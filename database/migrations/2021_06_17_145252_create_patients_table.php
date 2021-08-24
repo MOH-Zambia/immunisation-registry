@@ -14,17 +14,27 @@ class CreatePatientsTable extends Migration
     public function up()
     {
         Schema::create('patients', function (Blueprint $table) {
-            $table->id();
-            $table->string('patient_id');
-            $table->string('NRC');
-            $table->string('ZMB');
+            $table->increments('id');
+            $table->string('patient_id')->unique();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('other_names');
-            $table->date('date_of_birh');
-            $table->string('place_of_birth');
-            $table->string('home_address');
+            $table->char('sex');
+            $table->string('occupation');
+            $table->string('status'); //Status (active/inactive, e.g., in case of migration or death)
+            $table->string('contact_number')->nullable();
+            $table->string('contact_email_address')->nullable();
+            $table->string('next_of_kin_name')->nullable();
+            $table->string('next_of_kin_contact_number')->nullable();
+            $table->string('next_of_kin_contact_email_address')->nullable();
+            $table->date('date_of_birh')->nullable();
+            $table->string('place_of_birth')->nullable();
+            $table->string('address_line1');
+            $table->string('address_line2')->nullable();
+            $table->string('residence')->nullable();
+            $table->integer('record_id');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 

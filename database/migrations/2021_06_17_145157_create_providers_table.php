@@ -14,8 +14,13 @@ class CreateProvidersTable extends Migration
     public function up()
     {
         Schema::create('providers', function (Blueprint $table) {
-            $table->id();
+            $table->increments('id');
+            $table->string('first_name');
+            $table->string('last_name');
+            $table->string('other_names');
+            $table->char('sex');
             $table->timestamps();
+            $table->softDeletes();
         });
     }
 
