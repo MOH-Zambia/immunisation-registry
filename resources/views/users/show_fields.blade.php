@@ -1,7 +1,7 @@
-<!-- Role Id Field -->
+<!-- User Role Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('role_id', 'Role Id:') !!}
-    <p>{{ $user->role_id }}</p>
+    {!! Form::label('user_role_id', 'User Role Id:') !!}
+    <p>{{ $user->user_role_id }}</p>
 </div>
 
 <!-- Name Field -->
@@ -16,10 +16,10 @@
     <p>{{ $user->email }}</p>
 </div>
 
-<!-- Email Verified At Field -->
+<!-- Email Code Field -->
 <div class="col-sm-12">
-    {!! Form::label('email_verified_at', 'Email Verified At:') !!}
-    <p>{{ $user->email_verified_at }}</p>
+    {!! Form::label('email_code', 'Email Code:') !!}
+    <p>{{ $user->email_code }}</p>
 </div>
 
 <!-- Password Field -->
@@ -28,9 +28,21 @@
     <p>{{ $user->password }}</p>
 </div>
 
-<!-- Remember Token Field -->
+<!-- Last Login Field -->
 <div class="col-sm-12">
-    {!! Form::label('remember_token', 'Remember Token:') !!}
-    <p>{{ $user->remember_token }}</p>
+    {!! Form::label('last_login', 'Last Login:') !!}
+    <p>{{ $user->last_login }}</p>
+</div>
+
+<!-- Ip Field -->
+<div class="col-sm-12">
+    {!! Form::label('ip', 'Ip:') !!}
+    <p>{{ $user->ip }}</p>
+</div>
+
+<!-- Salt Field -->
+<div class="col-sm-12">
+    {!! Form::label('salt', 'Salt:') !!}
+    <p>{{ $user->salt }}</p>
 </div>
 

@@ -1,7 +1,7 @@
-<!-- Patient Id Field -->
+<!-- Client Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('patient_id', 'Patient Id:') !!}
-    {!! Form::number('patient_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('client_id', 'Client Id:') !!}
+    {!! Form::number('client_id', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Vaccine Id Field -->
@@ -25,6 +25,28 @@
 @push('page_scripts')
     <script type="text/javascript">
         $('#date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: true,
+            sideBySide: true
+        })
+    </script>
+@endpush
+
+<!-- Dose Number Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('dose_number', 'Dose Number:') !!}
+    {!! Form::text('dose_number', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+</div>
+
+<!-- Date Of Next Dose Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('date_of_next_dose', 'Date Of Next Dose:') !!}
+    {!! Form::text('date_of_next_dose', null, ['class' => 'form-control','id'=>'date_of_next_dose']) !!}
+</div>
+
+@push('page_scripts')
+    <script type="text/javascript">
+        $('#date_of_next_dose').datetimepicker({
             format: 'YYYY-MM-DD HH:mm:ss',
             useCurrent: true,
             sideBySide: true
@@ -66,10 +88,16 @@
     {!! Form::text('vaccinating_organization_id', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
-<!-- Vaccinating Country Field -->
+<!-- Vaccinating Country Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('vaccinating_country', 'Vaccinating Country:') !!}
-    {!! Form::text('vaccinating_country', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+    {!! Form::label('vaccinating_country_id', 'Vaccinating Country Id:') !!}
+    {!! Form::number('vaccinating_country_id', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Vaccination Certificate Id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate Id:') !!}
+    {!! Form::number('vaccination_certificate_id', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Record Id Field -->

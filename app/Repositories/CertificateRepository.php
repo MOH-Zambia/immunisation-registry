@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class CertificateRepository
  * @package App\Repositories
- * @version July 8, 2021, 12:43 am UTC
+ * @version August 30, 2021, 11:42 am UTC
 */
 
 class CertificateRepository extends BaseRepository
@@ -21,15 +21,17 @@ class CertificateRepository extends BaseRepository
         'signature_algorithm',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
-        'patient_id',
+        'client_id',
         'certificate_expiration_date',
         'innoculated_since_date',
         'recovery_date',
-        'patient_status',
-        'dose_1_id',
-        'dose_2_id',
-        'dose_3_id',
-        'dose_4_id',
+        'client_status',
+        'dose_1_date',
+        'dose_2_date',
+        'dose_3_date',
+        'dose_4_date',
+        'dose_5_date',
+        'booster_dose_date',
         'qr_code',
         'certificate_url'
     ];

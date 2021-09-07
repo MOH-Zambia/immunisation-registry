@@ -3,10 +3,9 @@
         <thead>
             <tr>
                 <th>Name</th>
-        <th>Population</th>
-        <th>Pop Density</th>
-        <th>Area Sq Km</th>
-        <th>Geometry</th>
+                <th>Population</th>
+                <th>Pop Density</th>
+                <th>Area Sq Km</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
@@ -14,10 +13,9 @@
         @foreach($provinces as $province)
             <tr>
                 <td>{{ $province->name }}</td>
-            <td>{{ $province->population }}</td>
-            <td>{{ $province->pop_density }}</td>
-            <td>{{ $province->area_sq_km }}</td>
-            <td>{{ $province->geometry }}</td>
+                <td>{{ $province->population }}</td>
+                <td>{{ $province->pop_density }}</td>
+                <td>{{ $province->area_sq_km }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['provinces.destroy', $province->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class VaccinationRepository
  * @package App\Repositories
- * @version July 8, 2021, 12:49 am UTC
+ * @version August 30, 2021, 12:06 pm UTC
 */
 
 class VaccinationRepository extends BaseRepository
@@ -17,15 +17,18 @@ class VaccinationRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'patient_id',
+        'client_id',
         'vaccine_id',
         'provider_id',
         'date',
+        'dose_number',
+        'date_of_next_dose',
         'type_of_strategy',
         'vaccine_batch_number',
         'vaccine_batch_expiration_date',
         'vaccinating_organization_id',
-        'vaccinating_country',
+        'vaccinating_country_id',
+        'vaccination_certificate_id',
         'record_id'
     ];
 

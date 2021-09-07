@@ -64,23 +64,22 @@ use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
  *          format="date-time"
  *      )
  * )
+ *
+ * @property \Grimzy\LaravelMysqlSpatial\Types\Polygon $geometry
  */
 class Province extends Model
 {
+    use SpatialTrait;
     use SoftDeletes;
-
     use HasFactory;
 
-    use SpatialTrait;
-
     public $table = 'provinces';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
 
     protected $dates = ['deleted_at'];
-
 
     protected $spatialFields = [
         'geometry',
@@ -124,5 +123,11 @@ class Province extends Model
         'deleted_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function districts()
+    {
+        return $this->hasMany(\App\Models\District::class, 'province_id');
+    }
 }

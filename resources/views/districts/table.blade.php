@@ -2,26 +2,24 @@
     <table class="table" id="districts-table">
         <thead>
             <tr>
-                <th>Province Id</th>
-        <th>Name</th>
-        <th>District Type</th>
-        <th>Population</th>
-        <th>Pop Density</th>
-        <th>Area Sq Km</th>
-        <th>Geometry</th>
+                <th>Province</th>
+                <th>Name</th>
+                <th>District Type</th>
+                <th>Population</th>
+                <th>Pop Density</th>
+                <th>Area Sq Km</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
         <tbody>
         @foreach($districts as $district)
             <tr>
-                <td>{{ $district->province_id }}</td>
-            <td>{{ $district->name }}</td>
-            <td>{{ $district->district_type }}</td>
-            <td>{{ $district->population }}</td>
-            <td>{{ $district->pop_density }}</td>
-            <td>{{ $district->area_sq_km }}</td>
-            <td>{{ $district->geometry }}</td>
+                <td>{{ $district->province['name'] }}</td>
+                <td>{{ $district->name }}</td>
+                <td>{{ $district->district_type }}</td>
+                <td>{{ $district->population }}</td>
+                <td>{{ $district->pop_density }}</td>
+                <td>{{ $district->area_sq_km }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['districts.destroy', $district->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

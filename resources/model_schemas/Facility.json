@@ -85,7 +85,7 @@
     },
     {
         "name": "district_id",
-        "dbType": "integer,false",
+        "dbType": "integer,false,true",
         "htmlType": null,
         "validations": "required|integer|integer",
         "searchable": true,
@@ -250,5 +250,9 @@
         "inForm": false,
         "inIndex": false,
         "inView": false
+    },
+    {
+        "type": "relation",
+        "relation": "mt1,District,district_id"
     }
 ]

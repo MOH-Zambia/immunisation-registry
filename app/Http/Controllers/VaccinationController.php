@@ -29,7 +29,7 @@ class VaccinationController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $vaccinations = $this->vaccinationRepository->all();
+        $vaccinations = $this->vaccinationRepository->paginate(20);
 
         return view('vaccinations.index')
             ->with('vaccinations', $vaccinations);

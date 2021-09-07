@@ -2,7 +2,8 @@
     <table class="table" id="providers-table">
         <thead>
             <tr>
-                <th>First Name</th>
+                <th>Provider Id</th>
+        <th>First Name</th>
         <th>Last Name</th>
         <th>Other Names</th>
         <th>Sex</th>
@@ -12,7 +13,8 @@
         <tbody>
         @foreach($providers as $provider)
             <tr>
-                <td>{{ $provider->first_name }}</td>
+                <td>{{ $provider->provider_id }}</td>
+            <td>{{ $provider->first_name }}</td>
             <td>{{ $provider->last_name }}</td>
             <td>{{ $provider->other_names }}</td>
             <td>{{ $provider->sex }}</td>

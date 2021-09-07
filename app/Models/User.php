@@ -6,12 +6,11 @@ use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 /**
  * @SWG\Definition(
  *      definition="User",
- *      required={"role_id", "name", "email", "password"},
+ *      required={"user_role_id", "name", "email", "password"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -19,8 +18,8 @@ use Illuminate\Notifications\Notifiable;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="role_id",
- *          description="role_id",
+ *          property="user_role_id",
+ *          description="user_role_id",
  *          type="integer",
  *          format="int32"
  *      ),
@@ -35,10 +34,9 @@ use Illuminate\Notifications\Notifiable;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="email_verified_at",
- *          description="email_verified_at",
- *          type="string",
- *          format="date-time"
+ *          property="email_code",
+ *          description="email_code",
+ *          type="string"
  *      ),
  *      @SWG\Property(
  *          property="password",
@@ -46,8 +44,18 @@ use Illuminate\Notifications\Notifiable;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="remember_token",
- *          description="remember_token",
+ *          property="last_login",
+ *          description="last_login",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="ip",
+ *          description="ip",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="salt",
+ *          description="salt",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -72,7 +80,9 @@ use Illuminate\Notifications\Notifiable;
  */
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, SoftDeletes;
+    use SoftDeletes;
+
+    use HasFactory;
 
     public $table = 'users';
     
@@ -85,12 +95,14 @@ class User extends Authenticatable
 
 
     public $fillable = [
-        'role_id',
+        'user_role_id',
         'name',
         'email',
-        'email_verified_at',
+        'email_code',
         'password',
-        'remember_token'
+        'last_login',
+        'ip',
+        'salt'
     ];
 
     /**
@@ -100,12 +112,14 @@ class User extends Authenticatable
      */
     protected $casts = [
         'id' => 'integer',
-        'role_id' => 'integer',
+        'user_role_id' => 'integer',
         'name' => 'string',
         'email' => 'string',
-        'email_verified_at' => 'datetime',
+        'email_code' => 'string',
         'password' => 'string',
-        'remember_token' => 'string'
+        'last_login' => 'string',
+        'ip' => 'string',
+        'salt' => 'string'
     ];
 
     /**
@@ -114,16 +128,24 @@ class User extends Authenticatable
      * @var array
      */
     public static $rules = [
-        'role_id' => 'required|integer',
+        'user_role_id' => 'required|integer',
         'name' => 'required|string|max:255',
         'email' => 'required|string|max:255',
-        'email_verified_at' => 'nullable',
+        'email_code' => 'nullable|string|max:255',
         'password' => 'required|string|max:255',
-        'remember_token' => 'nullable|string|max:100',
+        'last_login' => 'nullable|string|max:255',
+        'ip' => 'nullable|string|max:255',
+        'salt' => 'nullable|string|max:255',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function userRole()
+    {
+        return $this->belongsTo(\App\Models\Role::class, 'user_role_id');
+    }
 }

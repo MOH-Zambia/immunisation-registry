@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class RecordRepository
  * @package App\Repositories
- * @version July 8, 2021, 12:52 am UTC
+ * @version August 26, 2021, 5:17 pm UTC
 */
 
 class RecordRepository extends BaseRepository
@@ -17,6 +17,8 @@ class RecordRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
+        'data_source',
+        'data_type',
         'data'
     ];
 

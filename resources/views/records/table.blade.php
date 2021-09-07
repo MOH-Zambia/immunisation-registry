@@ -2,14 +2,18 @@
     <table class="table" id="records-table">
         <thead>
             <tr>
-                <th>Data</th>
+                <th>Data Source</th>
+        <th>Data Type</th>
+        <th>Data</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
         <tbody>
         @foreach($records as $record)
             <tr>
-                <td>{{ $record->data }}</td>
+                <td>{{ $record->data_source }}</td>
+            <td>{{ $record->data_type }}</td>
+            <td>{{ $record->data }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['records.destroy', $record->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

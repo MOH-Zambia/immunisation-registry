@@ -3,13 +3,12 @@
         <thead>
             <tr>
                 <th>Product Name</th>
-        <th>Short Description</th>
-        <th>Vaccine Code</th>
-        <th>Vaccine Manufacturer</th>
-        <th>Vaccine Type</th>
-        <th>Commercial Formulation</th>
-        <th>Vaccine Status</th>
-        <th>Notes</th>
+                <th>Short Description</th>
+                <th>Vaccine Manufacturer</th>
+                <th>Vaccine Group</th>
+                <th>Commercial Formulation</th>
+                <th>Vaccine Status</th>
+                <th>Notes</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
@@ -17,13 +16,12 @@
         @foreach($vaccines as $vaccine)
             <tr>
                 <td>{{ $vaccine->product_name }}</td>
-            <td>{{ $vaccine->short_description }}</td>
-            <td>{{ $vaccine->vaccine_code }}</td>
-            <td>{{ $vaccine->vaccine_manufacturer }}</td>
-            <td>{{ $vaccine->vaccine_type }}</td>
-            <td>{{ $vaccine->commercial_formulation }}</td>
-            <td>{{ $vaccine->vaccine_status }}</td>
-            <td>{{ $vaccine->notes }}</td>
+                <td>{{ $vaccine->short_description }}</td>
+                <td>{{ $vaccine->vaccine_manufacturer }}</td>
+                <td>{{ $vaccine->vaccine_group }}</td>
+                <td>{{ $vaccine->commercial_formulation }}</td>
+                <td>{{ $vaccine->vaccine_status }}</td>
+                <td>{{ $vaccine->notes }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['vaccines.destroy', $vaccine->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

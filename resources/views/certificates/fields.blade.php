@@ -1,6 +1,6 @@
 <!-- Vaccination Certificate Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate Id:') !!}
+    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate ID:') !!}
     {!! Form::text('vaccination_certificate_id', null, ['class' => 'form-control','maxlength' => 36,'maxlength' => 36]) !!}
 </div>
 
@@ -12,7 +12,7 @@
 
 <!-- Certificate Issuing Authority Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('certificate_issuing_authority_id', 'Certificate Issuing Authority Id:') !!}
+    {!! Form::label('certificate_issuing_authority_id', 'Certificate Issuing Authority ID:') !!}
     {!! Form::number('certificate_issuing_authority_id', null, ['class' => 'form-control']) !!}
 </div>
 
@@ -22,10 +22,10 @@
     {!! Form::text('vaccination_certificate_batch_number', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
-<!-- Patient Id Field -->
+<!-- Client Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('patient_id', 'Patient Id:') !!}
-    {!! Form::number('patient_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('client_id', 'Client Id:') !!}
+    {!! Form::number('client_id', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Certificate Expiration Date Field -->
@@ -76,35 +76,107 @@
     </script>
 @endpush
 
-<!-- Patient Status Field -->
+<!-- Client Status Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('patient_status', 'Patient Status:') !!}
-    {!! Form::text('patient_status', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+    {!! Form::label('client_status', 'Client Status:') !!}
+    {!! Form::text('client_status', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
-<!-- Dose 1 Id Field -->
+<!-- Dose 1 Date Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('dose_1_id', 'Dose 1 Id:') !!}
-    {!! Form::number('dose_1_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('dose_1_date', 'Dose 1 Date:') !!}
+    {!! Form::text('dose_1_date', null, ['class' => 'form-control','id'=>'dose_1_date']) !!}
 </div>
 
-<!-- Dose 2 Id Field -->
+@push('page_scripts')
+    <script type="text/javascript">
+        $('#dose_1_date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: true,
+            sideBySide: true
+        })
+    </script>
+@endpush
+
+<!-- Dose 2 Date Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('dose_2_id', 'Dose 2 Id:') !!}
-    {!! Form::number('dose_2_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('dose_2_date', 'Dose 2 Date:') !!}
+    {!! Form::text('dose_2_date', null, ['class' => 'form-control','id'=>'dose_2_date']) !!}
 </div>
 
-<!-- Dose 3 Id Field -->
+@push('page_scripts')
+    <script type="text/javascript">
+        $('#dose_2_date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: true,
+            sideBySide: true
+        })
+    </script>
+@endpush
+
+<!-- Dose 3 Date Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('dose_3_id', 'Dose 3 Id:') !!}
-    {!! Form::number('dose_3_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('dose_3_date', 'Dose 3 Date:') !!}
+    {!! Form::text('dose_3_date', null, ['class' => 'form-control','id'=>'dose_3_date']) !!}
 </div>
 
-<!-- Dose 4 Id Field -->
+@push('page_scripts')
+    <script type="text/javascript">
+        $('#dose_3_date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: true,
+            sideBySide: true
+        })
+    </script>
+@endpush
+
+<!-- Dose 4 Date Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('dose_4_id', 'Dose 4 Id:') !!}
-    {!! Form::number('dose_4_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('dose_4_date', 'Dose 4 Date:') !!}
+    {!! Form::text('dose_4_date', null, ['class' => 'form-control','id'=>'dose_4_date']) !!}
 </div>
+
+@push('page_scripts')
+    <script type="text/javascript">
+        $('#dose_4_date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: true,
+            sideBySide: true
+        })
+    </script>
+@endpush
+
+<!-- Dose 5 Date Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('dose_5_date', 'Dose 5 Date:') !!}
+    {!! Form::text('dose_5_date', null, ['class' => 'form-control','id'=>'dose_5_date']) !!}
+</div>
+
+@push('page_scripts')
+    <script type="text/javascript">
+        $('#dose_5_date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: true,
+            sideBySide: true
+        })
+    </script>
+@endpush
+
+<!-- Booster Dose Date Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('booster_dose_date', 'Booster Dose Date:') !!}
+    {!! Form::text('booster_dose_date', null, ['class' => 'form-control','id'=>'booster_dose_date']) !!}
+</div>
+
+@push('page_scripts')
+    <script type="text/javascript">
+        $('#booster_dose_date').datetimepicker({
+            format: 'YYYY-MM-DD HH:mm:ss',
+            useCurrent: true,
+            sideBySide: true
+        })
+    </script>
+@endpush
 
 <!-- Qr Code Field -->
 <div class="form-group col-sm-6">

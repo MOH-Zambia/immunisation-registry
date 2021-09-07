@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use Eloquent as Model;
-// use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 /**
@@ -76,5 +76,11 @@ class Role extends Model
         'updated_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function users()
+    {
+        return $this->hasMany(\App\Models\User::class, 'user_role_id');
+    }
 }

@@ -15,6 +15,9 @@ class CreateProvidersTable extends Migration
     {
         Schema::create('providers', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('NRC');
+            $table->string('passport');
+            $table->string('license_number');
             $table->string('first_name');
             $table->string('last_name');
             $table->string('other_names');

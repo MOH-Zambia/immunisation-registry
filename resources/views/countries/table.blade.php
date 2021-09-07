@@ -3,8 +3,7 @@
         <thead>
             <tr>
                 <th>Name</th>
-        <th>Alpha2</th>
-        <th>Alpha3</th>
+        <th>Code</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
@@ -12,8 +11,7 @@
         @foreach($countries as $country)
             <tr>
                 <td>{{ $country->name }}</td>
-            <td>{{ $country->alpha2 }}</td>
-            <td>{{ $country->alpha3 }}</td>
+            <td>{{ $country->code }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['countries.destroy', $country->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

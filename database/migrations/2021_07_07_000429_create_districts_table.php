@@ -16,18 +16,21 @@ class CreateDistrictsTable extends Migration
     {
         Schema::create('districts', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('province_id');
+            $table->integer('province_id')->unsigned();
             $table->string('name');
             $table->string('district_type')->nullable();
             $table->integer('population')->nullable();
             $table->float('pop_density')->nullable();
             $table->float('area_sq_km')->nullable();
             // $table->polygon('geometry', 4326);
-            $table->polygon('geometry', 3857);
+            // $table->polygon('geometry', 3857);
+            $table->MultiPolygon('geometry', 3857);
             $table->timestamps();
             $table->softDeletes();
+        });
 
-            // $table->foreign('province_id')->references('id')->on('provinces');
+        Schema::table('districts', function (Blueprint $table) {
+            $table->foreign('province_id')->references('id')->on('provinces');
         });
     }
 
@@ -38,6 +41,11 @@ class CreateDistrictsTable extends Migration
      */
     public function down()
     {
+        Schema::table('districts', function(Blueprint $table)
+        {
+            $table->dropForeign(['province_id']);
+        });
+        
         Schema::dropIfExists('districts');
     }
 }

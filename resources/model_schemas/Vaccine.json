@@ -36,10 +36,10 @@
         "inView": true
     },
     {
-        "name": "vaccine_code",
-        "dbType": "string,255",
+        "name": "cdc_cvx_code",
+        "dbType": "string,255:nullable",
         "htmlType": "text",
-        "validations": "required|string|max:255|string|max:255",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -60,10 +60,22 @@
         "inView": true
     },
     {
-        "name": "vaccine_type",
-        "dbType": "string,255",
+        "name": "cdc_mvx_code",
+        "dbType": "string,255:nullable",
         "htmlType": "text",
-        "validations": "required|string|max:255|string|max:255",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "vaccine_group",
+        "dbType": "string,255:nullable",
+        "htmlType": "text",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -73,9 +85,9 @@
     },
     {
         "name": "commercial_formulation",
-        "dbType": "string,255",
+        "dbType": "string,255:nullable",
         "htmlType": "text",
-        "validations": "required|string|max:255|string|max:255",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -97,7 +109,7 @@
     },
     {
         "name": "notes",
-        "dbType": "text:nullable",
+        "dbType": "text,65535:nullable",
         "htmlType": "textarea",
         "validations": "nullable|string|nullable|string",
         "searchable": true,
@@ -130,5 +142,21 @@
         "inForm": false,
         "inIndex": false,
         "inView": false
+    },
+    {
+        "name": "deleted_at",
+        "dbType": "datetime:nullable",
+        "htmlType": "date",
+        "validations": "nullable|nullable",
+        "searchable": false,
+        "fillable": false,
+        "primary": false,
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
+    },
+    {
+        "type": "relation",
+        "relation": "1tm,Vaccination,vaccine_id"
     }
 ]

@@ -29,7 +29,7 @@ class CertificateController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $certificates = $this->certificateRepository->all();
+        $certificates = $this->certificateRepository->paginate(20);
 
         return view('certificates.index')
             ->with('certificates', $certificates);
@@ -81,6 +81,26 @@ class CertificateController extends AppBaseController
         }
 
         return view('certificates.show')->with('certificate', $certificate);
+    }
+
+    /**
+     * Display the specified Certificate.
+     *
+     * @param int $id
+     *
+     * @return Response
+     */
+    public function view($uuid)
+    {
+        $certificate = $this->certificateRepository->find($uuid);
+
+        if (empty($certificate)) {
+            Flash::error('Certificate not found');
+
+//            return redirect(route('certificates.index'));
+        }
+
+        return view('certificates.view')->with('certificate', $certificate);
     }
 
     /**

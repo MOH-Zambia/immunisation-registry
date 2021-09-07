@@ -1,0 +1,158 @@
+product_name,short_description,cdc_cvx_code,manufacturer,cdc_mvx_code,product_name_status,vaccine_group
+ACAM2000,vaccinia (smallpox),75,Sanofi Pasteur,PMC,Active,VACCINIA
+ACAM2000,vaccinia (smallpox),75,"Acambis, Inc",ACA,Inactive,VACCINIA
+ACEL-IMUNE,DTaP,20,,,Inactive,DTAP
+ACTHIB,Hib (PRP-T),48,Sanofi Pasteur,PMC,Active,HIB
+ADACEL,Tdap,115,Sanofi Pasteur,PMC,Active,TDAP
+Adenovirus types 4 and 7,Adenovirus types 4 and 7,143,Barr Laboratories,BRR,Inactive,ADENO
+Adenovirus types 4 and 7,Adenovirus types 4 and 7,143,TEVA Pharmaceuticals USA ,TVA,Active,ADENO
+AFLURIA,"Influenza, seasonal, injectable",141,bioCSL,CSL,Inactive,FLU
+Afluria,"Influenza, seasonal, injectable",141,Seqirus,SEQ,Active,FLU
+Afluria quadrivalent preservative free,"influenza, injectable, quadrivalent, preservative free",150,Seqirus,SEQ,Active,FLU
+"Afluria quadrivalent, preservative free, pediatric","Influenza, injectable,quadrivalent, preservative free, pediatric",161,Seqirus,SEQ,Active,FLU
+"Afluria, preservative free","Influenza, seasonal, injectable, preservative free",140,bioCSL,CSL,Inactive,FLU
+"Afluria, preservative free","Influenza, seasonal, injectable, preservative free",140,Seqirus,SEQ,Active,FLU
+"Afluria, quadrivalent","influenza, injectable, quadrivalent",158,Seqirus,SEQ,Active,FLU
+AGRIFLU,"Influenza, seasonal, injectable, preservative free",140,Novartis Pharmaceutical Corporation,NOV,Inactive,FLU
+AS03 adjuvant,AS03 Adjuvant,801,GlaxoSmithKline,SKB,Inactive,
+"AstraZeneca COVID-19 Vaccine (Tradenames include VAXZEVRIA, COVISHIELD)","SARS-COV-2 COVID-19 vaccine, vector-nr, rS-ChAdOx1, PF, 0.5 mL ",210,AstraZeneca,ASZ,Active,COVID-19
+ATTENUVAX,measles,5,"Merck and Co., Inc.",MSD,Inactive,MMR
+Bexsero,"meningococcal B, OMV",163,Novartis Pharmaceutical Corporation,NOV,Active,MeningB
+Bexsero,"meningococcal B, OMV",163,GlaxoSmithKline,SKB,Active,MeningB
+BIAVAX II,rubella/mumps,38,,,Inactive,MMR
+BIOTHRAX,anthrax,24,Emergent BioSolutions,MIP,Active,ANTHRAX
+BOOSTRIX,Tdap,115,GlaxoSmithKline,SKB,Active,TDAP
+CERTIVA,DTaP,20,,,Inactive,DTAP
+CERVARIX,"HPV, bivalent",118,GlaxoSmithKline,SKB,Inactive,HPV
+COMVAX,Hib-Hep B,51,"Merck and Co., Inc.",MSD,Inactive,HIB
+Coronavac (Sinovac) COVID-19 Vaccine,"SARS-COV-2 COVID-19 IV (CoronaVac, Sinovac)",511,Sinovac ,SNV,Active,COVID-19
+DAPTACEL,"DTaP, 5 pertussis antigens",106,Sanofi Pasteur,PMC,Active,DTAP
+DECAVAC,"Td (adult), 5 Lf tetanus toxoid, preservative free, adsorbed",113,Sanofi Pasteur,PMC,Inactive,Td
+DENGVAXIA,dengue fever,56,Sanofi Pasteur,PMC,Active,DENGUE
+DRYVAX,vaccinia (smallpox),75,,,Inactive,VACCINIA
+DT(GENERIC),DT (pediatric),28,Sanofi Pasteur,PMC,Active,DTAP
+ENGERIX B-PEDS,"Hep B, adolescent or pediatric",8,GlaxoSmithKline,SKB,Active,HepB
+ENGERIX-B-ADULT,"Hep B, adult",43,GlaxoSmithKline,SKB,Active,HepB
+"ERVEBO (Ebola Zaire Vaccine, Live)","Ebola Zaire vaccine, live, recombinant, 1mL dose",204,"Merck and Co., Inc.",MSD,Active,Ebola
+Fluad,"influenza, trivalent, adjuvanted",168,Seqirus,SEQ,Active,FLU
+Fluad,"influenza, trivalent, adjuvanted",168,Novartis Pharmaceutical Corporation,NOV,Active,FLU
+FLUAD Quadrivalent,"Influenza vaccine, quadrivalent, adjuvanted",205,Seqirus,SEQ,Active,FLU
+FLUARIX,"Influenza, seasonal, injectable, preservative free",140,GlaxoSmithKline,SKB,Active,FLU
+"Fluarix, quadrivalent, preservative free","influenza, injectable, quadrivalent, preservative free",150,GlaxoSmithKline,SKB,Active,FLU
+Flublok,"influenza, recombinant, injectable, preservative free",155,Protein Sciences,PSC,Active,FLU
+Flublok quadrivalent,"influenza, recombinant, quadrivalent,injectable, preservative free",185,Protein Sciences,PSC,Inactive,FLU
+Flublok quadrivalent,"influenza, recombinant, quadrivalent,injectable, preservative free",185,Sanofi Pasteur,PMC,Active,FLU
+Flucelvax,"Influenza, injectable, MDCK, preservative free",153,Novartis Pharmaceutical Corporation,NOV,Inactive,FLU
+"flucelvax, quadrivalent, preservative free","Influenza, injectable, MDCK, preservative free, quadrivalent",171,Seqirus,SEQ,Active,FLU
+"Flucelvax, quadrivalent, with preservative","Influenza, injectable, MDCK, quadrivalent, preservative",186,Seqirus,SEQ,Active,FLU
+FLULAVAL,"Influenza, seasonal, injectable",141,ID Biomedical,IDB,Active,FLU
+Flulaval quadrivalent,"influenza, injectable, quadrivalent",158,ID Biomedical,IDB,Active,FLU
+"Flulaval, preservative free","Influenza, seasonal, injectable, preservative free",140,ID Biomedical,IDB,Active,FLU
+"Flulaval, quadrivalent, preservative free","influenza, injectable, quadrivalent, preservative free",150,ID Biomedical,IDB,Active,FLU
+FLUMIST,"influenza, live, intranasal",111,"MedImmune, Inc. (AstraZeneca)",MED,Inactive,FLU
+Flumist quadrivalent,"influenza, live, intranasal, quadrivalent",149,"MedImmune, Inc. (AstraZeneca)",MED,Active,FLU
+FLUVIRIN,"Influenza, seasonal, injectable",141,Novartis Pharmaceutical Corporation,NOV,Active,FLU
+Fluvirin,"Influenza, seasonal, injectable",141,Seqirus,SEQ,Active,FLU
+Fluvirin preservative free,"Influenza, seasonal, injectable, preservative free",140,Seqirus,SEQ,Active,FLU
+FLUVIRIN-PRESERVATIVE FREE,"Influenza, seasonal, injectable, preservative free",140,Novartis Pharmaceutical Corporation,NOV,Active,FLU
+FLUZONE,"Influenza, seasonal, injectable",141,Sanofi Pasteur,PMC,Active,FLU
+FLUZONE High-Dose Quadrivalent,"influenza, high-dose, quadrivalent",197,Sanofi Pasteur,PMC,Active,FLU
+Fluzone Quad Intradermal,"influenza, intradermal, quadrivalent, preservative free",166,Sanofi Pasteur,PMC,Active,FLU
+FLUZONE Quadrivalent Southern Hemisphere,"influenza, Southern Hemisphere, preservative free",201,Sanofi Pasteur,PMC,Active,FLU
+FLUZONE Quadrivalent Southern Hemisphere,"influenza, Southern Hemisphere, quadrivalent, with preservative",202,Sanofi Pasteur,PMC,Active,FLU
+"FLUZONE Quadrivalent Southern Hemisphere, Pediatric","influenza, Southern Hemisphere, pediatric, preservative free",200,Sanofi Pasteur,PMC,Active,FLU
+"Fluzone Quadrivalent, pediatric","Influenza, injectable,quadrivalent, preservative free, pediatric",161,Sanofi Pasteur,PMC,Active,FLU
+"Fluzone, intradermal","influenza, seasonal, intradermal, preservative free",144,Sanofi Pasteur,PMC,Active,FLU
+"Fluzone, Quadrivalent","influenza, injectable, quadrivalent",158,Sanofi Pasteur,PMC,Active,FLU
+"Fluzone, quadrivalent, preservative free","influenza, injectable, quadrivalent, preservative free",150,Sanofi Pasteur,PMC,Active,FLU
+FLUZONE-HIGH DOSE,"Influenza, high dose seasonal",135,Sanofi Pasteur,PMC,Active,FLU
+FLUZONE-PRESERVATIVE FREE,"Influenza, seasonal, injectable, preservative free",140,Sanofi Pasteur,PMC,Active,FLU
+GARDASIL,"HPV, quadrivalent",62,"Merck and Co., Inc.",MSD,Inactive,HPV
+Gardasil 9,HPV9,165,"Merck and Co., Inc.",MSD,Active,HPV
+HAVRIX-ADULT,"Hep A, adult",52,GlaxoSmithKline,SKB,Active,HepA
+HAVRIX-PEDS,"Hep A, ped/adol, 2 dose",83,GlaxoSmithKline,SKB,Active,HepA
+HEPLISAV-B,HepB-CpG,189,"Dynavax, Inc.",DVX,Active,HepB
+HIBERIX,Hib (PRP-T),48,GlaxoSmithKline,SKB,Active,HIB
+HIBTITER,Hib (HbOC),47,,,Inactive,HIB
+IMOVAX,Rabies - IM Diploid cell culture,175,Sanofi Pasteur,PMC,Active,RABIES
+Imovax,"rabies, intramuscular injection",18,Sanofi Pasteur,PMC,Inactive,RABIES
+IMOVAX ID,"rabies, intradermal injection",40,Sanofi Pasteur,PMC,Inactive,RABIES
+INFANRIX,DTaP,20,GlaxoSmithKline,SKB,Active,DTAP
+Influenza A (H5N1) -2013,"Influenza A monovalent (H5N1), ADJUVANTED-2013",160,ID Biomedical,IDB,Active,H5N1 flu
+"Influenza A monovalent (H5N1), ADJUVANTED-2013","Influenza A monovalent (H5N1), ADJUVANTED-2013",160,GlaxoSmithKline,SKB,Inactive,H5N1 flu
+IPOL,IPV,10,Sanofi Pasteur,PMC,Active,POLIO
+IXIARO,Japanese Encephalitis IM,134,Intercell Biomedical,INT,Inactive,Japanese encephalitis
+Ixiaro,Japanese Encephalitis IM,134,Valneva,VAL,Active,Japanese encephalitis
+IXIARO,Japanese Encephalitis IM,134,Vetter Pharma Fertigung GmbH & Co. KG,VET,Active,Japanese encephalitis
+Janssen (J&J) COVID-19 Vaccine,"SARS-COV-2 COVID-19 vaccine, vector-nr, rS-Ad26, PF, 0.5 mL",212,Janssen,JSN,Active,COVID-19
+JE-VAX,Japanese encephalitis SC,39,The Research Foundation for Microbial Diseases of Osaka University (BIKEN),JPN,Inactive,Japanese encephalitis
+JYNNEOS,Smallpox monkeypox vaccine (National Stockpile),206,Bavarian Nordic A/S,BN,Active,VACCINIA
+KINRIX,DTaP-IPV,130,GlaxoSmithKline,SKB,Active,POLIO
+MENACTRA,meningococcal MCV4P,114,Sanofi Pasteur,PMC,Active,MENING
+MENHIBRIX,Meningococcal C/Y-HIB PRP,148,GlaxoSmithKline,SKB,Inactive,MENING
+MENOMUNE,meningococcal MPSV4,32,Sanofi Pasteur,PMC,Inactive,MENING
+MenQuadfi,"meningococcal polysaccharide (groups A, C, Y, W-135) TT conjugate",203,Sanofi Pasteur,PMC,Active,MENING
+Menveo,Meningococcal MCV4O,136,GlaxoSmithKline,SKB,Active,MENING
+MENVEO,Meningococcal MCV4O,136,Novartis Pharmaceutical Corporation,NOV,Active,MENING
+MERUVAX II,rubella,6,"Merck and Co., Inc.",MSD,Inactive,MMR
+M-M-R II,MMR,3,"Merck and Co., Inc.",MSD,Active,MMR
+Moderna COVID-19 Vaccine (Spikevax),"SARS-COV-2 COVID-19, mRNA, LNP-S, PF, 100 mcg/0.5 mL dose",207,"Moderna US, Inc.",MOD,Active,COVID-19
+MUMPSVAX,mumps,7,,,Inactive,MMR
+MYCOBAX,BCG,19,,,Inactive,BCG
+Novavax COVID-19 Vaccine,"SARS-COV-2 COVID-19 vaccine, Subunit, rS-nanoparticle+Matrix-M1 Adjuvant, PF, 0.5 mL",211,"Novavax, Inc.",NVX,Active,COVID-19
+Novel influenza-H1N1-09,Novel influenza-H1N1-09,127,bioCSL,CSL,Inactive,H1N1 flu
+Novel influenza-H1N1-09,Novel influenza-H1N1-09,127,Novartis Pharmaceutical Corporation,NOV,Inactive,H1N1 flu
+Novel influenza-H1N1-09,Novel influenza-H1N1-09,127,Sanofi Pasteur,PMC,Inactive,H1N1 flu
+"Novel Influenza-H1N1-09, nasal","Novel Influenza-H1N1-09, nasal",125,"MedImmune, Inc. (AstraZeneca)",MED,Inactive,H1N1 flu
+"Novel influenza-H1N1-09, preservative-free","Novel influenza-H1N1-09, preservative-free",126,Sanofi Pasteur,PMC,Inactive,H1N1 flu
+"Novel influenza-H1N1-09, preservative-free","Novel influenza-H1N1-09, preservative-free",126,bioCSL,CSL,Inactive,H1N1 flu
+"Novel influenza-H1N1-09, preservative-free","Novel influenza-H1N1-09, preservative-free",126,Novartis Pharmaceutical Corporation,NOV,Inactive,H1N1 flu
+OMNIHIB,Hib (PRP-T),48,,,Inactive,HIB
+ORIMUNE,OPV,2,,,Inactive,POLIO
+PEDIARIX,DTaP-Hep B-IPV,110,GlaxoSmithKline,SKB,Active,DTAP
+PEDVAXHIB,Hib (PRP-OMP),49,"Merck and Co., Inc.",MSD,Active,HIB
+PENTACEL,DTaP-Hib-IPV,120,Sanofi Pasteur,PMC,Active,DTAP
+Pfizer-BioNTech COVID-19 Vaccine (COMIRNATY),"SARS-COV-2 COVID-19, mRNA, LNP-S, PF, 30 mcg/0.3 mL dose",208,"Pfizer, Inc",PFR,Active,COVID-19
+PNEUMOVAX 23,pneumococcal polysaccharide PPV23,33,"Merck and Co., Inc.",MSD,Active,PneumoPPV
+PREVNAR 13,Pneumococcal conjugate PCV 13,133,"Pfizer, Inc",PFR,Active,PneumoPCV
+PREVNAR 13,Pneumococcal conjugate PCV 13,133,Wyeth,WAL,Inactive,PneumoPCV
+PREVNAR 20,"Pneumococcal conjugate PCV20, polysaccharide CRM197 conjugate, adjuvant, PF",216,"Pfizer, Inc",PFR,Active,PneumoPCV
+PREVNAR 7,pneumococcal conjugate PCV 7,100,Wyeth,WAL,Inactive,PneumoPCV
+PREVNAR 7,pneumococcal conjugate PCV 7,100,Wyeth,WAL,Inactive,PneumoPCV
+PROHIBIT,Hib (PRP-D),46,,,Inactive,HIB
+PROQUAD,MMRV,94,"Merck and Co., Inc.",MSD,Active,MMR
+Quadracel,DTaP-IPV,130,Sanofi Pasteur,PMC,Active,POLIO
+RABAVERT,Rabies - IM fibroblast culture,176,Novartis Pharmaceutical Corporation,NOV,Inactive,RABIES
+RABAVERT,Rabies - IM fibroblast culture,176,GlaxoSmithKline,SKB,Active,RABIES
+RabAvert,"rabies, intramuscular injection",18,Chiron Corporation,CHI,Inactive,RABIES
+RECOMBIVAX-ADULT,"Hep B, adult",43,"Merck and Co., Inc.",MSD,Active,HepB
+RECOMBIVAX-DIALYSIS,"Hep B, dialysis",44,"Merck and Co., Inc.",MSD,Active,HepB
+RECOMBIVAX-PEDS,"Hep B, adolescent or pediatric",8,"Merck and Co., Inc.",MSD,Active,HepB
+ROTARIX,"rotavirus, monovalent",119,GlaxoSmithKline,SKB,Active,ROTAVIRUS
+ROTATEQ,"rotavirus, pentavalent",116,"Merck and Co., Inc.",MSD,Active,ROTAVIRUS
+SHINGRIX,zoster recombinant,187,GlaxoSmithKline,SKB,Active,ZOSTER
+Sinopharm (BIBP) COVID-19 Vaccine,"SARS-COV-2 COVID-19 IV Vaccine (BIBP, Sinopharm)",510,Sinopharm-Biotech,SPH,Active,COVID-19
+Stamaril,Yellow fever vaccine - alt,183,Sanofi Pasteur,PMC,Active,YELLOWFEVER
+"Td, adsorbed ","Td (adult), 2 Lf tetanus toxoid, preservative free, adsorbed",9,Grifols,GRF,Inactive,Td
+"Td, adsorbed","Td (adult), 2 Lf tetanus toxoid, preservative free, adsorbed",9,Massachusetts Biologic Laboratories,MBL,Inactive,Td
+TDVAX,"Td (adult), 2 Lf tetanus toxoid, preservative free, adsorbed",9,Massachusetts Biologic Laboratories,MBL,Active,Td
+Tenivac,"Td (adult), 5 Lf tetanus toxoid, preservative free, adsorbed",113,Sanofi Pasteur,PMC,Active,Td
+TETANUS TOXOID (GENERIC),"tetanus toxoid, adsorbed",35,Sanofi Pasteur,PMC,Inactive,
+TETRAMUNE,DTP-Hib,22,,,Inactive,DTAP
+TICE BCG,BCG,19,"Merck and Co., Inc.",MSD,Active,BCG
+TRIHIBIT,DTaP-Hib,50,Sanofi Pasteur,PMC,Inactive,HIB
+TRIPEDIA,DTaP,20,Sanofi Pasteur,PMC,Inactive,DTAP
+Trumenba,"meningococcal B, recombinant",162,"Pfizer, Inc",PFR,Active,MeningB
+TWINRIX,Hep A-Hep B,104,GlaxoSmithKline,SKB,Active,HepB
+TYPHIM VI,"typhoid, ViCPs",101,Sanofi Pasteur,PMC,Active,TYPHOID
+TYPHOID-AKD,"typhoid, parenteral, AKD (U.S. military)",53,,,Inactive,TYPHOID
+VAQTA-ADULT,"Hep A, adult",52,"Merck and Co., Inc.",MSD,Active,HepA
+VAQTA-PEDS,"Hep A, ped/adol, 2 dose",83,"Merck and Co., Inc.",MSD,Active,HepA
+VARIVAX,varicella,21,"Merck and Co., Inc.",MSD,Active,VARICELLA
+VAXCHORA,"cholera, live attenuated",174,"Emergent Travel Health, Inc (Formerly PaxVax)",PAX,Active,cholera
+VAXELIS,"DTaP,IPV,Hib,HepB",146,MSP Vaccine Company - (partnership Merck and Sanofi Pasteur),MSP,Active,POLIO
+VAXNEUVANCE,"Pneumococcal conjugate PCV15, polysaccharide CRM197 conjugate, adjuvant, PF",215,"Merck and Co., Inc.",MSD,Active,PneumoPCV
+Vivotif,"typhoid, oral",25,"Emergent Travel Health, Inc (Formerly PaxVax)",PAX,Active,TYPHOID
+VIVOTIF BERNA,"typhoid, oral",25,Crucell,CRU,Inactive,TYPHOID
+YF-VAX,yellow fever,37,Sanofi Pasteur,PMC,Active,YELLOWFEVER
+ZOSTAVAX,zoster live,121,"Merck and Co., Inc.",MSD,Active,ZOSTER

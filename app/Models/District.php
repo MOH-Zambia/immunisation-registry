@@ -75,17 +75,17 @@ use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
  *          format="date-time"
  *      )
  * )
+ *
+ * @property \Grimzy\LaravelMysqlSpatial\Types\Polygon $geometry
  */
 class District extends Model
 {
+    use SpatialTrait;
     use SoftDeletes;
-
     use HasFactory;
 
-    use SpatialTrait;
-
     public $table = 'districts';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -140,5 +140,19 @@ class District extends Model
         'deleted_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function province()
+    {
+        return $this->belongsTo(\App\Models\Province::class, 'province_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function facilities()
+    {
+        return $this->hasMany(\App\Models\Facility::class, 'district_id');
+    }
 }

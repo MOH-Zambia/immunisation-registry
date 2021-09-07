@@ -29,7 +29,7 @@
 
                 <div class="card-footer clearfix float-right">
                     <div class="float-right">
-                        
+                        @include('adminlte-templates::common.paginate', ['records' => $certificates])
                     </div>
                 </div>
             </div>

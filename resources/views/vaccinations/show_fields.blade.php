@@ -1,7 +1,7 @@
-<!-- Patient Id Field -->
+<!-- Client Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('patient_id', 'Patient Id:') !!}
-    <p>{{ $vaccination->patient_id }}</p>
+    {!! Form::label('client_id', 'Client Id:') !!}
+    <p>{{ $vaccination->client_id }}</p>
 </div>
 
 <!-- Vaccine Id Field -->
@@ -20,6 +20,18 @@
 <div class="col-sm-12">
     {!! Form::label('date', 'Date:') !!}
     <p>{{ $vaccination->date }}</p>
+</div>
+
+<!-- Dose Number Field -->
+<div class="col-sm-12">
+    {!! Form::label('dose_number', 'Dose Number:') !!}
+    <p>{{ $vaccination->dose_number }}</p>
+</div>
+
+<!-- Date Of Next Dose Field -->
+<div class="col-sm-12">
+    {!! Form::label('date_of_next_dose', 'Date Of Next Dose:') !!}
+    <p>{{ $vaccination->date_of_next_dose }}</p>
 </div>
 
 <!-- Type Of Strategy Field -->
@@ -46,10 +58,16 @@
     <p>{{ $vaccination->vaccinating_organization_id }}</p>
 </div>
 
-<!-- Vaccinating Country Field -->
+<!-- Vaccinating Country Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('vaccinating_country', 'Vaccinating Country:') !!}
-    <p>{{ $vaccination->vaccinating_country }}</p>
+    {!! Form::label('vaccinating_country_id', 'Vaccinating Country Id:') !!}
+    <p>{{ $vaccination->vaccinating_country_id }}</p>
+</div>
+
+<!-- Vaccination Certificate Id Field -->
+<div class="col-sm-12">
+    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate Id:') !!}
+    <p>{{ $vaccination->vaccination_certificate_id }}</p>
 </div>
 
 <!-- Record Id Field -->

@@ -12,6 +12,18 @@
         "inView": false
     },
     {
+        "name": "provider_id",
+        "dbType": "string,255",
+        "htmlType": "text",
+        "validations": "required|string|max:255|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
         "name": "first_name",
         "dbType": "string,255",
         "htmlType": "text",
@@ -82,5 +94,21 @@
         "inForm": false,
         "inIndex": false,
         "inView": false
+    },
+    {
+        "name": "deleted_at",
+        "dbType": "datetime:nullable",
+        "htmlType": "date",
+        "validations": "nullable|nullable",
+        "searchable": false,
+        "fillable": false,
+        "primary": false,
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
+    },
+    {
+        "type": "relation",
+        "relation": "1tm,Vaccination,provider_id"
     }
 ]
