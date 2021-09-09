@@ -112,6 +112,12 @@
     <p>{{ $client->next_of_kin_contact_email_address }}</p>
 </div>
 
+<!-- Facility Id Field -->
+<div class="col-sm-12">
+    {!! Form::label('facility_id', 'Facility Id:') !!}
+    <p>{{ $client->facility_id }}</p>
+</div>
+
 <!-- Record Id Field -->
 <div class="col-sm-12">
     {!! Form::label('record_id', 'Record Id:') !!}

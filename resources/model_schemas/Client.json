@@ -240,6 +240,18 @@
         "inView": true
     },
     {
+        "name": "facility_id",
+        "dbType": "integer,false,true",
+        "htmlType": null,
+        "validations": "required|integer|integer",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
         "name": "record_id",
         "dbType": "integer,false,true",
         "htmlType": null,
@@ -286,6 +298,10 @@
         "inForm": false,
         "inIndex": false,
         "inView": false
+    },
+    {
+        "type": "relation",
+        "relation": "mt1,Facility,facility_id"
     },
     {
         "type": "relation",

@@ -2,19 +2,27 @@
     <table class="table" id="clients-table">
         <thead>
             <tr>
-                <th>Client ID</th>
-                <th>Card Number</th>
-                <th>NRC</th>
-                <th>Passport Number</th>
-                <th>First Name</th>
-                <th>Last Name</th>
-                <th>Other Names</th>
-                <th>Sex</th>
-                <th>Date Of Birth</th>
-                <th>Occupation</th>
-                <th>Status</th>
-                <th>Contact Number</th>
-                <th>Contact Email Address</th>
+                <th>Client Id</th>
+        <th>Card Number</th>
+        <th>Nrc</th>
+        <th>Passport Number</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Other Names</th>
+        <th>Sex</th>
+        <th>Date Of Birth</th>
+        <th>Place Of Birth</th>
+        <th>Occupation</th>
+        <th>Status</th>
+        <th>Contact Number</th>
+        <th>Contact Email Address</th>
+        <th>Address Line1</th>
+        <th>Address Line2</th>
+        <th>Next Of Kin Name</th>
+        <th>Next Of Kin Contact Number</th>
+        <th>Next Of Kin Contact Email Address</th>
+        <th>Facility Id</th>
+        <th>Record Id</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
@@ -22,18 +30,26 @@
         @foreach($clients as $client)
             <tr>
                 <td>{{ $client->client_id }}</td>
-                <td>{{ $client->card_number }}</td>
-                <td>{{ $client->NRC }}</td>
-                <td>{{ $client->passport_number }}</td>
-                <td>{{ $client->first_name }}</td>
-                <td>{{ $client->last_name }}</td>
-                <td>{{ $client->other_names }}</td>
-                <td>{{ $client->sex }}</td>
-                <td>{{ $client->date_of_birth }}</td>
-                <td>{{ $client->occupation }}</td>
-                <td>{{ $client->status }}</td>
-                <td>{{ $client->contact_number }}</td>
-                <td>{{ $client->contact_email_address }}</td>
+            <td>{{ $client->card_number }}</td>
+            <td>{{ $client->NRC }}</td>
+            <td>{{ $client->passport_number }}</td>
+            <td>{{ $client->first_name }}</td>
+            <td>{{ $client->last_name }}</td>
+            <td>{{ $client->other_names }}</td>
+            <td>{{ $client->sex }}</td>
+            <td>{{ $client->date_of_birth }}</td>
+            <td>{{ $client->place_of_birth }}</td>
+            <td>{{ $client->occupation }}</td>
+            <td>{{ $client->status }}</td>
+            <td>{{ $client->contact_number }}</td>
+            <td>{{ $client->contact_email_address }}</td>
+            <td>{{ $client->address_line1 }}</td>
+            <td>{{ $client->address_line2 }}</td>
+            <td>{{ $client->next_of_kin_name }}</td>
+            <td>{{ $client->next_of_kin_contact_number }}</td>
+            <td>{{ $client->next_of_kin_contact_email_address }}</td>
+            <td>{{ $client->facility_id }}</td>
+            <td>{{ $client->record_id }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['clients.destroy', $client->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

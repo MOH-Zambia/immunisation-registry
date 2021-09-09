@@ -156,6 +156,18 @@
         "inView": true
     },
     {
+        "name": "facility_id",
+        "dbType": "integer,false,true",
+        "htmlType": null,
+        "validations": "required|integer|integer",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
         "name": "record_id",
         "dbType": "integer,false,true",
         "htmlType": null,

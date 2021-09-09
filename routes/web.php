@@ -13,9 +13,11 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+//Route::get('/', function () {
+//    return view('index');
+//});
+
+Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('index');
 
 Route::get('/about', function () {
     return view('about');
@@ -28,6 +30,8 @@ Route::get('/contact', function () {
 Route::get('/help', function () {
     return view('help');
 });
+
+Route::get('/certificate/{uuid}', 'App\Http\Controllers\CertificateController@view')->name('certificate.view');
 
 
 Auth::routes();

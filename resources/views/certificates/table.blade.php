@@ -2,24 +2,32 @@
     <table class="table" id="certificates-table">
         <thead>
             <tr>
-                <th>Client</th>
-                <th>NRC</th>
+                <th>Certificate UUID</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Other Names</th>
+                <th>Certificate Issuing Authority</th>
+                <th>Certificate Expiration Date</th>
                 <th>Dose 1 Date</th>
                 <th>Dose 2 Date</th>
+                <th>Dose 3 Date</th>
                 <th>Booster Dose Date</th>
-                <th>Certificate Url</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
         <tbody>
         @foreach($certificates as $certificate)
             <tr>
-                <td>{{ $certificate->client['first_name'] }} {{ $certificate->client['last_name'] }}</td>
-                <td>{{ $certificate->client['NRC'] }}</td>
+                <td>{{ $certificate->certificate_uuid }}</td>
+                <td>{{ $certificate->client->last_name }}</td>
+                <td>{{ $certificate->client->first_name }}</td>
+                <td>{{ $certificate->client->other_names }}</td>
+                <td>{{ $certificate->certificate_issuing_authority_id }}</td>
+                <td>{{ $certificate->certificate_expiration_date }}</td>
                 <td>{{ $certificate->dose_1_date }}</td>
                 <td>{{ $certificate->dose_2_date }}</td>
+                <td>{{ $certificate->dose_3_date }}</td>
                 <td>{{ $certificate->booster_dose_date }}</td>
-                <td>{{ $certificate->certificate_url }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['certificates.destroy', $certificate->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

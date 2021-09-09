@@ -12,7 +12,7 @@
         "inView": false
     },
     {
-        "name": "vaccination_certificate_id",
+        "name": "certificate_uuid",
         "dbType": "string,36",
         "htmlType": "text",
         "validations": "required|string|max:36|string|max:36",
@@ -25,9 +25,9 @@
     },
     {
         "name": "signature_algorithm",
-        "dbType": "string,255",
+        "dbType": "string,255:nullable",
         "htmlType": "text",
-        "validations": "required|string|max:255|string|max:255",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -39,7 +39,7 @@
         "name": "certificate_issuing_authority_id",
         "dbType": "integer,false",
         "htmlType": null,
-        "validations": "required|integer|integer",
+        "validations": "nullable|integer|nullable|integer",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -73,9 +73,9 @@
     },
     {
         "name": "certificate_expiration_date",
-        "dbType": "date",
+        "dbType": "date:nullable",
         "htmlType": "date",
-        "validations": "required",
+        "validations": "nullable|nullable",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -204,6 +204,18 @@
         "inView": true
     },
     {
+        "name": "qr_code_path",
+        "dbType": "string,255",
+        "htmlType": "text",
+        "validations": "required|string|max:255|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
         "name": "certificate_url",
         "dbType": "string,255",
         "htmlType": "text",
@@ -254,5 +266,9 @@
     {
         "type": "relation",
         "relation": "mt1,Client,client_id"
+    },
+    {
+        "type": "relation",
+        "relation": "1tm,Vaccination,certificate_id"
     }
 ]

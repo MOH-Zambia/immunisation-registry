@@ -15,11 +15,11 @@ class CreateVaccinationsTable extends Migration
     {
         Schema::create('vaccinations', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('client_id');
+            $table->integer('client_id')->unsigned();
             $table->integer('vaccine_id')->unsigned();
             $table->integer('provider_id')->unsigned()->nullable(); //vaccinator
             $table->date('date'); //Complete date, without time, following ISO 8601
-            $table->string('dose_number'); //First, Second, Third, Fourth, Fifth, Booster
+            $table->string('dose_number')->default('First'); //First, Second, Third, Fourth, Fifth, Booster
             $table->date('date_of_next_dose')->nullable();
             $table->string('type_of_strategy')->nullable(); //(intramural, extramural, etc.)
             $table->string('vaccine_batch_number')->nullable(); // BNT162b2
@@ -28,19 +28,21 @@ class CreateVaccinationsTable extends Migration
             $table->integer('vaccinating_country_id')->default(248); //ZMB - ISO 3166 Country
             $table->integer('certificate_id')->unsigned()->nullable();
             $table->integer('facility_id')->unsigned();
+            $table->string('event_id')->nullable(); //DHIS2 event id
             $table->integer('record_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['vaccine_id', 'provider_id']);
+            $table->index(['client_id']);
         });
 
         Schema::table('vaccinations', function (Blueprint $table) {
-            $table->foreign('client_id')->references('client_id')->on('clients');
+            $table->foreign('client_id')->references('id')->on('clients');
             $table->foreign('vaccine_id')->references('id')->on('vaccines');
             $table->foreign('provider_id')->references('id')->on('providers');
             $table->foreign('certificate_id')->references('id')->on('certificates');
             $table->foreign('facility_id')->references('id')->on('facilities');
+            $table->foreign('vaccinating_country_id')->references('id')->on('countries');
             $table->foreign('record_id')->references('id')->on('records');
         });
 

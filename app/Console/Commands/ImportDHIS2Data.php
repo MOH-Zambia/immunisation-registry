@@ -93,11 +93,11 @@ class ImportDHIS2Data extends Command
         parent::__construct();
     }
 
-    public function getTrackedEntityInstance($tracked_entity_instance_id, $facility_id): ?Client
+    public function getTrackedEntityInstance($tracked_entity_instance_uid, $facility_id): ?Client
     {
         $httpClient = new GuzzleHttp\Client();
 
-        $response = $httpClient->request('GET', self::TRACKED_ENTITY_INSTANCES_URL."?trackedEntityInstance={$tracked_entity_instance_id}", [
+        $response = $httpClient->request('GET', self::TRACKED_ENTITY_INSTANCES_URL."?trackedEntityInstance={$tracked_entity_instance_uid}", [
             'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
         ]);
 
@@ -129,7 +129,7 @@ class ImportDHIS2Data extends Command
                 $first_name = "";
                 $last_name = "";
                 $sex = "";
-                $date_of_birth = "";
+                $date_of_birth = null;
                 $contact_number = "";
                 $address_line1 = "";
                 $occupation = "";
@@ -196,7 +196,6 @@ class ImportDHIS2Data extends Command
 
         $facilities = Facility::all();
 
-
         foreach($facilities as $facility){
             if(!empty($facility->DHIS2_UID)){
                 try {
@@ -205,7 +204,7 @@ class ImportDHIS2Data extends Command
                     $response = $httpClient->request('GET', self::EVENTS_URL, [
                         'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
                         'query' => [
-                            'ou'=>$facility->DHIS2_UID,
+                            'orgUnit'=>$facility->DHIS2_UID,
                             'program'=>'yDuAzyqYABS',
                             'programStartDate'=>'2020-04-01',
                             'programEndDate'=>'2021-08-27'
@@ -214,21 +213,30 @@ class ImportDHIS2Data extends Command
 
                     if ($response->getStatusCode() == 200){
                         $response_body = json_decode($response->getBody(), true);
+
                         foreach($response_body['events'] as $event){
+                            $startTime = microtime(true);
 
+                            $this->getOutput()
+                                ->writeln("<comment>Facility: {$facility->DHIS2_UID}, {$facility->id} Saving data for event:</comment> {$event['event']} <comment>for tracked entity instance:</comment> {$event['trackedEntityInstance']}");
 
-                            $event_id = $event['event'];
-                            $client_id = $event['trackedEntityInstance'];
+                            $event_uid = $event['event'];
+                            $tracked_entity_instance_uid = $event['trackedEntityInstance'];
+                            $client = Client::where('client_id', $tracked_entity_instance_uid)->first();
 
-                            // Check if hash of $event exist in import log
-                            $import_log = ImportLog::where('hash', Hash::make(json_encode($event)))->first();
+                            if(empty($client)){
+                                $this->getOutput()->writeln("<comment>\t Getting {$event['trackedEntityInstance']} tracked entity instance for event:</comment> {$event['event']}");
+                                $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
+                                $this->getOutput()->writeln("<info>\t Client saved:</info> {$client->id}");
+                            }
 
-                            if($event['status'] == 'COMPLETED') { //Only process completed events
-                                $this->getOutput()->writeln("<comment>Saving data for event:</comment> {$event['event']} <comment>for tracked entity instance:</comment> {$event['trackedEntityInstance']}");
+                            if($event['status'] == 'COMPLETED') { //Process only completed events
 
-                                $startTime = microtime(true);
+                                // Check if hash of $event exist in import log
+                                $import_log = ImportLog::where('hash', Hash::make(json_encode($event)))->first();
+
                                 if(empty($import_log)){
-                                    //Store data in reocrd table
+                                    //Store data in record table
                                     $record = new Record([
                                         'data_source' => 'MOH_DHIS2_COVAX',
                                         'data_type' => 'EVENT',
@@ -237,16 +245,10 @@ class ImportDHIS2Data extends Command
 
                                     $record->save();
 
-                                    $client = Client::where('client_id', $client_id)->first();
-
-                                    if(empty($client)){
-                                        $client = self::getTrackedEntityInstance($client_id, $facility->id);
-                                    }
-
                                     //Create and save new vaccination event
-                                    $vaccine_id = "";
-                                    $dose_number = "";
-                                    $date_of_next_dose = "";
+                                    $vaccine_id = null;
+                                    $dose_number = "First";
+                                    $date_of_next_dose = null;
 
                                     foreach($event['dataValues'] as $dataValue){
 
@@ -282,17 +284,19 @@ class ImportDHIS2Data extends Command
                                         }
                                     }
 
-                                    $vaccination = new Vaccination([
-                                        'client_id' => $client->client_id,
-                                        'vaccine_id' => $vaccine_id,
-                                        'date' => $event['eventDate'],
-                                        'dose_number' => $dose_number,
-                                        'date_of_next_dose' => $date_of_next_dose,
-                                        'facility_id' => $facility->id,
-                                        'record_id' => $record->id,
-                                    ]);
-
-                                    $vaccination->save();
+                                    if (!empty($vaccine_id)) {
+                                        $vaccination = new Vaccination([
+                                            'client_id' => $client->id,
+                                            'vaccine_id' => $vaccine_id,
+                                            'date' => $event['eventDate'],
+                                            'dose_number' => $dose_number,
+                                            'date_of_next_dose' => $date_of_next_dose,
+                                            'facility_id' => $facility->id,
+                                            'event_id' => $event_uid,
+                                            'record_id' => $record->id,
+                                        ]);
+                                        $vaccination->save();
+                                    }
 
                                     // Create record in ImportLog table
                                     ImportLog::create([
@@ -302,8 +306,10 @@ class ImportDHIS2Data extends Command
                                     $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                     $this->getOutput()->writeln("<info>Event saved:</info> {$event['event']} ({$runTime}ms)");
                                 } else {
-                                    $this->getOutput()->writeln("<info>Skipping event:</info> {$event['event']} because event already exist in the database!");
+                                    $this->getOutput()->writeln("<info>Skipping event:</info> {$event['event']} because event already exist in the DATABASE!");
                                 }
+                            } else {
+                                $this->getOutput()->writeln("<info>Skipping event:</info> {$event['event']} because it is not COMPLETE!");
                             }
                         }
                     }//End if ($response->getStatusCode() == 200)

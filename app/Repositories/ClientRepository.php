@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class ClientRepository
  * @package App\Repositories
- * @version August 30, 2021, 11:36 am UTC
+ * @version September 8, 2021, 6:38 am UTC
 */
 
 class ClientRepository extends BaseRepository
@@ -36,6 +36,7 @@ class ClientRepository extends BaseRepository
         'next_of_kin_name',
         'next_of_kin_contact_number',
         'next_of_kin_contact_email_address',
+        'facility_id',
         'record_id'
     ];
 

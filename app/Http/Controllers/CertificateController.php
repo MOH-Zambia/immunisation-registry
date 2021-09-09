@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateCertificateRequest;
 use App\Http\Requests\UpdateCertificateRequest;
+use App\Models\Certificate;
 use App\Repositories\CertificateRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -29,7 +30,7 @@ class CertificateController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $certificates = $this->certificateRepository->paginate(20);
+        $certificates = $this->certificateRepository->paginate(50);
 
         return view('certificates.index')
             ->with('certificates', $certificates);
@@ -92,7 +93,7 @@ class CertificateController extends AppBaseController
      */
     public function view($uuid)
     {
-        $certificate = $this->certificateRepository->find($uuid);
+        $certificate = Certificate::where('certificate_uuid', $uuid)->first();
 
         if (empty($certificate)) {
             Flash::error('Certificate not found');
@@ -100,7 +101,7 @@ class CertificateController extends AppBaseController
 //            return redirect(route('certificates.index'));
         }
 
-        return view('certificates.view')->with('certificate', $certificate);
+        return view('certificate')->with('certificate', $certificate);
     }
 
     /**

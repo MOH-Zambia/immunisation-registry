@@ -64,10 +64,22 @@
     <p>{{ $vaccination->vaccinating_country_id }}</p>
 </div>
 
-<!-- Vaccination Certificate Id Field -->
+<!-- Certificate Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate Id:') !!}
-    <p>{{ $vaccination->vaccination_certificate_id }}</p>
+    {!! Form::label('certificate_id', 'Certificate Id:') !!}
+    <p>{{ $vaccination->certificate_id }}</p>
+</div>
+
+<!-- Facility Id Field -->
+<div class="col-sm-12">
+    {!! Form::label('facility_id', 'Facility Id:') !!}
+    <p>{{ $vaccination->facility_id }}</p>
+</div>
+
+<!-- Event Id Field -->
+<div class="col-sm-12">
+    {!! Form::label('event_id', 'Event Id:') !!}
+    <p>{{ $vaccination->event_id }}</p>
 </div>
 
 <!-- Record Id Field -->

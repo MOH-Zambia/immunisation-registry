@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Client",
- *      required={"client_id", "first_name", "last_name", "sex", "status", "record_id"},
+ *      required={"client_id", "first_name", "last_name", "sex", "status", "facility_id", "record_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -113,6 +113,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="string"
  *      ),
  *      @SWG\Property(
+ *          property="facility_id",
+ *          description="facility_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *      @SWG\Property(
  *          property="record_id",
  *          description="record_id",
  *          type="integer",
@@ -145,7 +151,7 @@ class Client extends Model
     use HasFactory;
 
     public $table = 'clients';
-
+    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -239,6 +245,14 @@ class Client extends Model
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'
     ];
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function facility()
+    {
+        return $this->belongsTo(\App\Models\Facility::class, 'facility_id');
+    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

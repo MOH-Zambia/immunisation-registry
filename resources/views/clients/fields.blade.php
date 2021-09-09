@@ -122,6 +122,12 @@
     {!! Form::text('next_of_kin_contact_email_address', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
+<!-- Facility Id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('facility_id', 'Facility Id:') !!}
+    {!! Form::number('facility_id', null, ['class' => 'form-control']) !!}
+</div>
+
 <!-- Record Id Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('record_id', 'Record Id:') !!}

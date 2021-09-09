@@ -1,7 +1,7 @@
-<!-- Vaccination Certificate Id Field -->
+<!-- Certificate Uuid Field -->
 <div class="col-sm-12">
-    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate ID:') !!}
-    <p>{{ $certificate->vaccination_certificate_id }}</p>
+    {!! Form::label('certificate_uuid', 'Certificate Uuid:') !!}
+    <p>{{ $certificate->certificate_uuid }}</p>
 </div>
 
 <!-- Signature Algorithm Field -->
@@ -91,7 +91,13 @@
 <!-- Qr Code Field -->
 <div class="col-sm-12">
     {!! Form::label('qr_code', 'Qr Code:') !!}
-    <p><img src="{{ url('img/qrcodes/'.$certificate->vaccination_certificate_id.'.png') }}" alt="QR Code"/></p>
+    <p>{{ $certificate->qr_code }}</p>
+</div>
+
+<!-- Qr Code Path Field -->
+<div class="col-sm-12">
+    {!! Form::label('qr_code_path', 'Qr Code Path:') !!}
+    <p>{{ $certificate->qr_code_path }}</p>
 </div>
 
 <!-- Certificate Url Field -->

@@ -1,7 +1,7 @@
-<!-- Vaccination Certificate Id Field -->
+<!-- Certificate Uuid Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate ID:') !!}
-    {!! Form::text('vaccination_certificate_id', null, ['class' => 'form-control','maxlength' => 36,'maxlength' => 36]) !!}
+    {!! Form::label('certificate_uuid', 'Certificate Uuid:') !!}
+    {!! Form::text('certificate_uuid', null, ['class' => 'form-control','maxlength' => 36,'maxlength' => 36]) !!}
 </div>
 
 <!-- Signature Algorithm Field -->
@@ -12,7 +12,7 @@
 
 <!-- Certificate Issuing Authority Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('certificate_issuing_authority_id', 'Certificate Issuing Authority ID:') !!}
+    {!! Form::label('certificate_issuing_authority_id', 'Certificate Issuing Authority Id:') !!}
     {!! Form::number('certificate_issuing_authority_id', null, ['class' => 'form-control']) !!}
 </div>
 
@@ -182,6 +182,12 @@
 <div class="form-group col-sm-6">
     {!! Form::label('qr_code', 'Qr Code:') !!}
     {!! Form::text('qr_code', null, ['class' => 'form-control','maxlength' => 65535,'maxlength' => 65535]) !!}
+</div>
+
+<!-- Qr Code Path Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('qr_code_path', 'Qr Code Path:') !!}
+    {!! Form::text('qr_code_path', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
 <!-- Certificate Url Field -->

@@ -95,7 +95,7 @@ class GenerateVaccinationCertificates extends Command
             $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
 
             if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>Saving certificate for client:</comment> {$vaccination->client_id}");
+                $this->getOutput()->writeln("<comment>ASTRAZENCA Saving certificate for client:</comment> {$vaccination->client_id}");
                 $startTime = microtime(true);
 
                 $certificate_uuid = Str::orderedUuid();
@@ -113,10 +113,16 @@ class GenerateVaccinationCertificates extends Command
                 $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
 
                 //generate qrcode
-                $qrcode = QRCode::url($certificate_url)
-                    ->setSize(8)
-                    ->setMargin(2)
+                //save qrcode image in our folder on this site
+                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
+
+                //generate qrcode
+                QRCode::url($certificate_url)
+                    ->setSize(6)
+                    ->setOutfile('public/'.$qr_code_path)
                     ->png();
+
+                $qrcode = file_get_contents('public/'.$qr_code_path);
 
                 $certificate = new Certificate([
                     'certificate_uuid' => $certificate_uuid,
@@ -124,6 +130,7 @@ class GenerateVaccinationCertificates extends Command
                     'dose_1_date' => $dose1->date,
                     'dose_2_date' => $dose2->date,
                     'qr_code' => $qrcode,
+                    'qr_code_path' => $qr_code_path,
                     'certificate_url' => $certificate_url,
                 ]);
 
@@ -161,13 +168,12 @@ class GenerateVaccinationCertificates extends Command
                 //save qrcode image in our folder on this site
                 $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
 
-                $qrcode = QRCode::url($certificate_url)
-                    ->setSize(8)
-                    ->setMargin(2)
-                    ->setOutfile($qr_code_path)
+                QRCode::url($certificate_url)
+                    ->setSize(6)
+                    ->setOutfile('public/'.$qr_code_path)
                     ->png();
 
-                $qrcode = file_get_contents($qr_code_path);
+                $qrcode = file_get_contents('public/'.$qr_code_path);
 
                 // $qrcode = QrCode::format('png')
                 //     ->size(8)
@@ -214,14 +220,12 @@ class GenerateVaccinationCertificates extends Command
                 //save qrcode image in our folder on this site
                 $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
 
-                $qrcode = QRCode::url($certificate_url)
-                    ->setSize(8)
-                    ->setMargin(2)
-                    ->setOutfile($qr_code_path)
+                QRCode::url($certificate_url)
+                    ->setSize(6)
+                    ->setOutfile('public/'.$qr_code_path)
                     ->png();
 
-
-                $qrcode = file_get_contents($qr_code_path);
+                $qrcode = file_get_contents('public/'.$qr_code_path);
 
                 // $qrcode = QrCode::format('png')
                 //     ->size(8)

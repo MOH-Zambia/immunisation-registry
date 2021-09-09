@@ -29,7 +29,7 @@ class ClientController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $clients = $this->clientRepository->paginate(20);
+        $clients = $this->clientRepository->paginate(50);
 
         return view('clients.index')
             ->with('clients', $clients);

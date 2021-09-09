@@ -94,10 +94,22 @@
     {!! Form::number('vaccinating_country_id', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Vaccination Certificate Id Field -->
+<!-- Certificate Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate Id:') !!}
-    {!! Form::number('vaccination_certificate_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('certificate_id', 'Certificate Id:') !!}
+    {!! Form::number('certificate_id', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Facility Id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('facility_id', 'Facility Id:') !!}
+    {!! Form::number('facility_id', null, ['class' => 'form-control']) !!}
+</div>
+
+<!-- Event Id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('event_id', 'Event Id:') !!}
+    {!! Form::text('event_id', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
 <!-- Record Id Field -->

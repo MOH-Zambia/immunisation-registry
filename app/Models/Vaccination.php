@@ -139,6 +139,8 @@ class Vaccination extends Model
         'vaccinating_organization_id',
         'vaccinating_country_id',
         'vaccination_certificate_id',
+        'facility_id',
+        'event_id',
         'record_id'
     ];
 
@@ -149,7 +151,7 @@ class Vaccination extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'client_id' => 'string',
+        'client_id' => 'integer',
         'vaccine_id' => 'integer',
         'provider_id' => 'integer',
         'date' => 'date',
@@ -161,6 +163,8 @@ class Vaccination extends Model
         'vaccinating_organization_id' => 'string',
         'vaccinating_country_id' => 'integer',
         'vaccination_certificate_id' => 'integer',
+        'facility_id' => 'integer',
+        'event_id' => 'string',
         'record_id' => 'integer'
     ];
 
@@ -170,7 +174,7 @@ class Vaccination extends Model
      * @var array
      */
     public static $rules = [
-        'client_id' => 'required|string|max:255',
+        'client_id' => 'required|integer',
         'vaccine_id' => 'required|integer',
         'provider_id' => 'nullable|integer',
         'date' => 'required',
@@ -182,6 +186,8 @@ class Vaccination extends Model
         'vaccinating_organization_id' => 'nullable|string|max:255',
         'vaccinating_country_id' => 'required|integer',
         'vaccination_certificate_id' => 'nullable|integer',
+        'facility_id' => 'required|integer',
+        'event_id' => 'nullable|string|max:255',
         'record_id' => 'required|integer',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
@@ -191,7 +197,7 @@ class Vaccination extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function client()
+    public function client(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\Client::class, 'client_id');
     }
@@ -199,7 +205,7 @@ class Vaccination extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function provider()
+    public function provider(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\Provider::class, 'provider_id');
     }
@@ -207,7 +213,23 @@ class Vaccination extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function record()
+    public function facility(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Facility::class, 'facility_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Country::class, 'vaccinating_country_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function record(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\Record::class, 'record_id');
     }
@@ -215,7 +237,7 @@ class Vaccination extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function vaccine()
+    public function vaccine(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\Vaccine::class, 'vaccine_id');
     }

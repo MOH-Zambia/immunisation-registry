@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Certificate",
- *      required={"vaccination_certificate_id", "signature_algorithm", "certificate_issuing_authority_id", "client_id", "certificate_expiration_date", "dose_1_date", "qr_code", "certificate_url"},
+ *      required={"certificate_uuid", "client_id", "dose_1_date", "qr_code", "qr_code_path", "certificate_url"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="vaccination_certificate_id",
- *          description="vaccination_certificate_id",
+ *          property="certificate_uuid",
+ *          description="certificate_uuid",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -108,6 +108,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="string"
  *      ),
  *      @SWG\Property(
+ *          property="qr_code_path",
+ *          description="qr_code_path",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
  *          property="certificate_url",
  *          description="certificate_url",
  *          type="string"
@@ -139,7 +144,7 @@ class Certificate extends Model
     use HasFactory;
 
     public $table = 'certificates';
-
+    
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -149,7 +154,7 @@ class Certificate extends Model
 
 
     public $fillable = [
-        'vaccination_certificate_id',
+        'certificate_uuid',
         'signature_algorithm',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
@@ -165,6 +170,7 @@ class Certificate extends Model
         'dose_5_date',
         'booster_dose_date',
         'qr_code',
+        'qr_code_path',
         'certificate_url'
     ];
 
@@ -175,7 +181,7 @@ class Certificate extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'vaccination_certificate_id' => 'string',
+        'certificate_uuid' => 'string',
         'signature_algorithm' => 'string',
         'certificate_issuing_authority_id' => 'integer',
         'vaccination_certificate_batch_number' => 'string',
@@ -191,6 +197,7 @@ class Certificate extends Model
         'dose_5_date' => 'date',
         'booster_dose_date' => 'date',
         'qr_code' => 'string',
+        'qr_code_path' => 'string',
         'certificate_url' => 'string'
     ];
 
@@ -200,12 +207,12 @@ class Certificate extends Model
      * @var array
      */
     public static $rules = [
-        'vaccination_certificate_id' => 'required|string|max:36',
-        'signature_algorithm' => 'required|string|max:255',
-        'certificate_issuing_authority_id' => 'required|integer',
+        'certificate_uuid' => 'required|string|max:36',
+        'signature_algorithm' => 'nullable|string|max:255',
+        'certificate_issuing_authority_id' => 'nullable|integer',
         'vaccination_certificate_batch_number' => 'nullable|string|max:255',
         'client_id' => 'required|integer',
-        'certificate_expiration_date' => 'required',
+        'certificate_expiration_date' => 'nullable',
         'innoculated_since_date' => 'nullable',
         'recovery_date' => 'nullable',
         'client_status' => 'nullable|string|max:255',
@@ -216,6 +223,7 @@ class Certificate extends Model
         'dose_5_date' => 'nullable',
         'booster_dose_date' => 'nullable',
         'qr_code' => 'required|string|max:65535',
+        'qr_code_path' => 'required|string|max:255',
         'certificate_url' => 'required|string|max:255',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
@@ -228,5 +236,13 @@ class Certificate extends Model
     public function client()
     {
         return $this->belongsTo(\App\Models\Client::class, 'client_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function vaccinations()
+    {
+        return $this->hasMany(\App\Models\Vaccination::class, 'certificate_id');
     }
 }

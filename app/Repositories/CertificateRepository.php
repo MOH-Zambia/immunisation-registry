@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class CertificateRepository
  * @package App\Repositories
- * @version August 30, 2021, 11:42 am UTC
+ * @version September 8, 2021, 6:37 am UTC
 */
 
 class CertificateRepository extends BaseRepository
@@ -17,7 +17,7 @@ class CertificateRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'vaccination_certificate_id',
+        'certificate_uuid',
         'signature_algorithm',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
@@ -33,6 +33,7 @@ class CertificateRepository extends BaseRepository
         'dose_5_date',
         'booster_dose_date',
         'qr_code',
+        'qr_code_path',
         'certificate_url'
     ];
 

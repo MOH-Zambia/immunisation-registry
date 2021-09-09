@@ -19,7 +19,7 @@
 
         <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
             rel="stylesheet">
-            
+
         <!-- AdminLTE -->
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.5/css/adminlte.min.css"
             integrity="sha512-rVZC4rf0Piwtw/LsgwXxKXzWq3L0P6atiQKBNuXYRbg2FoRbSTIY0k2DxuJcs7dk4e/ShtMzglHKBOJxW8EQyQ=="
@@ -133,76 +133,182 @@
 
             <!-- Content Wrapper. Contains page content -->
             <div class="content-wrapper">
-            <!-- Content Header (Page header) -->
-            <div class="content-header">
+                <!-- Content Header (Page header) -->
+                <div class="content-header">
 
-            </div>
-            <!-- /.content-header -->
-
-            <!-- Main content -->
-            <div class="content">
-                <div class="container">
-                <div class="row">
-                    <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-
-                        <p class="card-text">
-                            Some quick example text to build on the card title and make up the bulk of the card's
-                            content.
-                        </p>
-
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                        </div>
-                    </div>
-
-                    <div class="card card-primary card-outline">
-                        <div class="card-body">
-                        <h5 class="card-title">Card title</h5>
-
-                        <p class="card-text">
-                            Some quick example text to build on the card title and make up the bulk of the card's
-                            content.
-                        </p>
-                        <a href="#" class="card-link">Card link</a>
-                        <a href="#" class="card-link">Another link</a>
-                        </div>
-                    </div><!-- /.card -->
-                    </div>
-                    <!-- /.col-md-6 -->
-                    <div class="col-lg-6">
-                    <div class="card">
-                        <div class="card-header">
-                        <h5 class="card-title m-0">Featured</h5>
-                        </div>
-                        <div class="card-body">
-                        <h6 class="card-title">Special title treatment</h6>
-
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-
-                    <div class="card card-primary card-outline">
-                        <div class="card-header">
-                        <h5 class="card-title m-0">Featured</h5>
-                        </div>
-                        <div class="card-body">
-                        <h6 class="card-title">Special title treatment</h6>
-
-                        <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                        <a href="#" class="btn btn-primary">Go somewhere</a>
-                        </div>
-                    </div>
-                    </div>
-                    <!-- /.col-md-6 -->
                 </div>
-                <!-- /.row -->
-                </div><!-- /.container-fluid -->
-            </div>
-            <!-- /.content -->
+                <!-- /.content-header -->
+
+                <!-- Main content -->
+                <div class="content">
+                    <div class="container">
+                        <!-- Small boxes (Stat box) -->
+                        <div class="row">
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box">
+                                    <div class="inner">
+                                        <h3>{{ $vaccinations }}</h3>
+
+                                        <p>Total Number of Doses</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-stats-bars"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box">
+                                    <div class="inner">
+                                        <h3>{{ $astrazeneca_doses }}</h3>
+
+                                        <p>AstraZeneca</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box">
+                                    <div class="inner">
+                                        <h3>{{ $janssen_doses }}</h3>
+
+                                        <p>Janssen (J&J)</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-lg-3 col-6">
+                                <!-- small box -->
+                                <div class="small-box">
+                                    <div class="inner">
+                                        <h3>{{ $sinopharm_doses }}</h3>
+
+                                        <p>Sinopharm (BIBP)</p>
+                                    </div>
+                                    <div class="icon">
+                                        <i class="ion ion-pie-graph"></i>
+                                    </div>
+                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                                </div>
+                            </div>
+                            <!-- ./col -->
+                        </div>
+                        <!-- /.row -->
+
+                        <!-- Map Row -->
+                        <div class="row">
+                            <section class="col-lg-12">
+                                <!-- Map card -->
+                                <div class="card">
+                                    <div class="card-header border-0">
+                                        <h3 class="card-title">
+                                            <i class="fas fa-map-marker-alt mr-1"></i>
+                                            Vaccine Doses
+                                        </h3>
+                                    </div>
+                                    <div class="card-body">
+                                        <div id="map" style="height: 250px; width: 100%;"></div>
+                                    </div>
+                                    <!-- /.card-body-->
+
+                                    <div class="card-footer bg-transparent">
+                                        <div class="row">
+                                            <div class="col-4 text-center">
+                                                <div id="sparkline-1"></div>
+                                                <div class="text-white">Visitors</div>
+                                            </div>
+                                            <!-- ./col -->
+                                            <div class="col-4 text-center">
+                                                <div id="sparkline-2"></div>
+                                                <div class="text-white">Online</div>
+                                            </div>
+                                            <!-- ./col -->
+                                            <div class="col-4 text-center">
+                                                <div id="sparkline-3"></div>
+                                                <div class="text-white">Sales</div>
+                                            </div>
+                                            <!-- ./col -->
+                                        </div>
+                                        <!-- /.row -->
+                                    </div>
+                                </div>
+                                <!-- /.card -->
+                            </section>
+                        </div>
+                        <!-- /.row -->
+                    <div class="row">
+                        <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+
+                            <p class="card-text">
+                                Some quick example text to build on the card title and make up the bulk of the card's
+                                content.
+                            </p>
+
+                            <a href="#" class="card-link">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                            </div>
+                        </div>
+
+                        <div class="card card-primary card-outline">
+                            <div class="card-body">
+                            <h5 class="card-title">Card title</h5>
+
+                            <p class="card-text">
+                                Some quick example text to build on the card title and make up the bulk of the card's
+                                content.
+                            </p>
+                            <a href="#" class="card-link">Card link</a>
+                            <a href="#" class="card-link">Another link</a>
+                            </div>
+                        </div><!-- /.card -->
+                        </div>
+                        <!-- /.col-md-6 -->
+                        <div class="col-lg-6">
+                        <div class="card">
+                            <div class="card-header">
+                            <h5 class="card-title m-0">Featured</h5>
+                            </div>
+                            <div class="card-body">
+                            <h6 class="card-title">Special title treatment</h6>
+
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+
+                        <div class="card card-primary card-outline">
+                            <div class="card-header">
+                            <h5 class="card-title m-0">Featured</h5>
+                            </div>
+                            <div class="card-body">
+                            <h6 class="card-title">Special title treatment</h6>
+
+                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
+                            <a href="#" class="btn btn-primary">Go somewhere</a>
+                            </div>
+                        </div>
+                        </div>
+                        <!-- /.col-md-6 -->
+                    </div>
+                    <!-- /.row -->
+                    </div><!-- /.container-fluid -->
+                </div>
+                <!-- /.content -->
             </div>
             <!-- /.content-wrapper -->
 
@@ -229,13 +335,13 @@
                 crossorigin="anonymous"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-                integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN" 
+                integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
                 crossorigin="anonymous"></script>
 
         <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
-                integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s" 
+                integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
                 crossorigin="anonymous"></script>
-                
+
         <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
 
         <!-- AdminLTE App -->
@@ -256,14 +362,14 @@
         <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
                 integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
                 crossorigin="anonymous"></script>
-                
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js" integrity="sha512-J+763o/bd3r9iW+gFEqTaeyi+uAphmzkE/zU8FxY6iAvD3nQKXa+ZAWkBI9QS9QkYEKddQoiy0I5GDxKf/ORBA==" crossorigin="anonymous"></script>
 
         <script>
             $(function () {
                 bsCustomFileInput.init();
             });
-            
+
             $("input[data-bootstrap-switch]").each(function(){
                 $(this).bootstrapSwitch('state', $(this).prop('checked'));
             });
