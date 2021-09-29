@@ -34,7 +34,7 @@ class CreateClientsTable extends Migration
             $table->string('next_of_kin_name')->nullable();
             $table->string('next_of_kin_contact_number')->nullable();
             $table->string('next_of_kin_contact_email_address')->nullable();
-            $table->integer('nationality')->unsigned()->nullable(); //country_id
+            $table->integer('nationality')->unsigned()->default(248); //country_id
             $table->integer('facility_id')->unsigned();
             $table->integer('record_id')->unsigned();
             $table->timestamps();

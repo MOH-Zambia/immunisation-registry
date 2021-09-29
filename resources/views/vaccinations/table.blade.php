@@ -24,7 +24,7 @@
                 <td>{{ $vaccinations->dose_number }}</td>
                 <td>{{ $vaccinations->date_of_next_dose }}</td>
                 <td>{{ $vaccinations->vaccine_batch_number }}</td>
-                <td>{{ $vaccinations->vaccinating_organization_id }}</td>
+                <td>{{ $vaccinations->vaccinating_organization }}</td>
                 <td>{{ $vaccinations->country->name }}</td>
                 <td>{{ $vaccinations->certificate_id }}</td>
                 <td>{{ $vaccinations->facility->name }}</td>

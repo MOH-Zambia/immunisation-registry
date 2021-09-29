@@ -77,6 +77,10 @@
     },
     {
         "type": "relation",
+        "relation": "1tm,VaccinationId,vaccinating_country_id"
+    },
+    {
+        "type": "relation",
         "relation": "1tm,ProviderId,country_id"
     }
 ]

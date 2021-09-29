@@ -125,9 +125,9 @@
                                                         <th>Date</th>
                                                         <th>Vaccine</th>
                                                         <th>Dose Number</th>
+                                                        <th>Facility</th>
                                                         <th>Vaccinating Organization</th>
                                                         <th>Country</th>
-                                                        <th>Facility</th>
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -136,9 +136,9 @@
                                                                 <td>{{ $vaccinations['date'] }}</td>
                                                                 <td>{{ $vaccinations['vaccine']->product_name }}</td>
                                                                 <td>{{ $vaccinations['dose_number'] }}</td>
-                                                                <td>455-981-221</td>
-                                                                <td>El snort testosterone trophy driving gloves handsome</td>
                                                                 <td>{{ $vaccinations['facility']->name }}</td>
+                                                                <td>{{ $vaccinations['vaccinating_organization'] }}</td>
+                                                                <td>{{ $vaccinations['country']->name }}</td>
                                                             </tr>
                                                         @endforeach
                                                     </tbody>

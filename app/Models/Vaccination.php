@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Vaccination",
- *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_country_id", "record_id"},
+ *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "record_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -68,8 +68,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="date"
  *      ),
  *      @SWG\Property(
- *          property="vaccinating_organization_id",
- *          description="vaccinating_organization_id",
+ *          property="vaccinating_organization",
+ *          description="vaccinating_organization",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -136,7 +136,7 @@ class Vaccination extends Model
         'type_of_strategy',
         'vaccine_batch_number',
         'vaccine_batch_expiration_date',
-        'vaccinating_organization_id',
+        'vaccinating_organization',
         'vaccinating_country_id',
         'vaccination_certificate_id',
         'facility_id',
@@ -160,7 +160,7 @@ class Vaccination extends Model
         'type_of_strategy' => 'string',
         'vaccine_batch_number' => 'string',
         'vaccine_batch_expiration_date' => 'date',
-        'vaccinating_organization_id' => 'string',
+        'vaccinating_organization' => 'string',
         'vaccinating_country_id' => 'integer',
         'vaccination_certificate_id' => 'integer',
         'facility_id' => 'integer',
@@ -183,7 +183,7 @@ class Vaccination extends Model
         'type_of_strategy' => 'nullable|string|max:255',
         'vaccine_batch_number' => 'nullable|string|max:255',
         'vaccine_batch_expiration_date' => 'nullable',
-        'vaccinating_organization_id' => 'nullable|string|max:255',
+        'vaccinating_organization' => 'nullable|string|max:255',
         'vaccinating_country_id' => 'required|integer',
         'vaccination_certificate_id' => 'nullable|integer',
         'facility_id' => 'required|integer',

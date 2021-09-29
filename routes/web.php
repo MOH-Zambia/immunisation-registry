@@ -31,7 +31,7 @@ Route::get('/help', function () {
     return view('help');
 });
 
-Route::get('/certificate/{uuid}', 'App\Http\Controllers\CertificateController@view')->name('certificate.view');
+Route::get('/certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
 
 
 Auth::routes();

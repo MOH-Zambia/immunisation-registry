@@ -120,7 +120,7 @@
         "inView": true
     },
     {
-        "name": "vaccinating_organization_id",
+        "name": "vaccinating_organization",
         "dbType": "string,255:nullable",
         "htmlType": "text",
         "validations": "nullable|string|max:255|nullable|string|max:255",
@@ -144,7 +144,7 @@
         "inView": true
     },
     {
-        "name": "vaccination_certificate_id",
+        "name": "certificate_id",
         "dbType": "integer,false",
         "htmlType": null,
         "validations": "nullable|integer|nullable|integer",
@@ -221,11 +221,23 @@
     },
     {
         "type": "relation",
+        "relation": "mt1,Certificate,certificate_id"
+    },
+    {
+        "type": "relation",
+        "relation": "mt1,Facility,facility_id"
+    },
+    {
+        "type": "relation",
         "relation": "mt1,Provider,provider_id"
     },
     {
         "type": "relation",
         "relation": "mt1,Record,record_id"
+    },
+    {
+        "type": "relation",
+        "relation": "mt1,Country,vaccinating_country_id"
     },
     {
         "type": "relation",
