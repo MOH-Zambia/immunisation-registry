@@ -33,8 +33,8 @@ class CreateViewNumberDosesAdministeredPast12Months extends Migration
      */
     private function createView(): string
     {
-        return <<
-            CREATE VIEW view_doses_administered_past_12_months AS
+        return
+            'CREATE VIEW `view_doses_administered_past_12_months` AS
                 SELECT dates.date, COUNT(vaccinations.vaccine_id) as number_of_doses
                 FROM (
                     SELECT LAST_DAY(CURRENT_DATE) + INTERVAL 1 DAY - INTERVAL 1 MONTH AS date UNION ALL
@@ -51,8 +51,7 @@ class CreateViewNumberDosesAdministeredPast12Months extends Migration
                     SELECT LAST_DAY(CURRENT_DATE) + INTERVAL 1 DAY - INTERVAL 12 MONTH
                 ) AS dates
                 LEFT JOIN vaccinations ON vaccinations.date >= dates.date AND vaccinations.date < dates.date + INTERVAL 1 MONTH
-                GROUP BY dates.date
-            SQL;
+                GROUP BY dates.date';
     }
 
     /**
@@ -62,8 +61,7 @@ class CreateViewNumberDosesAdministeredPast12Months extends Migration
      */
     private function dropView(): string
     {
-        return <<
-            DROP VIEW IF EXISTS `view_number_doses_administered_past_12_months`;
-            SQL;
+        return
+            'DROP VIEW IF EXISTS `view_number_doses_administered_past_12_months`';
     }
 }

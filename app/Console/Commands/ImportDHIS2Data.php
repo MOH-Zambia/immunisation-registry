@@ -314,12 +314,18 @@ class ImportDHIS2Data extends Command
                         }
                     }//End if ($response->getStatusCode() == 200)
                 } catch (TransferException $e) {
-                    // Log::debug(Psr7\Message::toString($e->message));
-                    // $this->getOutput()->writeln("<error>{Psr7\Message::toString($e->message)}</error>");
-                    if ($e->hasResponse()) {
-                        // Log::debug(Psr7\Message::toString($e->message));
-                        // $this->getOutput()->writeln("<error>{Psr7\Message::toString($e->message)}</error>");
+                    // you can catch here 400 response errors and 500 response errors
+                    // You can either use logs here use Illuminate\Support\Facades\Log;
+                    $error['error'] = $e->getMessage();
+                    $error['request'] = $e->getRequest();
+                    if($e->hasResponse()){
+                        if ($e->getResponse()->getStatusCode() == '400'){
+                            $error['response'] = $e->getResponse();
+                        }
                     }
+                    Log::error('Error occurred in get request.', ['error' => $error]);
+                }catch(Exception $e){
+                    //other errors
                 }
             } //if(!empty($facility->DHIS2_UID))
         } //End foreach($facilities as $facility)
