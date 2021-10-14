@@ -15,7 +15,7 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_role_id')->unsigned()->default(1);
+            $table->integer('role_id')->unsigned()->default(1);
             $table->string('name');
             // $table->string('first_name');
             // $table->string('last_name');
@@ -32,7 +32,7 @@ class CreateUsersTable extends Migration
         });
 
         Schema::table('users', function (Blueprint $table) {
-            $table->foreign('user_role_id')->references('id')->on('roles');
+            $table->foreign('role_id')->references('id')->on('roles');
         });
     }
 
@@ -45,10 +45,10 @@ class CreateUsersTable extends Migration
     {
         Schema::table('users', function(Blueprint $table)
         {
-            $table->dropForeign('user_role_id');
+            $table->dropForeign('role_id');
         });
-        
+
         Schema::dropIfExists('users');
-        
+
     }
 }

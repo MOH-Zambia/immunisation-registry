@@ -34,7 +34,8 @@
                                         <h4 class="text-center">
                                             <img src="{{ url('img/android-icon-96x96.png') }}" alt="Coat of Arms" style="opacity: .8"> <br><br>
                                             Government of Republic of Zambia<br>
-                                            Ministry of Health <br>
+                                            Ministry of Health <br><br>
+                                            {{ $certificate->target_disease }} Vaccination Certificate <br>
                                             <small class="text-center">{{ $certificate->created_at }}</small><br><br>
                                         </h4>
                                     </div>
@@ -58,12 +59,12 @@
                                         <b>Passport Number:</b> {{ $certificate->client['passport_number'] }}<br>
                                         <b>Nationality:</b> {{-- $certificate->client['nationality'] --}}<br>
                                         <b>Sex:</b> {{ $certificate->client['sex'] }}<br>
-                                        <b>Date of Birth:</b> {{ $certificate->client['date_of_birth'] }}<br>
+                                        <b>Date of Birth:</b> {{ $certificate->client['date_of_birth']->format('d-M-Y') }}<br>
                                     </div>
                                     <!-- /.col -->
                                 </div>
                                 <!-- /.row -->
-
+                                <br><br>
                                 <!-- Table row -->
                                 <div class="row">
                                     <div class="col-12 table-responsive">
@@ -74,19 +75,19 @@
                                                 <th>Vaccine</th>
                                                 <th>Dose Number</th>
                                                 <th>Facility</th>
-                                                <th>Vaccinating Organization</th>
-                                                <th>Country</th>
+{{--                                                <th>Vaccinating Organization</th>--}}
+{{--                                                <th>Country</th>--}}
                                             </tr>
                                             </thead>
                                             <tbody>
                                             @foreach($certificate->vaccinations as $vaccinations)
                                                 <tr>
-                                                    <td>{{ $vaccinations['date'] }}</td>
+                                                    <td>{{ $vaccinations['date']->format('d-M-Y') }}</td>
                                                     <td>{{ $vaccinations['vaccine']->product_name }}</td>
                                                     <td>{{ $vaccinations['dose_number'] }}</td>
                                                     <td>{{ $vaccinations['facility']->name }}</td>
-                                                    <td>{{ $vaccinations['vaccinating_organization'] }}</td>
-                                                    <td>{{ $vaccinations['country']->name }}</td>
+{{--                                                    <td>{{ $vaccinations['vaccinating_organization'] }}</td>--}}
+{{--                                                    <td>{{ $vaccinations['country']->name }}</td>--}}
                                                 </tr>
                                             @endforeach
                                             </tbody>
@@ -99,12 +100,13 @@
                                 <!-- this row will not appear when printing -->
                                 <div class="row no-print">
                                     <div class="col-12">
-                                        <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
-                                        <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
-                                            <i class="fas fa-download"></i> Generate PDF
+                                        <button type="button" class="btn btn-success float-right" style="margin-right: 5px;">
+                                            <i class="fas fa-share-square"></i> Send
                                         </button>
                                     </div>
                                 </div>
+                                <br>
+                                <br>
                             </div>
                             <!-- /.invoice -->
                         </div><!-- /.col -->

@@ -88,7 +88,7 @@ class Vaccine extends Model
     use HasFactory;
 
     public $table = 'vaccines';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -153,5 +153,10 @@ class Vaccine extends Model
     public function vaccinations()
     {
         return $this->hasMany(\App\Models\Vaccination::class, 'vaccine_id');
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(\App\Models\Certificate::class, 'vaccine_id');
     }
 }

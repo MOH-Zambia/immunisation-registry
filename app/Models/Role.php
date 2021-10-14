@@ -42,7 +42,7 @@ class Role extends Model
     use HasFactory;
 
     public $table = 'roles';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -81,6 +81,6 @@ class Role extends Model
      **/
     public function users()
     {
-        return $this->hasMany(\App\Models\User::class, 'user_role_id');
+        return $this->hasMany(\App\Models\User::class, 'role_id');
     }
 }

@@ -19,7 +19,7 @@ class CreateVaccinationsTable extends Migration
             $table->integer('vaccine_id')->unsigned();
             $table->integer('provider_id')->unsigned()->nullable(); //vaccinator
             $table->date('date'); //Complete date, without time, following ISO 8601
-            $table->string('dose_number')->default('First'); //First, Second, Third, Fourth, Fifth, Booster
+            $table->string('dose_number')->default('1'); //First, Second, Third, Fourth, Fifth, Booster
             $table->date('date_of_next_dose')->nullable();
             $table->string('type_of_strategy')->nullable(); //(intramural, extramural, etc.)
             $table->string('vaccine_batch_number')->nullable(); // BNT162b2

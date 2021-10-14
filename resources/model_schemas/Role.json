@@ -49,6 +49,6 @@
     },
     {
         "type": "relation",
-        "relation": "1tm,User,user_role_id"
+        "relation": "1tm,User,role_id"
     }
 ]

@@ -78,17 +78,43 @@ class GenerateVaccinationCertificates extends Command
      */
     public function handle()
     {
-        $astrazeneca_first_dose = Vaccination::where([
-            ['vaccine_id', '=', 1],
-            ['dose_number', '=', 'First'],
-        ])->whereNull('certificate_id')->get();
 
-        $astrazeneca_second_dose = Vaccination::where([
-            ['vaccine_id', '=', 1],
-            ['dose_number', '=', 'Second'],
-        ])->whereNull('certificate_id')->get();
 
-        $astrazeneca_fully_vaccinated = $astrazeneca_first_dose->intersect($astrazeneca_second_dose);
+//        $astrazeneca_first_dose = Vaccination::select('client_id')->where([
+//            ['vaccine_id', '=', 1],
+//            ['dose_number', '=', '1'],
+//        ])->whereNull('certificate_id')->get();
+//
+//        $astrazeneca_second_dose = Vaccination::select('client_id')->where([
+//            ['vaccine_id', '=', 1],
+//            ['dose_number', '=', '2'],
+//        ])->whereNull('certificate_id')->get();
+//
+//        $astrazeneca_fully_vaccinated = $astrazeneca_first_dose->intersect($astrazeneca_second_dose);
+
+//        $astrazeneca_fully_vaccinated = \DB::table('vaccinations')
+//            ->where([
+//                ['vaccine_id', '=', 1],
+//                ['dose_number', '=', '1'],
+//            ])->whereExists(function($query) {
+//                $query->select(\DB::raw(1))
+//                    ->from('vaccinations')
+//                    ->whereRaw([
+//                        ['vaccine_id', '=', 1],
+//                        ['dose_number', '=', '2'],
+//                    ]);
+//            })->get();
+
+        $astrazeneca_fully_vaccinated = \DB::table('vaccinations as dose1')->where([
+                ['dose1.vaccine_id', '=', 1],
+                ['dose1.dose_number', '=', '1'],
+            ])->join('vaccinations as dose2', function($join) {
+                $join->on('dose1.client_id', '=', 'dose2.client_id')
+                    ->where([
+                        ['dose2.vaccine_id', '=', 1],
+                        ['dose2.dose_number', '=', '2'],
+                    ]);
+            })->get();
 
         foreach($astrazeneca_fully_vaccinated as $vaccination){
 
@@ -102,13 +128,13 @@ class GenerateVaccinationCertificates extends Command
 
                 $dose1 = Vaccination::where([
                     ['client_id', '=', $vaccination->client_id],
-                    ['dose_number', '=', 'First'],
-                ])->whereNull('certificate_id')->get();
+                    ['dose_number', '=', '1'],
+                ])->whereNull('certificate_id')->first();
 
                 $dose2 = Vaccination::where([
                     ['client_id', '=', $vaccination->client_id],
-                    ['dose_number', '=', 'Second'],
-                ])->whereNull('certificate_id')->get();
+                    ['dose_number', '=', '2'],
+                ])->whereNull('certificate_id')->first();
 
                 $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
 
@@ -129,6 +155,7 @@ class GenerateVaccinationCertificates extends Command
                     'client_id' => $vaccination->client_id,
                     'dose_1_date' => $dose1->date,
                     'dose_2_date' => $dose2->date,
+                    'target_disease' => 'COVID-19',
                     'qr_code' => $qrcode,
                     'qr_code_path' => $qr_code_path,
                     'certificate_url' => $certificate_url,
@@ -184,6 +211,7 @@ class GenerateVaccinationCertificates extends Command
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
                     'dose_1_date' => $vaccination->date,
+                    'target_disease' => 'COVID-19',
                     'qr_code' => $qrcode,
                     'qr_code_path' => $qr_code_path,
                     'certificate_url' => $certificate_url,
@@ -236,6 +264,7 @@ class GenerateVaccinationCertificates extends Command
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
                     'dose_1_date' => $vaccination->date,
+                    'target_disease' => 'COVID-19',
                     'qr_code' => $qrcode,
                     'qr_code_path' => $qr_code_path,
                     'certificate_url' => $certificate_url,

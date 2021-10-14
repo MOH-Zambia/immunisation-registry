@@ -177,7 +177,10 @@ return [
         LaravelQRCode\Providers\QRCodeServiceProvider::class,
         Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
         OwenIt\Auditing\AuditingServiceProvider::class,
-
+        Yajra\DataTables\DataTablesServiceProvider::class,
+        Yajra\DataTables\HtmlServiceProvider::class,
+        Yajra\DataTables\ButtonsServiceProvider::class,
+        Yajra\DataTables\EditorServiceProvider::class,
     ],
 
     /*
@@ -233,5 +236,6 @@ return [
         'Html' => Collective\Html\HtmlFacade::class,
         'Flash' => Laracasts\Flash\Flash::class,
         'QRCode' => LaravelQRCode\Facades\QRCode::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
 ];

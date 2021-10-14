@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Certificate",
- *      required={"certificate_uuid", "client_id", "dose_1_date", "qr_code", "qr_code_path", "certificate_url"},
+ *      required={"certificate_uuid", "client_id", "dose_1_date", "target_disease", "qr_code", "qr_code_path", "certificate_url"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -102,6 +102,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="string",
  *          format="date"
  *      ),
+ *     @SWG\Property(
+ *          property="target_disease",
+ *          description="target_disease",
+ *          type="string",
+ *      ),
  *      @SWG\Property(
  *          property="qr_code",
  *          description="qr_code",
@@ -144,13 +149,12 @@ class Certificate extends Model
     use HasFactory;
 
     public $table = 'certificates';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
 
     protected $dates = ['deleted_at'];
-
 
 
     public $fillable = [
@@ -169,6 +173,8 @@ class Certificate extends Model
         'dose_4_date',
         'dose_5_date',
         'booster_dose_date',
+        'vaccine_id',
+        'target_disease',
         'qr_code',
         'qr_code_path',
         'certificate_url'
@@ -196,6 +202,8 @@ class Certificate extends Model
         'dose_4_date' => 'date',
         'dose_5_date' => 'date',
         'booster_dose_date' => 'date',
+        'vaccine_id' => 'integer',
+        'target_disease',
         'qr_code' => 'string',
         'qr_code_path' => 'string',
         'certificate_url' => 'string'
@@ -222,6 +230,8 @@ class Certificate extends Model
         'dose_4_date' => 'nullable',
         'dose_5_date' => 'nullable',
         'booster_dose_date' => 'nullable',
+        'vaccine_id' => 'required|integer',
+        'target_disease' => 'required|string|max:255',
         'qr_code' => 'required|string|max:65535',
         'qr_code_path' => 'required|string|max:255',
         'certificate_url' => 'required|string|max:255',
@@ -236,6 +246,14 @@ class Certificate extends Model
     public function client()
     {
         return $this->belongsTo(\App\Models\Client::class, 'client_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function vaccine()
+    {
+        return $this->belongsTo(\App\Models\Vaccine::class, 'vaccine_id');
     }
 
     /**

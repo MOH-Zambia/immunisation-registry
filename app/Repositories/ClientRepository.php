@@ -17,7 +17,7 @@ class ClientRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'client_id',
+        'client_uid',
         'card_number',
         'NRC',
         'passport_number',

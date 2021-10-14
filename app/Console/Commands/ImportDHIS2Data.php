@@ -93,95 +93,92 @@ class ImportDHIS2Data extends Command
         parent::__construct();
     }
 
-    public function getTrackedEntityInstance($tracked_entity_instance_uid, $facility_id): ?Client
+    public function getTrackedEntityInstance($tracked_entity_instance_uid, $facility_id): ? Client
     {
+        $client = null;
         $httpClient = new GuzzleHttp\Client();
 
         $response = $httpClient->request('GET', self::TRACKED_ENTITY_INSTANCES_URL."?trackedEntityInstance={$tracked_entity_instance_uid}", [
             'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
         ]);
 
-        $client = null;
-
         if ($response->getStatusCode() == 200){
             $responce_body = json_decode($response->getBody(), true);
             $trackedEntityInstance = $responce_body['trackedEntityInstances'][0];
-            // Anonymous DB Transaction function
 
-            $client_id = $trackedEntityInstance['trackedEntityInstance'];
-            // Check if hash of $trackedEntityInstance exist in import log
-            $import_log = ImportLog::where('hash', Hash::make(json_encode($trackedEntityInstance)))->first();
+            $client_uid = $trackedEntityInstance['trackedEntityInstance'];
 
-            if(empty($import_log)){
-                //Store data in reocrd table
-                $record = new Record([
-                    'data_source' => 'MOH_DHIS2_COVAX',
-                    'data_type' => 'TRACKED_ENTITY_INSTANCE',
-                    'data' => json_encode($trackedEntityInstance),
-                ]);
+//            $this->getOutput()->writeln("<comment>\t Getting {$client_uid} tracked entity instance");
 
-                $record->save();
+            $card_number = "";
+            $NRC = "";
+            $passport_number = "";
+            $first_name = "";
+            $last_name = "";
+            $sex = "";
+            $date_of_birth = null;
+            $contact_number = "";
+            $address_line1 = "";
+            $occupation = "";
 
-                //Create a client record
-                $card_number = "";
-                $NRC = "";
-                $passport_number = "";
-                $first_name = "";
-                $last_name = "";
-                $sex = "";
-                $date_of_birth = null;
-                $contact_number = "";
-                $address_line1 = "";
-                $occupation = "";
-
-                foreach($trackedEntityInstance['attributes'] as $attribute){
-                    if($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
-                        $card_number = $attribute['value'];
-                    else if($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
-                        $NRC = $attribute['value'];
-                    else if($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
-                        $passport_number = $attribute['value'];
-                    else if($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
-                        $first_name = $attribute['value'];
-                    else if($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
-                        $last_name = $attribute['value'];
-                    else if($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
-                        $sex = $attribute['value'][0];
-                    else if($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
-                        $date_of_birth = $attribute['value'];
-                    else if($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
-                        $contact_number = $attribute['value'];
-                    else if($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
-                        $address_line1 = $attribute['value'];
-                    else if($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
-                        $occupation = $attribute['value'];
-                }
-
-                $client = new Client([
-                    'client_id' => $client_id,
-                    'card_number' => $card_number,
-                    'NRC' => $NRC,
-                    'passport_number' => $passport_number,
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'sex' => $sex,
-                    'date_of_birth' => $date_of_birth,
-                    'contact_number' => $contact_number,
-                    'address_line1' => $address_line1,
-                    'occupation' => $occupation,
-                    'facility_id' => $facility_id,
-                    'record_id' => $record->id,
-                ]);
-
-                $client->save();
-
-                // Create record in ImportLog table
-                ImportLog::create([
-                    'hash' => Hash::make(json_encode($trackedEntityInstance)),
-                ]);
+            foreach($trackedEntityInstance['attributes'] as $attribute){
+                if($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
+                    $card_number = $attribute['value'];
+                else if($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
+                    $NRC = $attribute['value'];
+                else if($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
+                    $passport_number = $attribute['value'];
+                else if($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
+                    $first_name = ucfirst(strtolower(trim($attribute['value'])));
+                else if($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
+                    $last_name = ucfirst(strtolower(trim($attribute['value'])));
+                else if($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
+                    $sex = $attribute['value'][0];
+                else if($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
+                    $date_of_birth = $attribute['value'];
+                else if($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
+                    $contact_number = $attribute['value'];
+                else if($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
+                    $address_line1 = $attribute['value'];
+                else if($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
+                    $occupation = $attribute['value'];
             }
-        }
 
+            //Store data in record table
+            $record = new Record([
+                'data_source' => 'MOH_DHIS2_COVAX',
+                'data_type' => 'TRACKED_ENTITY_INSTANCE',
+                'data' => json_encode($trackedEntityInstance),
+            ]);
+
+            $record->save();
+
+            //Create new client
+            $client = new Client([
+                'client_uid' => $client_uid,
+                'card_number' => $card_number,
+                'NRC' => $NRC,
+                'passport_number' => $passport_number,
+                'first_name' => $first_name,
+                'last_name' => $last_name,
+                'sex' => $sex,
+                'date_of_birth' => $date_of_birth,
+                'contact_number' => $contact_number,
+                'address_line1' => $address_line1,
+                'occupation' => $occupation,
+                'facility_id' => $facility_id,
+                'record_id' => $record->id,
+            ]);
+
+            $client->save();
+
+            $this->getOutput()->writeln("<info>\t Client saved:</info> {$client->id}");
+
+            // Create record in ImportLog table
+            ImportLog::create([
+                'hash' => Hash::make(json_encode($trackedEntityInstance)),
+            ]);
+        }
         return $client;
     }
 
@@ -217,20 +214,17 @@ class ImportDHIS2Data extends Command
                         foreach($response_body['events'] as $event){
                             $startTime = microtime(true);
 
-                            $this->getOutput()
-                                ->writeln("<comment>Facility: {$facility->DHIS2_UID}, {$facility->id} Saving data for event:</comment> {$event['event']} <comment>for tracked entity instance:</comment> {$event['trackedEntityInstance']}");
-
-                            $event_uid = $event['event'];
-                            $tracked_entity_instance_uid = $event['trackedEntityInstance'];
-                            $client = Client::where('client_id', $tracked_entity_instance_uid)->first();
-
-                            if(empty($client)){
-                                $this->getOutput()->writeln("<comment>\t Getting {$event['trackedEntityInstance']} tracked entity instance for event:</comment> {$event['event']}");
-                                $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
-                                $this->getOutput()->writeln("<info>\t Client saved:</info> {$client->id}");
-                            }
-
                             if($event['status'] == 'COMPLETED') { //Process only completed events
+                                $this->getOutput()
+                                    ->writeln("<comment>Facility: {$facility->DHIS2_UID}, {$facility->id} Saving data for event:</comment> {$event['event']} <comment>for tracked entity instance:</comment> {$event['trackedEntityInstance']}");
+
+                                $event_uid = $event['event'];
+                                $tracked_entity_instance_uid = $event['trackedEntityInstance'];
+                                $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
+
+                                if(empty($client)){
+                                    $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
+                                }
 
                                 // Check if hash of $event exist in import log
                                 $import_log = ImportLog::where('hash', Hash::make(json_encode($event)))->first();
@@ -247,11 +241,10 @@ class ImportDHIS2Data extends Command
 
                                     //Create and save new vaccination event
                                     $vaccine_id = null;
-                                    $dose_number = "First";
+                                    $dose_number = '1';
                                     $date_of_next_dose = null;
 
                                     foreach($event['dataValues'] as $dataValue){
-
                                         if($dataValue['dataElement'] == 'bbnyNYD1wgS'){ //Vaccine Name
                                             switch($dataValue['value']){
                                                 case 'AstraZeneca_zm':
@@ -267,13 +260,13 @@ class ImportDHIS2Data extends Command
                                         } else if ($dataValue['dataElement'] == 'LUIsbsm3okG'){ // Dose Number
                                             switch($dataValue['value']){
                                                 case 'DOSE1':
-                                                    $dose_number = 'First';
+                                                    $dose_number = '1';
                                                     break;
                                                 case 'DOSE2':
-                                                    $dose_number = 'Second';
+                                                    $dose_number = '2';
                                                     break;
                                                 case 'DOSE3':
-                                                    $dose_number = 'Third';
+                                                    $dose_number = '3';
                                                     break;
                                                 case 'BOOSTER':
                                                     $dose_number = 'Booster';
@@ -324,9 +317,10 @@ class ImportDHIS2Data extends Command
                         }
                     }
                     Log::error('Error occurred in get request.', ['error' => $error]);
-                }catch(Exception $e){
-                    //other errors
                 }
+//                catch(Exception $e){
+//                    //other errors
+//                }
             } //if(!empty($facility->DHIS2_UID))
         } //End foreach($facilities as $facility)
     }
@@ -338,7 +332,6 @@ class ImportDHIS2Data extends Command
      */
     public function handle()
     {
-
         // self::loadTrackedEntityInstances();
         self::loadEvents();
         return 0;

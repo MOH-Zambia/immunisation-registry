@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Client",
- *      required={"client_id", "first_name", "last_name", "sex", "status", "facility_id", "record_id"},
+ *      required={"client_uid", "first_name", "last_name", "sex", "status", "facility_id", "record_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="client_id",
- *          description="client_id",
+ *          property="client_uid",
+ *          description="client_uid",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -151,7 +151,7 @@ class Client extends Model
     use HasFactory;
 
     public $table = 'clients';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -161,7 +161,7 @@ class Client extends Model
 
 
     public $fillable = [
-        'client_id',
+        'client_uid',
         'card_number',
         'NRC',
         'passport_number',
@@ -191,7 +191,7 @@ class Client extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'client_id' => 'string',
+        'client_uid' => 'string',
         'card_number' => 'string',
         'NRC' => 'string',
         'passport_number' => 'string',
@@ -220,7 +220,7 @@ class Client extends Model
      * @var array
      */
     public static $rules = [
-        'client_id' => 'required|string|max:255',
+        'client_uid' => 'required|string|max:255',
         'card_number' => 'nullable|string|max:255',
         'NRC' => 'nullable|string|max:255',
         'passport_number' => 'nullable|string|max:255',

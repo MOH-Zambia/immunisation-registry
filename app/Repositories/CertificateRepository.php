@@ -32,6 +32,8 @@ class CertificateRepository extends BaseRepository
         'dose_4_date',
         'dose_5_date',
         'booster_dose_date',
+        'vaccine_id',
+        'target_disease',
         'qr_code',
         'qr_code_path',
         'certificate_url'

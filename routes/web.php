@@ -66,6 +66,7 @@ Route::resource('facilityTypes', App\Http\Controllers\FacilityTypeController::cl
 
 Route::resource('importLogs', App\Http\Controllers\ImportLogController::class);
 
+
 // Auth::routes();
 
 

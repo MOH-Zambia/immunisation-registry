@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * @SWG\Definition(
  *      definition="User",
- *      required={"user_role_id", "name", "email", "password"},
+ *      required={"role_id", "name", "email", "password"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -18,7 +18,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="user_role_id",
+ *          property="role_id",
  *          description="user_role_id",
  *          type="integer",
  *          format="int32"
@@ -85,7 +85,7 @@ class User extends Authenticatable
     use HasFactory;
 
     public $table = 'users';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -95,7 +95,7 @@ class User extends Authenticatable
 
 
     public $fillable = [
-        'user_role_id',
+        'role_id',
         'name',
         'email',
         'email_code',
@@ -112,7 +112,7 @@ class User extends Authenticatable
      */
     protected $casts = [
         'id' => 'integer',
-        'user_role_id' => 'integer',
+        'role_id' => 'integer',
         'name' => 'string',
         'email' => 'string',
         'email_code' => 'string',
@@ -128,7 +128,7 @@ class User extends Authenticatable
      * @var array
      */
     public static $rules = [
-        'user_role_id' => 'required|integer',
+        'role_id' => 'required|integer',
         'name' => 'required|string|max:255',
         'email' => 'required|string|max:255',
         'email_code' => 'nullable|string|max:255',
@@ -144,8 +144,8 @@ class User extends Authenticatable
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
-    public function userRole()
+    public function role()
     {
-        return $this->belongsTo(\App\Models\Role::class, 'user_role_id');
+        return $this->belongsTo(\App\Models\Role::class, 'role_id');
     }
 }

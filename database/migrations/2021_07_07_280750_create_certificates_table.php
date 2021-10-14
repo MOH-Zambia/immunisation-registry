@@ -30,6 +30,8 @@ class CreateCertificatesTable extends Migration
             $table->date('dose_4_date')->nullable();
             $table->date('dose_5_date')->nullable();
             $table->date('booster_dose_date')->nullable();
+            $table->integer('vaccine_id')->unsigned();
+            $table->string('target_disease');
             $table->binary('qr_code');
             $table->string('qr_code_path');
             $table->string('certificate_url');
@@ -39,6 +41,7 @@ class CreateCertificatesTable extends Migration
 
         Schema::table('certificates', function (Blueprint $table) {
             $table->foreign('client_id')->references('id')->on('clients');
+            $table->foreign('vaccine_id')->references('id')->on('vaccines');
         });
     }
 
