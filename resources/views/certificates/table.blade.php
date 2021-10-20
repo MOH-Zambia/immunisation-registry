@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th>Certificate UUID</th>
+                <th>Trusted Vaccine Code</th>
                 <th>Last Name</th>
                 <th>First Name</th>
                 <th>Other Names</th>
@@ -19,6 +20,7 @@
         @foreach($certificates as $certificate)
             <tr>
                 <td>{{ $certificate->certificate_uuid }}</td>
+                <td>{{ $certificate->africa_cdc_trusted_vaccine_code }}</td>
                 <td>{{ $certificate->client->last_name }}</td>
                 <td>{{ $certificate->client->first_name }}</td>
                 <td>{{ $certificate->client->other_names }}</td>

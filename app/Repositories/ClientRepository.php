@@ -36,7 +36,9 @@ class ClientRepository extends BaseRepository
         'next_of_kin_name',
         'next_of_kin_contact_number',
         'next_of_kin_contact_email_address',
+        'nationality',
         'facility_id',
+        'user_id',
         'record_id'
     ];
 

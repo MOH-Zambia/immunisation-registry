@@ -18,25 +18,21 @@ class CertificateRepository extends BaseRepository
      */
     protected $fieldSearchable = [
         'certificate_uuid',
-        'signature_algorithm',
+        'client_id',
+        'africa_cdc_trusted_vaccine_code',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
-        'client_id',
-        'certificate_expiration_date',
+        'vaccine_id',
         'innoculated_since_date',
         'recovery_date',
-        'client_status',
         'dose_1_date',
         'dose_2_date',
         'dose_3_date',
         'dose_4_date',
         'dose_5_date',
         'booster_dose_date',
-        'vaccine_id',
         'target_disease',
-        'qr_code',
-        'qr_code_path',
-        'certificate_url'
+        'certificate_expiration_date'
     ];
 
     /**

@@ -23,8 +23,9 @@ class UserFactory extends Factory
     public function definition()
     {
         return [
-            'user_role_id' => 3,
-            'name' => $this->faker->name,
+            'role_id' => 3,
+            'first_name' => $this->faker->firstName,
+            'last_name' => $this->faker->lastName(),
             'email' => $this->faker->unique()->safeEmail(),
             'email_code' => Str::random(10),
             'email_verified_at' => now(),
@@ -32,7 +33,6 @@ class UserFactory extends Factory
             'password'  => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
             'ip' => $this->faker->ipv4,
             'salt' => Str::random(10),
-//            'created_at' => $this->faker->date('Y-m-d H:i:s'),
             'created_at' => $this->faker->dateTimeBetween('-9 month', '+1 month'),
         ];
     }

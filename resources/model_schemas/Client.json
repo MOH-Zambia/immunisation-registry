@@ -264,6 +264,18 @@
         "inView": true
     },
     {
+        "name": "user_id",
+        "dbType": "integer,false,true",
+        "htmlType": null,
+        "validations": "nullable|integer|integer",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
         "name": "record_id",
         "dbType": "integer,false,true",
         "htmlType": null,
@@ -314,6 +326,10 @@
     {
         "type": "relation",
         "relation": "mt1,Facility,facility_id"
+    },
+    {
+        "type": "relation",
+        "relation": "1t1,User,user_id"
     },
     {
         "type": "relation",

@@ -94,16 +94,9 @@ class Country extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\HasMany
      **/
-    public function clientIds()
+    public function clients()
     {
-        return $this->hasMany(\App\Models\ClientId::class, 'country_id');
+        return $this->hasMany(\App\Models\Client::class, 'nationality');
     }
 
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
-     **/
-    public function providerIds()
-    {
-        return $this->hasMany(\App\Models\ProviderId::class, 'country_id');
-    }
 }

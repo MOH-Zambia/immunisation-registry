@@ -220,6 +220,18 @@ class Facility extends Model
         'deleted_at' => 'nullable'
     ];
 
+    public function __toString()
+    {
+        try
+        {
+            return "Facility ID: $this->id, Facility name: $this->name, District: $this->district->name, Provinve: $this->district->province->name";
+        }
+        catch (Exception $exception)
+        {
+            return '';
+        }
+    }
+
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/

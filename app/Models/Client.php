@@ -112,9 +112,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="next_of_kin_contact_email_address",
  *          type="string"
  *      ),
+ *     @SWG\Property(
+ *          property="nationality",
+ *          description="nationality",
+ *          type="integer",
+ *          format="int32"
+ *      ),
  *      @SWG\Property(
  *          property="facility_id",
  *          description="facility_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *     @SWG\Property(
+ *          property="user_id",
+ *          description="user_id",
  *          type="integer",
  *          format="int32"
  *      ),
@@ -180,7 +192,9 @@ class Client extends Model
         'next_of_kin_name',
         'next_of_kin_contact_number',
         'next_of_kin_contact_email_address',
+        'nationality',
         'facility_id',
+        'user_id',
         'record_id'
     ];
 
@@ -210,7 +224,9 @@ class Client extends Model
         'next_of_kin_name' => 'string',
         'next_of_kin_contact_number' => 'string',
         'next_of_kin_contact_email_address' => 'string',
+        'nationality' => 'integer',
         'facility_id' => 'integer',
+        'user_id' => 'integer',
         'record_id' => 'integer'
     ];
 
@@ -239,7 +255,9 @@ class Client extends Model
         'next_of_kin_name' => 'nullable|string|max:255',
         'next_of_kin_contact_number' => 'nullable|string|max:255',
         'next_of_kin_contact_email_address' => 'nullable|string|max:255',
+        'nationality' => 'required|integer',
         'facility_id' => 'required|integer',
+        'user_id' => 'nullable|integer',
         'record_id' => 'required|integer',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
@@ -249,9 +267,25 @@ class Client extends Model
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
      **/
+    public function country()
+    {
+        return $this->belongsTo(\App\Models\Country::class, 'nationality');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
     public function facility()
     {
         return $this->belongsTo(\App\Models\Facility::class, 'facility_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function user()
+    {
+        return $this->belongsTo(\App\Models\User::class, 'user_id');
     }
 
     /**

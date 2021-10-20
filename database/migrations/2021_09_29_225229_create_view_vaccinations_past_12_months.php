@@ -62,6 +62,6 @@ class CreateViewVaccinationsPast12Months extends Migration
     private function dropView(): string
     {
         return
-            'DROP VIEW IF EXITS `view_vaccinations_past_12_months`';
+            'DROP VIEW IF EXISTS `view_vaccinations_past_12_months`';
     }
 }

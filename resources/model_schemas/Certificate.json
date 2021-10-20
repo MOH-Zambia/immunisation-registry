@@ -24,42 +24,6 @@
         "inView": true
     },
     {
-        "name": "signature_algorithm",
-        "dbType": "string,255:nullable",
-        "htmlType": "text",
-        "validations": "nullable|string|max:255|nullable|string|max:255",
-        "searchable": true,
-        "fillable": true,
-        "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
-    },
-    {
-        "name": "certificate_issuing_authority_id",
-        "dbType": "integer,false",
-        "htmlType": null,
-        "validations": "nullable|integer|nullable|integer",
-        "searchable": true,
-        "fillable": true,
-        "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
-    },
-    {
-        "name": "vaccination_certificate_batch_number",
-        "dbType": "string,255:nullable",
-        "htmlType": "text",
-        "validations": "nullable|string|max:255|nullable|string|max:255",
-        "searchable": true,
-        "fillable": true,
-        "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
-    },
-    {
         "name": "client_id",
         "dbType": "integer,false,true",
         "htmlType": null,
@@ -72,10 +36,22 @@
         "inView": true
     },
     {
-        "name": "certificate_expiration_date",
-        "dbType": "date:nullable",
-        "htmlType": "date",
-        "validations": "nullable|nullable",
+        "name": "africa_cdc_trusted_vaccine_code",
+        "dbType": "string,255",
+        "htmlType": "text",
+        "validations": "nullable|string|max:255|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "vaccine_id",
+        "dbType": "integer,false,true",
+        "htmlType": null,
+        "validations": "required|integer|integer",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -88,30 +64,6 @@
         "dbType": "date:nullable",
         "htmlType": "date",
         "validations": "nullable|nullable",
-        "searchable": true,
-        "fillable": true,
-        "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
-    },
-    {
-        "name": "recovery_date",
-        "dbType": "date:nullable",
-        "htmlType": "date",
-        "validations": "nullable|nullable",
-        "searchable": true,
-        "fillable": true,
-        "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
-    },
-    {
-        "name": "client_status",
-        "dbType": "string,255:nullable",
-        "htmlType": "text",
-        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -192,10 +144,10 @@
         "inView": true
     },
     {
-        "name": "vaccine_id",
-        "dbType": "integer,false,true",
-        "htmlType": null,
-        "validations": "required|integer|integer",
+        "name": "target_disease",
+        "dbType": "string,255",
+        "htmlType": "text",
+        "validations": "required|string|max:255|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -204,10 +156,58 @@
         "inView": true
     },
     {
-        "name": "target_disease",
-        "dbType": "string,255",
+        "name": "certificate_expiration_date",
+        "dbType": "date:nullable",
+        "htmlType": "date",
+        "validations": "nullable|nullable",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "certificate_status",
+        "dbType": "string,255:required",
         "htmlType": "text",
-        "validations": "required|string|max:255|string|max:255",
+        "validations": "required|string|max:255|nullable|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "signature_algorithm",
+        "dbType": "string,255:nullable",
+        "htmlType": "text",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "certificate_issuing_authority_id",
+        "dbType": "integer,false",
+        "htmlType": null,
+        "validations": "nullable|integer|nullable|integer",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "vaccination_certificate_batch_number",
+        "dbType": "string,255:nullable",
+        "htmlType": "text",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -247,7 +247,7 @@
         "searchable": true,
         "fillable": true,
         "primary": false,
-        "inForm": true,
+        "inForm": false,
         "inIndex": true,
         "inView": true
     },
@@ -290,6 +290,10 @@
     {
         "type": "relation",
         "relation": "mt1,Client,client_id"
+    },
+    {
+        "type": "relation",
+        "relation": "mt1,Vaccine,vaccine_id"
     },
     {
         "type": "relation",

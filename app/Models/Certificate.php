@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Certificate",
- *      required={"certificate_uuid", "client_id", "dose_1_date", "target_disease", "qr_code", "qr_code_path", "certificate_url"},
+ *      required={"certificate_uuid", "client_id", "dose_1_date", "target_disease", "certificate_status", "qr_code", "qr_code_path", "certificate_url"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -21,50 +21,22 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="certificate_uuid",
  *          type="string"
  *      ),
- *      @SWG\Property(
- *          property="signature_algorithm",
- *          description="signature_algorithm",
- *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="certificate_issuing_authority_id",
- *          description="certificate_issuing_authority_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="vaccination_certificate_batch_number",
- *          description="vaccination_certificate_batch_number",
- *          type="string"
- *      ),
- *      @SWG\Property(
+ *     @SWG\Property(
  *          property="client_id",
  *          description="client_id",
  *          type="integer",
  *          format="int32"
  *      ),
- *      @SWG\Property(
- *          property="certificate_expiration_date",
- *          description="certificate_expiration_date",
- *          type="string",
- *          format="date"
+ *     @SWG\Property(
+ *          property="africa_cdc_trusted_vaccine_code",
+ *          description="africa_cdc_trusted_vaccine_code",
+ *          type="string"
  *      ),
  *      @SWG\Property(
  *          property="innoculated_since_date",
  *          description="innoculated_since_date",
  *          type="string",
  *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="recovery_date",
- *          description="recovery_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="client_status",
- *          description="client_status",
- *          type="string"
  *      ),
  *      @SWG\Property(
  *          property="dose_1_date",
@@ -106,6 +78,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          property="target_disease",
  *          description="target_disease",
  *          type="string",
+ *      ),
+ *     @SWG\Property(
+ *          property="certificate_expiration_date",
+ *          description="certificate_expiration_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *     @SWG\Property(
+ *          property="certificate_status",
+ *          description="certificate_status",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
+ *          property="signature_algorithm",
+ *          description="signature_algorithm",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="certificate_issuing_authority_id",
+ *          description="certificate_issuing_authority_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *      @SWG\Property(
+ *          property="vaccination_certificate_batch_number",
+ *          description="vaccination_certificate_batch_number",
+ *          type="string"
  *      ),
  *      @SWG\Property(
  *          property="qr_code",
@@ -159,22 +158,22 @@ class Certificate extends Model
 
     public $fillable = [
         'certificate_uuid',
-        'signature_algorithm',
-        'certificate_issuing_authority_id',
-        'vaccination_certificate_batch_number',
         'client_id',
-        'certificate_expiration_date',
+        'africa_cdc_trusted_vaccine_code',
+        'vaccine_id',
         'innoculated_since_date',
-        'recovery_date',
-        'client_status',
         'dose_1_date',
         'dose_2_date',
         'dose_3_date',
         'dose_4_date',
         'dose_5_date',
         'booster_dose_date',
-        'vaccine_id',
         'target_disease',
+        'certificate_expiration_date',
+        'certificate_status',
+        'signature_algorithm',
+        'certificate_issuing_authority_id',
+        'vaccination_certificate_batch_number',
         'qr_code',
         'qr_code_path',
         'certificate_url'
@@ -188,22 +187,22 @@ class Certificate extends Model
     protected $casts = [
         'id' => 'integer',
         'certificate_uuid' => 'string',
-        'signature_algorithm' => 'string',
-        'certificate_issuing_authority_id' => 'integer',
-        'vaccination_certificate_batch_number' => 'string',
         'client_id' => 'integer',
-        'certificate_expiration_date' => 'date',
+        'africa_cdc_trusted_vaccine_code' => 'string',
+        'vaccine_id' => 'integer',
         'innoculated_since_date' => 'date',
-        'recovery_date' => 'date',
-        'client_status' => 'string',
         'dose_1_date' => 'date',
         'dose_2_date' => 'date',
         'dose_3_date' => 'date',
         'dose_4_date' => 'date',
         'dose_5_date' => 'date',
         'booster_dose_date' => 'date',
-        'vaccine_id' => 'integer',
         'target_disease',
+        'certificate_expiration_date' => 'date',
+        'certificate_status' => 'string',
+        'signature_algorithm' => 'string',
+        'certificate_issuing_authority_id' => 'integer',
+        'vaccination_certificate_batch_number' => 'string',
         'qr_code' => 'string',
         'qr_code_path' => 'string',
         'certificate_url' => 'string'
@@ -216,22 +215,22 @@ class Certificate extends Model
      */
     public static $rules = [
         'certificate_uuid' => 'required|string|max:36',
-        'signature_algorithm' => 'nullable|string|max:255',
-        'certificate_issuing_authority_id' => 'nullable|integer',
-        'vaccination_certificate_batch_number' => 'nullable|string|max:255',
         'client_id' => 'required|integer',
-        'certificate_expiration_date' => 'nullable',
+        'africa_cdc_trusted_vaccine_code' => 'nullable|string|max:255',
+        'vaccine_id' => 'required|integer',
         'innoculated_since_date' => 'nullable',
-        'recovery_date' => 'nullable',
-        'client_status' => 'nullable|string|max:255',
         'dose_1_date' => 'required',
         'dose_2_date' => 'nullable',
         'dose_3_date' => 'nullable',
         'dose_4_date' => 'nullable',
         'dose_5_date' => 'nullable',
         'booster_dose_date' => 'nullable',
-        'vaccine_id' => 'required|integer',
         'target_disease' => 'required|string|max:255',
+        'certificate_expiration_date' => 'nullable',
+        'certificate_status' => 'required|string|max:255',
+        'signature_algorithm' => 'nullable|string|max:255',
+        'certificate_issuing_authority_id' => 'nullable|integer',
+        'vaccination_certificate_batch_number' => 'nullable|string|max:255',
         'qr_code' => 'required|string|max:65535',
         'qr_code_path' => 'required|string|max:255',
         'certificate_url' => 'required|string|max:255',

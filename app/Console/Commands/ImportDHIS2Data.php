@@ -41,6 +41,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp;
 use GuzzleHttp\Psr7;
+use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
@@ -98,86 +99,108 @@ class ImportDHIS2Data extends Command
         $client = null;
         $httpClient = new GuzzleHttp\Client();
 
-        $response = $httpClient->request('GET', self::TRACKED_ENTITY_INSTANCES_URL."?trackedEntityInstance={$tracked_entity_instance_uid}", [
-            'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
-        ]);
+        try {
+            $response = $httpClient->request('GET', self::TRACKED_ENTITY_INSTANCES_URL . "?trackedEntityInstance={$tracked_entity_instance_uid}", [
+                'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
+            ]);
+            if ($response->getStatusCode() == 200) {
+                $responce_body = json_decode($response->getBody(), true);
+                $trackedEntityInstance = $responce_body['trackedEntityInstances'][0];
 
-        if ($response->getStatusCode() == 200){
-            $responce_body = json_decode($response->getBody(), true);
-            $trackedEntityInstance = $responce_body['trackedEntityInstances'][0];
+                $client_uid = $trackedEntityInstance['trackedEntityInstance'];
 
-            $client_uid = $trackedEntityInstance['trackedEntityInstance'];
+                //            $this->getOutput()->writeln("<comment>\t Getting {$client_uid} tracked entity instance");
 
-//            $this->getOutput()->writeln("<comment>\t Getting {$client_uid} tracked entity instance");
+                $card_number = "";
+                $NRC = "";
+                $passport_number = "";
+                $first_name = "";
+                $last_name = "";
+                $sex = "";
+                $date_of_birth = null;
+                $contact_number = "";
+                $address_line1 = "";
+                $occupation = "";
 
-            $card_number = "";
-            $NRC = "";
-            $passport_number = "";
-            $first_name = "";
-            $last_name = "";
-            $sex = "";
-            $date_of_birth = null;
-            $contact_number = "";
-            $address_line1 = "";
-            $occupation = "";
+                foreach ($trackedEntityInstance['attributes'] as $attribute) {
+                    if ($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
+                        $card_number = $attribute['value'];
+                    else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
+                        $NRC = $attribute['value'];
+                    else if ($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
+                        $passport_number = $attribute['value'];
+                    else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
+                        $first_name = ucfirst(strtolower(trim($attribute['value'])));
+                    else if ($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
+                        $last_name = ucfirst(strtolower(trim($attribute['value'])));
+                    else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
+                        $sex = $attribute['value'][0];
+                    else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
+                        $date_of_birth = $attribute['value'];
+                    else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
+                        $contact_number = $attribute['value'];
+                    else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
+                        $address_line1 = $attribute['value'];
+                    else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
+                        $occupation = $attribute['value'];
+                }
 
-            foreach($trackedEntityInstance['attributes'] as $attribute){
-                if($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
-                    $card_number = $attribute['value'];
-                else if($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
-                    $NRC = $attribute['value'];
-                else if($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
-                    $passport_number = $attribute['value'];
-                else if($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
-                    $first_name = ucfirst(strtolower(trim($attribute['value'])));
-                else if($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
-                    $last_name = ucfirst(strtolower(trim($attribute['value'])));
-                else if($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
-                    $sex = $attribute['value'][0];
-                else if($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
-                    $date_of_birth = $attribute['value'];
-                else if($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
-                    $contact_number = $attribute['value'];
-                else if($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
-                    $address_line1 = $attribute['value'];
-                else if($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
-                    $occupation = $attribute['value'];
+                //Store data in record table
+                $record = new Record([
+                    'data_source' => 'MOH_DHIS2_COVAX',
+                    'data_type' => 'TRACKED_ENTITY_INSTANCE',
+                    'data' => json_encode($trackedEntityInstance),
+                ]);
+
+                $record->save();
+
+                //Create new client
+                $client = new Client([
+                    'client_uid' => $client_uid,
+                    'card_number' => $card_number,
+                    'NRC' => $NRC,
+                    'passport_number' => $passport_number,
+                    'first_name' => $first_name,
+                    'last_name' => $last_name,
+                    'sex' => $sex,
+                    'date_of_birth' => $date_of_birth,
+                    'contact_number' => $contact_number,
+                    'address_line1' => $address_line1,
+                    'occupation' => $occupation,
+                    'facility_id' => $facility_id,
+                    'record_id' => $record->id,
+                ]);
+
+                $client->save();
+
+                $this->getOutput()->writeln("<info>\t Client saved:</info> {$client->id}");
+
+                // Create record in ImportLog table
+                ImportLog::create([
+                    'hash' => Hash::make(json_encode($trackedEntityInstance)),
+                ]);
             }
-
-            //Store data in record table
-            $record = new Record([
-                'data_source' => 'MOH_DHIS2_COVAX',
-                'data_type' => 'TRACKED_ENTITY_INSTANCE',
-                'data' => json_encode($trackedEntityInstance),
-            ]);
-
-            $record->save();
-
-            //Create new client
-            $client = new Client([
-                'client_uid' => $client_uid,
-                'card_number' => $card_number,
-                'NRC' => $NRC,
-                'passport_number' => $passport_number,
-                'first_name' => $first_name,
-                'last_name' => $last_name,
-                'sex' => $sex,
-                'date_of_birth' => $date_of_birth,
-                'contact_number' => $contact_number,
-                'address_line1' => $address_line1,
-                'occupation' => $occupation,
-                'facility_id' => $facility_id,
-                'record_id' => $record->id,
-            ]);
-
-            $client->save();
-
-            $this->getOutput()->writeln("<info>\t Client saved:</info> {$client->id}");
-
-            // Create record in ImportLog table
-            ImportLog::create([
-                'hash' => Hash::make(json_encode($trackedEntityInstance)),
-            ]);
+        } catch (ConnectException $e) {
+            // Connection exceptions are not caught by RequestException
+            $message = $e->getMessage();
+            $time = date('Y-m-d H:i:s');
+            Log::error( " $time: ConnectException - $message");
+            $this->getOutput()->writeln("<error>$time: $message </error>");
+        } catch (RequestException $e) {
+            $message = $e->getMessage();
+            $time = date('Y-m-d H:i:s');
+            Log::error( "$time: RequestException - $message");
+            $this->getOutput()->writeln("<error>$time: RequestException: $message</error>");
+        } catch (TransferException $e) {
+            $message = $e->getMessage();
+            $time = date('Y-m-d H:i:s');
+            Log::error( "$time: TransferException: $message");
+            $this->getOutput()->writeln("<error>$time: TransferException: $message</error>");
+        }catch (Exception $e) {
+            $message = $e->getMessage();
+            $time = date('Y-m-d H:i:s');
+            Log::error( "$time: Exception: $message");
+            $this->getOutput()->writeln("<error>$time: Exception: $message</error>");
         }
         return $client;
     }
@@ -192,11 +215,16 @@ class ImportDHIS2Data extends Command
         // $client->setDefaultOption(['verify'=>false]);
 
         $facilities = Facility::all();
+        $number_of_events = 0;
+        $script_start_time = microtime(true);
+        $script_start_date_time = date('Y-m-d H:i:s');
 
         foreach($facilities as $facility){
             if(!empty($facility->DHIS2_UID)){
                 try {
-                    Log::info('Loading data from: '.self::EVENTS_URL);
+
+                    Log::info("$script_start_date_time: Loading data from DHIS2 Covax instance");
+                    $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Loading data from DHIS2 Covax instance</info>");
 
                     $response = $httpClient->request('GET', self::EVENTS_URL, [
                         'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
@@ -212,6 +240,7 @@ class ImportDHIS2Data extends Command
                         $response_body = json_decode($response->getBody(), true);
 
                         foreach($response_body['events'] as $event){
+                            $number_of_events++;
                             $startTime = microtime(true);
 
                             if($event['status'] == 'COMPLETED') { //Process only completed events
@@ -300,40 +329,57 @@ class ImportDHIS2Data extends Command
                                     $this->getOutput()->writeln("<info>Event saved:</info> {$event['event']} ({$runTime}ms)");
                                 } else {
                                     $this->getOutput()->writeln("<info>Skipping event:</info> {$event['event']} because event already exist in the DATABASE!");
+                                    Log::info("\t Skipping event: {$event['event']} because event already exist in the DATABASE!");
                                 }
                             } else {
                                 $this->getOutput()->writeln("<info>Skipping event:</info> {$event['event']} because it is not COMPLETE!");
+                                Log::info("\t Skipping event: {$event['event']} because it is not COMPLETE!");
                             }
                         }
                     }//End if ($response->getStatusCode() == 200)
+                } catch (ConnectException $e) {
+                    // Connection exceptions are not caught by RequestException
+                    $message = $e->getMessage();
+                    $time = date('Y-m-d H:i:s');
+                    Log::error( " $time: ConnectException - $message");
+                    $this->getOutput()->writeln("<error>$time: $message </error>");
+                } catch (RequestException $e) {
+                    $message = $e->getMessage();
+                    $time = date('Y-m-d H:i:s');
+                    Log::error( "$time: RequestException - $message");
+                    $this->getOutput()->writeln("<error>$time: RequestException: $message</error>");
                 } catch (TransferException $e) {
-                    // you can catch here 400 response errors and 500 response errors
-                    // You can either use logs here use Illuminate\Support\Facades\Log;
-                    $error['error'] = $e->getMessage();
-                    $error['request'] = $e->getRequest();
-                    if($e->hasResponse()){
-                        if ($e->getResponse()->getStatusCode() == '400'){
-                            $error['response'] = $e->getResponse();
-                        }
-                    }
-                    Log::error('Error occurred in get request.', ['error' => $error]);
+                    $message = $e->getMessage();
+                    $time = date('Y-m-d H:i:s');
+                    Log::error( "$time: TransferException: $message");
+                    $this->getOutput()->writeln("<error>$time: TransferException: $message</error>");
+                }catch (Exception $e) {
+                    $message = $e->getMessage();
+                    $time = date('Y-m-d H:i:s');
+                    Log::error( "$time: Exception: $message");
+                    $this->getOutput()->writeln("<error>$time: Exception: $message</error>");
                 }
-//                catch(Exception $e){
-//                    //other errors
-//                }
-            } //if(!empty($facility->DHIS2_UID))
+            } else {//if(!empty($facility->DHIS2_UID))
+                Log::alert(date('Y-m-d H:i:s').": $facility has no DHIS2_UID");
+                $this->getOutput()->writeln("<info>Skipping facility:</info>
+                    Facility ID: $facility->id, Facility name: $facility->name has no DHIS2_UID");
+            }
         } //End foreach($facilities as $facility)
+
+        $script_start_end_time = date('Y-m-d H:i:s');
+        $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
+        Log::info("$script_start_end_time: Completed loading data from DHIS2 Covax instance: Duration: $script_run_time Number of Events: $number_of_events");
+        $this->getOutput()->writeln("<info>Script completed:</info> Completed loading data from DHIS2 Covax instance. Duration: $script_run_time");
     }
 
     /**
-     * Execute the console command.
+     * Execute the console command."
      *
      * @return int
      */
     public function handle()
     {
-        // self::loadTrackedEntityInstances();
         self::loadEvents();
-        return 0;
+        return Command::SUCCESS;
     }
 }

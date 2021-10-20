@@ -57,7 +57,13 @@ class CreateVaccinationsTable extends Migration
     {
         Schema::table('vaccinations', function(Blueprint $table)
         {
-            $table->dropForeign(['client_id', 'vaccine_id', 'provider_id', 'facility_id', 'record_id']);
+            $table->dropForeign(['record_id']);
+            $table->dropForeign(['vaccinating_country_id']);
+            $table->dropForeign(['facility_id']);
+            $table->dropForeign(['certificate_id']);
+            $table->dropForeign(['provider_id']);
+            $table->dropForeign(['vaccine_id']);
+            $table->dropForeign(['client_id']);
         });
 
         Schema::dropIfExists('vaccinations');

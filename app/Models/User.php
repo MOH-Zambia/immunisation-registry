@@ -10,7 +10,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 /**
  * @SWG\Definition(
  *      definition="User",
- *      required={"role_id", "name", "email", "password"},
+ *      required={"role_id", "first_name", "last_name", "email", "password"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -24,8 +24,13 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="name",
- *          description="name",
+ *          property="first_name",
+ *          description="first_name",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
+ *          property="last_name",
+ *          description="last_name",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -96,7 +101,8 @@ class User extends Authenticatable
 
     public $fillable = [
         'role_id',
-        'name',
+        'first_name',
+        'last_name',
         'email',
         'email_code',
         'password',
@@ -113,7 +119,8 @@ class User extends Authenticatable
     protected $casts = [
         'id' => 'integer',
         'role_id' => 'integer',
-        'name' => 'string',
+        'first_name' => 'string',
+        'last_name' => 'string',
         'email' => 'string',
         'email_code' => 'string',
         'password' => 'string',
@@ -129,7 +136,8 @@ class User extends Authenticatable
      */
     public static $rules = [
         'role_id' => 'required|integer',
-        'name' => 'required|string|max:255',
+        'first_name' => 'required|string|max:255',
+        'last_name' => 'required|string|max:255',
         'email' => 'required|string|max:255',
         'email_code' => 'nullable|string|max:255',
         'password' => 'required|string|max:255',

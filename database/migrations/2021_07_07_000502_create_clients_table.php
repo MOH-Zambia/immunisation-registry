@@ -61,7 +61,8 @@ class CreateClientsTable extends Migration
     {
         Schema::table('clients', function(Blueprint $table)
         {
-            $table->dropForeign(['facility_id', 'record_id']);
+            $table->dropForeign(['facility_id']);
+            $table->dropForeign(['record_id']);
         });
 
         Schema::dropIfExists('clients');

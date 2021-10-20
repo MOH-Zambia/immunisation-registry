@@ -36,6 +36,7 @@ namespace App\Console\Commands;
  */
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 use QRCode;
@@ -59,7 +60,7 @@ class GenerateVaccinationCertificates extends Command
      *
      * @var string
      */
-    protected $description = 'Command description';
+    protected $description = 'Generates Vaccination Certificates for Clients';
 
     /**
      * Create a new command instance.
@@ -78,32 +79,12 @@ class GenerateVaccinationCertificates extends Command
      */
     public function handle()
     {
+        $number_of_certificates = 0;
+        $script_start_time = microtime(true);
+        $script_start_date_time = date('Y-m-d H:i:s');
 
-
-//        $astrazeneca_first_dose = Vaccination::select('client_id')->where([
-//            ['vaccine_id', '=', 1],
-//            ['dose_number', '=', '1'],
-//        ])->whereNull('certificate_id')->get();
-//
-//        $astrazeneca_second_dose = Vaccination::select('client_id')->where([
-//            ['vaccine_id', '=', 1],
-//            ['dose_number', '=', '2'],
-//        ])->whereNull('certificate_id')->get();
-//
-//        $astrazeneca_fully_vaccinated = $astrazeneca_first_dose->intersect($astrazeneca_second_dose);
-
-//        $astrazeneca_fully_vaccinated = \DB::table('vaccinations')
-//            ->where([
-//                ['vaccine_id', '=', 1],
-//                ['dose_number', '=', '1'],
-//            ])->whereExists(function($query) {
-//                $query->select(\DB::raw(1))
-//                    ->from('vaccinations')
-//                    ->whereRaw([
-//                        ['vaccine_id', '=', 1],
-//                        ['dose_number', '=', '2'],
-//                    ]);
-//            })->get();
+        Log::info("$script_start_date_time: Generating certificates");
+        $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Generating certificates</info>");
 
         $astrazeneca_fully_vaccinated = \DB::table('vaccinations as dose1')->where([
                 ['dose1.vaccine_id', '=', 1],
@@ -153,6 +134,7 @@ class GenerateVaccinationCertificates extends Command
                 $certificate = new Certificate([
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
+                    'innoculated_since_date' => $dose2->date,
                     'dose_1_date' => $dose1->date,
                     'dose_2_date' => $dose2->date,
                     'target_disease' => 'COVID-19',
@@ -162,6 +144,7 @@ class GenerateVaccinationCertificates extends Command
                 ]);
 
                 $certificate->save();
+                $number_of_certificates++;
 
                 //Add reference to the certificate in the vaccination table
                 $dose1->certificate_id = $certificate->id;
@@ -210,6 +193,7 @@ class GenerateVaccinationCertificates extends Command
                 $certificate = new Certificate([
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
+                    'innoculated_since_date' => $vaccination->date,
                     'dose_1_date' => $vaccination->date,
                     'target_disease' => 'COVID-19',
                     'qr_code' => $qrcode,
@@ -218,6 +202,7 @@ class GenerateVaccinationCertificates extends Command
                 ]);
 
                 $certificate->save();
+                $number_of_certificates++;
 
                 //Add reference to the certificate in the vaccination table
                 $vaccination->certificate_id = $certificate->id;
@@ -263,6 +248,7 @@ class GenerateVaccinationCertificates extends Command
                 $certificate = new Certificate([
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
+                    'innoculated_since_date' => $vaccination->date,
                     'dose_1_date' => $vaccination->date,
                     'target_disease' => 'COVID-19',
                     'qr_code' => $qrcode,
@@ -271,6 +257,7 @@ class GenerateVaccinationCertificates extends Command
                 ]);
 
                 $certificate->save();
+                $number_of_certificates++;
 
                 //Add reference to the certificate in the vaccination table
                 $vaccination->certificate_id = $certificate->id;
@@ -280,6 +267,11 @@ class GenerateVaccinationCertificates extends Command
                 $this->getOutput()->writeln("<info>Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
             }
         }
+
+        $script_start_end_time = date('Y-m-d H:i:s');
+        $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
+        Log::info("$script_start_end_time: Completed generating certificates: Duration: $script_run_time Number of Certificate: $number_of_certificates");
+        $this->getOutput()->writeln("<info>Script completed:</info> Completed generating certificates. Duration: $script_run_time");
 
         return 0;
     }
