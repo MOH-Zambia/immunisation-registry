@@ -87,12 +87,12 @@ class GenerateVaccinationCertificates extends Command
         $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Generating certificates</info>");
 
         $astrazeneca_fully_vaccinated = \DB::table('vaccinations as dose1')->where([
-                ['dose1.vaccine_id', '=', 1],
+                ['dose1.vaccine_id', '=', 1], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
                 ['dose1.dose_number', '=', '1'],
             ])->join('vaccinations as dose2', function($join) {
                 $join->on('dose1.client_id', '=', 'dose2.client_id')
                     ->where([
-                        ['dose2.vaccine_id', '=', 1],
+                        ['dose2.vaccine_id', '=', 1], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
                         ['dose2.dose_number', '=', '2'],
                     ]);
             })->get();
@@ -134,6 +134,7 @@ class GenerateVaccinationCertificates extends Command
                 $certificate = new Certificate([
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
+                    'vaccine_id' => $vaccination->vaccine_id,
                     'innoculated_since_date' => $dose2->date,
                     'dose_1_date' => $dose1->date,
                     'dose_2_date' => $dose2->date,
@@ -159,7 +160,7 @@ class GenerateVaccinationCertificates extends Command
         }
 
         $janssen_dose = Vaccination::where([
-            ['vaccine_id', '=', 3],
+            ['vaccine_id', '=', 3], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
         ])->whereNull('certificate_id')->get();
 
         foreach($janssen_dose as $vaccination){
@@ -193,6 +194,7 @@ class GenerateVaccinationCertificates extends Command
                 $certificate = new Certificate([
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
+                    'vaccine_id' => $vaccination->vaccine_id,
                     'innoculated_since_date' => $vaccination->date,
                     'dose_1_date' => $vaccination->date,
                     'target_disease' => 'COVID-19',
@@ -248,6 +250,7 @@ class GenerateVaccinationCertificates extends Command
                 $certificate = new Certificate([
                     'certificate_uuid' => $certificate_uuid,
                     'client_id' => $vaccination->client_id,
+                    'vaccine_id' => $vaccination->vaccine_id,
                     'innoculated_since_date' => $vaccination->date,
                     'dose_1_date' => $vaccination->date,
                     'target_disease' => 'COVID-19',

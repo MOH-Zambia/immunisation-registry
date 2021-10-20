@@ -3,6 +3,7 @@
         <thead>
             <tr>
                 <th>MFL Facility ID</th>
+                <th>DHIS2 UID</th>
                 <th>Province</th>
                 <th>District</th>
                 <th>Name</th>
@@ -20,6 +21,7 @@
         @foreach($facilities as $facility)
             <tr>
                 <td>{{ $facility->facility_id }}</td>
+                <td>{{ $facility->DHIS2_UID }}</td>
                 <td>{{ $facility->district->province['name'] }}</td>
                 <td>{{ $facility->district['name'] }}</td>
                 <td>{{ $facility->name }}</td>

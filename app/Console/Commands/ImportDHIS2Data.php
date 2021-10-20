@@ -36,14 +36,11 @@ namespace App\Console\Commands;
  */
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp;
-use GuzzleHttp\Psr7;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
-use GuzzleHttp\Exception\ClientException;
 use GuzzleHttp\Exception\TransferException;
 use Exception;
 
@@ -109,7 +106,8 @@ class ImportDHIS2Data extends Command
 
                 $client_uid = $trackedEntityInstance['trackedEntityInstance'];
 
-                //            $this->getOutput()->writeln("<comment>\t Getting {$client_uid} tracked entity instance");
+                $time = date('Y-m-d H:i:s');
+                $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: </info>{$client_uid}");
 
                 $card_number = "";
                 $NRC = "";
@@ -173,34 +171,35 @@ class ImportDHIS2Data extends Command
 
                 $client->save();
 
-                $this->getOutput()->writeln("<info>\t Client saved:</info> {$client->id}");
-
                 // Create record in ImportLog table
                 ImportLog::create([
-                    'hash' => Hash::make(json_encode($trackedEntityInstance)),
+                    'hash' => sha1(json_encode($trackedEntityInstance)),
                 ]);
+
+                $time = date('Y-m-d H:i:s');
+                $this->getOutput()->writeln("<info>$time Client saved:</info> {$client->id}");
             }
         } catch (ConnectException $e) {
             // Connection exceptions are not caught by RequestException
             $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');
             Log::error( " $time: ConnectException - $message");
-            $this->getOutput()->writeln("<error>$time: $message </error>");
+            $this->getOutput()->writeln("<error>$time $message </error>");
         } catch (RequestException $e) {
             $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');
             Log::error( "$time: RequestException - $message");
-            $this->getOutput()->writeln("<error>$time: RequestException: $message</error>");
+            $this->getOutput()->writeln("<error>$time RequestException: $message</error>");
         } catch (TransferException $e) {
             $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');
             Log::error( "$time: TransferException: $message");
-            $this->getOutput()->writeln("<error>$time: TransferException: $message</error>");
+            $this->getOutput()->writeln("<error>$time TransferException: $message</error>");
         }catch (Exception $e) {
             $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');
             Log::error( "$time: Exception: $message");
-            $this->getOutput()->writeln("<error>$time: Exception: $message</error>");
+            $this->getOutput()->writeln("<error>$time Exception: $message</error>");
         }
         return $client;
     }
@@ -214,18 +213,17 @@ class ImportDHIS2Data extends Command
         // disable cert verification
         // $client->setDefaultOption(['verify'=>false]);
 
-        $facilities = Facility::all();
+        $facilities = Facility::all(); //Get all facilities from database
         $number_of_events = 0;
         $script_start_time = microtime(true);
         $script_start_date_time = date('Y-m-d H:i:s');
 
+        Log::info("$script_start_date_time: Loading data from DHIS2 Covax instance");
+        $this->getOutput()->writeln("<info>$script_start_date_time Script started - Loading data from DHIS2 Covax instance</info>");
+
         foreach($facilities as $facility){
             if(!empty($facility->DHIS2_UID)){
                 try {
-
-                    Log::info("$script_start_date_time: Loading data from DHIS2 Covax instance");
-                    $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Loading data from DHIS2 Covax instance</info>");
-
                     $response = $httpClient->request('GET', self::EVENTS_URL, [
                         'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
                         'query' => [
@@ -240,13 +238,12 @@ class ImportDHIS2Data extends Command
                         $response_body = json_decode($response->getBody(), true);
 
                         foreach($response_body['events'] as $event){
+                            DB::beginTransaction();
+
                             $number_of_events++;
                             $startTime = microtime(true);
 
                             if($event['status'] == 'COMPLETED') { //Process only completed events
-                                $this->getOutput()
-                                    ->writeln("<comment>Facility: {$facility->DHIS2_UID}, {$facility->id} Saving data for event:</comment> {$event['event']} <comment>for tracked entity instance:</comment> {$event['trackedEntityInstance']}");
-
                                 $event_uid = $event['event'];
                                 $tracked_entity_instance_uid = $event['trackedEntityInstance'];
                                 $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
@@ -256,9 +253,13 @@ class ImportDHIS2Data extends Command
                                 }
 
                                 // Check if hash of $event exist in import log
-                                $import_log = ImportLog::where('hash', Hash::make(json_encode($event)))->first();
+                                $import_log = ImportLog::where('hash', sha1(json_encode($event)))->first();
 
                                 if(empty($import_log)){
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()
+                                        ->writeln("<info>$time Saving event:</info> Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
+
                                     //Store data in record table
                                     $record = new Record([
                                         'data_source' => 'MOH_DHIS2_COVAX',
@@ -322,54 +323,62 @@ class ImportDHIS2Data extends Command
 
                                     // Create record in ImportLog table
                                     ImportLog::create([
-                                        'hash' => Hash::make(json_encode($event)),
+                                        'hash' => sha1(json_encode($event)),
                                     ]);
 
                                     $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                    $this->getOutput()->writeln("<info>Event saved:</info> {$event['event']} ({$runTime}ms)");
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("<info>$time Event saved:</info> {$event['event']} ({$runTime}ms)");
                                 } else {
-                                    $this->getOutput()->writeln("<info>Skipping event:</info> {$event['event']} because event already exist in the DATABASE!");
-                                    Log::info("\t Skipping event: {$event['event']} because event already exist in the DATABASE!");
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because event already exist in the DATABASE!");
+                                    Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
                                 }
                             } else {
-                                $this->getOutput()->writeln("<info>Skipping event:</info> {$event['event']} because it is not COMPLETE!");
-                                Log::info("\t Skipping event: {$event['event']} because it is not COMPLETE!");
+                                $time = date('Y-m-d H:i:s');
+                                $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because it is not COMPLETE!");
+                                Log::warning("$time Skipping event: {$event['event']} because it is not COMPLETE!");
                             }
-                        }
+
+                            DB::commit();
+
+                        } //End foreach
                     }//End if ($response->getStatusCode() == 200)
                 } catch (ConnectException $e) {
                     // Connection exceptions are not caught by RequestException
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
-                    Log::error( " $time: ConnectException - $message");
-                    $this->getOutput()->writeln("<error>$time: $message </error>");
+                    Log::error( " $time ConnectException: $message");
+                    $this->getOutput()->writeln("<error>$time ConnectException: $message </error>");
                 } catch (RequestException $e) {
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
-                    Log::error( "$time: RequestException - $message");
-                    $this->getOutput()->writeln("<error>$time: RequestException: $message</error>");
+                    Log::error( "$time RequestException - $message");
+                    $this->getOutput()->writeln("<error>$time RequestException: $message</error>");
                 } catch (TransferException $e) {
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
-                    Log::error( "$time: TransferException: $message");
-                    $this->getOutput()->writeln("<error>$time: TransferException: $message</error>");
+                    Log::error( "$time TransferException: $message");
+                    $this->getOutput()->writeln("<error>$time TransferException: $message</error>");
                 }catch (Exception $e) {
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
-                    Log::error( "$time: Exception: $message");
-                    $this->getOutput()->writeln("<error>$time: Exception: $message</error>");
+                    Log::error( "$time Exception: $message");
+                    $this->getOutput()->writeln("<error>$time Exception: $message</error>");
+
+                    DB::rollback(); //Rollback database transaction
                 }
             } else {//if(!empty($facility->DHIS2_UID))
-                Log::alert(date('Y-m-d H:i:s').": $facility has no DHIS2_UID");
-                $this->getOutput()->writeln("<info>Skipping facility:</info>
-                    Facility ID: $facility->id, Facility name: $facility->name has no DHIS2_UID");
+                $time = date('Y-m-d H:i:s');
+                Log::error("$time Skipping facility: $facility has no DHIS2_UID");
+                $this->getOutput()->writeln("<error>$time Skipping facility:</error> Facility ID: $facility->id, Facility name: $facility->name has no DHIS2_UID");
             }
         } //End foreach($facilities as $facility)
 
         $script_start_end_time = date('Y-m-d H:i:s');
         $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
-        Log::info("$script_start_end_time: Completed loading data from DHIS2 Covax instance: Duration: $script_run_time Number of Events: $number_of_events");
-        $this->getOutput()->writeln("<info>Script completed:</info> Completed loading data from DHIS2 Covax instance. Duration: $script_run_time");
+        Log::info("$script_start_end_time Script completed loading data from DHIS2 Covax instance: Duration: $script_run_time Number of Events: $number_of_events");
+        $this->getOutput()->writeln("<info>$script_start_end_time Script completed:</info> Completed loading data from DHIS2 Covax instance. Duration: $script_run_time");
     }
 
     /**
