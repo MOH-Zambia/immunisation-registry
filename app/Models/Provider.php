@@ -9,12 +9,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Provider",
- *      required={"first_name", "last_name", "other_names", "sex"},
+ *      required={"provider_id", "first_name", "last_name", "other_names", "sex"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
  *          type="integer",
  *          format="int32"
+ *      ),
+ *      @SWG\Property(
+ *          property="provider_id",
+ *          description="provider_id",
+ *          type="string"
  *      ),
  *      @SWG\Property(
  *          property="first_name",
@@ -47,6 +52,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="updated_at",
  *          type="string",
  *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="deleted_at",
+ *          description="deleted_at",
+ *          type="string",
+ *          format="date-time"
  *      )
  * )
  */
@@ -67,6 +78,7 @@ class Provider extends Model
 
 
     public $fillable = [
+        'provider_id',
         'first_name',
         'last_name',
         'other_names',
@@ -80,6 +92,7 @@ class Provider extends Model
      */
     protected $casts = [
         'id' => 'integer',
+        'provider_id' => 'string',
         'first_name' => 'string',
         'last_name' => 'string',
         'other_names' => 'string',
@@ -92,13 +105,21 @@ class Provider extends Model
      * @var array
      */
     public static $rules = [
+        'provider_id' => 'required|string|max:255',
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
         'other_names' => 'required|string|max:255',
         'sex' => 'required|string|max:255',
         'created_at' => 'nullable',
-        'updated_at' => 'nullable'
+        'updated_at' => 'nullable',
+        'deleted_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function vaccinations()
+    {
+        return $this->hasMany(\App\Models\Vaccination::class, 'provider_id');
+    }
 }

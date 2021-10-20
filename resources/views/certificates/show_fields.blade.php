@@ -1,7 +1,7 @@
-<!-- Vaccination Certificate Id Field -->
+<!-- Certificate Uuid Field -->
 <div class="col-sm-12">
-    {!! Form::label('vaccination_certificate_id', 'Vaccination Certificate Id:') !!}
-    <p>{{ $certificate->vaccination_certificate_id }}</p>
+    {!! Form::label('certificate_uuid', 'Certificate Uuid:') !!}
+    <p>{{ $certificate->certificate_uuid }}</p>
 </div>
 
 <!-- Signature Algorithm Field -->
@@ -22,10 +22,10 @@
     <p>{{ $certificate->vaccination_certificate_batch_number }}</p>
 </div>
 
-<!-- Patient Id Field -->
+<!-- Client Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('patient_id', 'Patient Id:') !!}
-    <p>{{ $certificate->patient_id }}</p>
+    {!! Form::label('client_id', 'Client Id:') !!}
+    <p>{{ $certificate->client_id }}</p>
 </div>
 
 <!-- Certificate Expiration Date Field -->
@@ -46,40 +46,58 @@
     <p>{{ $certificate->recovery_date }}</p>
 </div>
 
-<!-- Patient Status Field -->
+<!-- Client Status Field -->
 <div class="col-sm-12">
-    {!! Form::label('patient_status', 'Patient Status:') !!}
-    <p>{{ $certificate->patient_status }}</p>
+    {!! Form::label('client_status', 'Client Status:') !!}
+    <p>{{ $certificate->client_status }}</p>
 </div>
 
-<!-- Dose 1 Id Field -->
+<!-- Dose 1 Date Field -->
 <div class="col-sm-12">
-    {!! Form::label('dose_1_id', 'Dose 1 Id:') !!}
-    <p>{{ $certificate->dose_1_id }}</p>
+    {!! Form::label('dose_1_date', 'Dose 1 Date:') !!}
+    <p>{{ $certificate->dose_1_date }}</p>
 </div>
 
-<!-- Dose 2 Id Field -->
+<!-- Dose 2 Date Field -->
 <div class="col-sm-12">
-    {!! Form::label('dose_2_id', 'Dose 2 Id:') !!}
-    <p>{{ $certificate->dose_2_id }}</p>
+    {!! Form::label('dose_2_date', 'Dose 2 Date:') !!}
+    <p>{{ $certificate->dose_2_date }}</p>
 </div>
 
-<!-- Dose 3 Id Field -->
+<!-- Dose 3 Date Field -->
 <div class="col-sm-12">
-    {!! Form::label('dose_3_id', 'Dose 3 Id:') !!}
-    <p>{{ $certificate->dose_3_id }}</p>
+    {!! Form::label('dose_3_date', 'Dose 3 Date:') !!}
+    <p>{{ $certificate->dose_3_date }}</p>
 </div>
 
-<!-- Dose 4 Id Field -->
+<!-- Dose 4 Date Field -->
 <div class="col-sm-12">
-    {!! Form::label('dose_4_id', 'Dose 4 Id:') !!}
-    <p>{{ $certificate->dose_4_id }}</p>
+    {!! Form::label('dose_4_date', 'Dose 4 Date:') !!}
+    <p>{{ $certificate->dose_4_date }}</p>
+</div>
+
+<!-- Dose 5 Date Field -->
+<div class="col-sm-12">
+    {!! Form::label('dose_5_date', 'Dose 5 Date:') !!}
+    <p>{{ $certificate->dose_5_date }}</p>
+</div>
+
+<!-- Booster Dose Date Field -->
+<div class="col-sm-12">
+    {!! Form::label('booster_dose_date', 'Booster Dose Date:') !!}
+    <p>{{ $certificate->booster_dose_date }}</p>
 </div>
 
 <!-- Qr Code Field -->
 <div class="col-sm-12">
     {!! Form::label('qr_code', 'Qr Code:') !!}
     <p>{{ $certificate->qr_code }}</p>
+</div>
+
+<!-- Qr Code Path Field -->
+<div class="col-sm-12">
+    {!! Form::label('qr_code_path', 'Qr Code Path:') !!}
+    <p>{{ $certificate->qr_code_path }}</p>
 </div>
 
 <!-- Certificate Url Field -->

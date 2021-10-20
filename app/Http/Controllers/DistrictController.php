@@ -29,7 +29,7 @@ class DistrictController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $districts = $this->districtRepository->all();
+        $districts = $this->districtRepository->paginate(20);
 
         return view('districts.index')
             ->with('districts', $districts);

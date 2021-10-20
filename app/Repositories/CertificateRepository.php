@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class CertificateRepository
  * @package App\Repositories
- * @version July 8, 2021, 12:43 am UTC
+ * @version September 8, 2021, 6:37 am UTC
 */
 
 class CertificateRepository extends BaseRepository
@@ -17,21 +17,22 @@ class CertificateRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
-        'vaccination_certificate_id',
-        'signature_algorithm',
+        'certificate_uuid',
+        'client_id',
+        'africa_cdc_trusted_vaccine_code',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
-        'patient_id',
-        'certificate_expiration_date',
+        'vaccine_id',
         'innoculated_since_date',
         'recovery_date',
-        'patient_status',
-        'dose_1_id',
-        'dose_2_id',
-        'dose_3_id',
-        'dose_4_id',
-        'qr_code',
-        'certificate_url'
+        'dose_1_date',
+        'dose_2_date',
+        'dose_3_date',
+        'dose_4_date',
+        'dose_5_date',
+        'booster_dose_date',
+        'target_disease',
+        'certificate_expiration_date'
     ];
 
     /**

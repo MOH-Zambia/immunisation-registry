@@ -13,7 +13,7 @@
     },
     {
         "name": "role_id",
-        "dbType": "integer,false",
+        "dbType": "integer,false,true",
         "htmlType": null,
         "validations": "required|integer|integer",
         "searchable": true,
@@ -24,7 +24,19 @@
         "inView": true
     },
     {
-        "name": "name",
+        "name": "first_name",
+        "dbType": "string,255",
+        "htmlType": "text",
+        "validations": "required|string|max:255|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "last_name",
         "dbType": "string,255",
         "htmlType": "text",
         "validations": "required|string|max:255|string|max:255",
@@ -48,10 +60,10 @@
         "inView": true
     },
     {
-        "name": "email_verified_at",
-        "dbType": "datetime:nullable",
-        "htmlType": "date",
-        "validations": "nullable|nullable",
+        "name": "email_code",
+        "dbType": "string,255:nullable",
+        "htmlType": "text",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -72,10 +84,34 @@
         "inView": true
     },
     {
-        "name": "remember_token",
-        "dbType": "string,100:nullable",
+        "name": "last_login",
+        "dbType": "string,255:nullable",
         "htmlType": "text",
-        "validations": "nullable|string|max:100|nullable|string|max:100",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "ip",
+        "dbType": "string,255:nullable",
+        "htmlType": "text",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "salt",
+        "dbType": "string,255:nullable",
+        "htmlType": "text",
+        "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
         "fillable": true,
         "primary": false,
@@ -118,5 +154,9 @@
         "inForm": false,
         "inIndex": false,
         "inView": false
+    },
+    {
+        "type": "relation",
+        "relation": "mt1,Role,role_id"
     }
 ]

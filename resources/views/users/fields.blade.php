@@ -1,7 +1,7 @@
-<!-- Role Id Field -->
+<!-- User Role Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('role_id', 'Role Id:') !!}
-    {!! Form::number('role_id', null, ['class' => 'form-control']) !!}
+    {!! Form::label('user_role_id', 'User Role Id:') !!}
+    {!! Form::number('user_role_id', null, ['class' => 'form-control']) !!}
 </div>
 
 <!-- Name Field -->
@@ -16,21 +16,11 @@
     {!! Form::email('email', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
-<!-- Email Verified At Field -->
+<!-- Email Code Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('email_verified_at', 'Email Verified At:') !!}
-    {!! Form::text('email_verified_at', null, ['class' => 'form-control','id'=>'email_verified_at']) !!}
+    {!! Form::label('email_code', 'Email Code:') !!}
+    {!! Form::text('email_code', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
-
-@push('page_scripts')
-    <script type="text/javascript">
-        $('#email_verified_at').datetimepicker({
-            format: 'YYYY-MM-DD HH:mm:ss',
-            useCurrent: true,
-            sideBySide: true
-        })
-    </script>
-@endpush
 
 <!-- Password Field -->
 <div class="form-group col-sm-6">
@@ -38,8 +28,20 @@
     {!! Form::password('password', ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
-<!-- Remember Token Field -->
+<!-- Last Login Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('remember_token', 'Remember Token:') !!}
-    {!! Form::text('remember_token', null, ['class' => 'form-control','maxlength' => 100,'maxlength' => 100]) !!}
+    {!! Form::label('last_login', 'Last Login:') !!}
+    {!! Form::text('last_login', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+</div>
+
+<!-- Ip Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('ip', 'Ip:') !!}
+    {!! Form::text('ip', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+</div>
+
+<!-- Salt Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('salt', 'Salt:') !!}
+    {!! Form::text('salt', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>

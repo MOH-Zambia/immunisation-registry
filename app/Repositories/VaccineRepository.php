@@ -8,7 +8,7 @@ use App\Repositories\BaseRepository;
 /**
  * Class VaccineRepository
  * @package App\Repositories
- * @version July 8, 2021, 12:41 am UTC
+ * @version August 30, 2021, 11:56 am UTC
 */
 
 class VaccineRepository extends BaseRepository
@@ -19,9 +19,10 @@ class VaccineRepository extends BaseRepository
     protected $fieldSearchable = [
         'product_name',
         'short_description',
-        'vaccine_code',
+        'cdc_cvx_code',
         'vaccine_manufacturer',
-        'vaccine_type',
+        'cdc_mvx_code',
+        'vaccine_group',
         'commercial_formulation',
         'vaccine_status',
         'notes'

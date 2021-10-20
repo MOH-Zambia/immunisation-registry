@@ -2,24 +2,24 @@
     <table class="table" id="users-table">
         <thead>
             <tr>
-                <th>Role Id</th>
-        <th>Name</th>
-        <th>Email</th>
-        <th>Email Verified At</th>
-        <th>Password</th>
-        <th>Remember Token</th>
+                <th>Last Name</th>
+                <th>First Name</th>
+                <th>Role</th>
+                <th>Email</th>
+                <th>Last Login</th>
+                <th>IP</th>
                 <th colspan="3">Action</th>
             </tr>
         </thead>
         <tbody>
         @foreach($users as $user)
             <tr>
-                <td>{{ $user->role_id }}</td>
-            <td>{{ $user->name }}</td>
-            <td>{{ $user->email }}</td>
-            <td>{{ $user->email_verified_at }}</td>
-            <td>{{ $user->password }}</td>
-            <td>{{ $user->remember_token }}</td>
+                <td>{{ $user->last_name }}</td>
+                <td>{{ $user->first_name }}</td>
+                <td>{{ $user->role['name'] }}</td>
+                <td>{{ $user->email }}</td>
+                <td>{{ $user->last_login }}</td>
+                <td>{{ $user->ip }}</td>
                 <td width="120">
                     {!! Form::open(['route' => ['users.destroy', $user->id], 'method' => 'delete']) !!}
                     <div class='btn-group'>

@@ -29,7 +29,7 @@ class FacilityController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $facilities = $this->facilityRepository->all();
+        $facilities = $this->facilityRepository->paginate(20);
 
         return view('facilities.index')
             ->with('facilities', $facilities);

@@ -5,6 +5,7 @@ namespace App\Models;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Grimzy\LaravelMysqlSpatial\Eloquent\SpatialTrait;
 
 /**
  * @SWG\Definition(
@@ -124,22 +125,26 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="date-time"
  *      )
  * )
+ *
+ * @property \Grimzy\LaravelMysqlSpatial\Types\Point $location
  */
 class Facility extends Model
 {
+    use SpatialTrait;
     use SoftDeletes;
-
     use HasFactory;
 
     public $table = 'facilities';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
 
     protected $dates = ['deleted_at'];
 
-
+    protected $spatialFields = [
+        'location',
+    ];
 
     public $fillable = [
         'facility_id',
@@ -215,5 +220,23 @@ class Facility extends Model
         'deleted_at' => 'nullable'
     ];
 
-    
+    public function __toString()
+    {
+        try
+        {
+            return "Facility ID: $this->id, Facility name: $this->name, District: $this->district->name, Provinve: $this->district->province->name";
+        }
+        catch (Exception $exception)
+        {
+            return '';
+        }
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function district()
+    {
+        return $this->belongsTo(\App\Models\District::class, 'district_id');
+    }
 }

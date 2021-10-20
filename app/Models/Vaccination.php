@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Vaccination",
- *      required={"patient_id", "vaccine_id", "provider_id", "date", "type_of_strategy", "vaccine_batch_number", "vaccinating_organization_id", "vaccinating_country", "record_id"},
+ *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "record_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -17,8 +17,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="patient_id",
- *          description="patient_id",
+ *          property="client_id",
+ *          description="client_id",
  *          type="integer",
  *          format="int32"
  *      ),
@@ -41,6 +41,17 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="date"
  *      ),
  *      @SWG\Property(
+ *          property="dose_number",
+ *          description="dose_number",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="date_of_next_dose",
+ *          description="date_of_next_dose",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
  *          property="type_of_strategy",
  *          description="type_of_strategy",
  *          type="string"
@@ -57,14 +68,21 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="date"
  *      ),
  *      @SWG\Property(
- *          property="vaccinating_organization_id",
- *          description="vaccinating_organization_id",
+ *          property="vaccinating_organization",
+ *          description="vaccinating_organization",
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="vaccinating_country",
- *          description="vaccinating_country",
- *          type="string"
+ *          property="vaccinating_country_id",
+ *          description="vaccinating_country_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *      @SWG\Property(
+ *          property="vaccination_certificate_id",
+ *          description="vaccination_certificate_id",
+ *          type="integer",
+ *          format="int32"
  *      ),
  *      @SWG\Property(
  *          property="record_id",
@@ -83,6 +101,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="updated_at",
  *          type="string",
  *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="deleted_at",
+ *          description="deleted_at",
+ *          type="string",
+ *          format="date-time"
  *      )
  * )
  */
@@ -93,7 +117,7 @@ class Vaccination extends Model
     use HasFactory;
 
     public $table = 'vaccinations';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -103,15 +127,20 @@ class Vaccination extends Model
 
 
     public $fillable = [
-        'patient_id',
+        'client_id',
         'vaccine_id',
         'provider_id',
         'date',
+        'dose_number',
+        'date_of_next_dose',
         'type_of_strategy',
         'vaccine_batch_number',
         'vaccine_batch_expiration_date',
-        'vaccinating_organization_id',
-        'vaccinating_country',
+        'vaccinating_organization',
+        'vaccinating_country_id',
+        'vaccination_certificate_id',
+        'facility_id',
+        'event_id',
         'record_id'
     ];
 
@@ -122,15 +151,20 @@ class Vaccination extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'patient_id' => 'integer',
+        'client_id' => 'integer',
         'vaccine_id' => 'integer',
         'provider_id' => 'integer',
         'date' => 'date',
+        'dose_number' => 'string',
+        'date_of_next_dose' => 'date',
         'type_of_strategy' => 'string',
         'vaccine_batch_number' => 'string',
         'vaccine_batch_expiration_date' => 'date',
-        'vaccinating_organization_id' => 'string',
-        'vaccinating_country' => 'string',
+        'vaccinating_organization' => 'string',
+        'vaccinating_country_id' => 'integer',
+        'vaccination_certificate_id' => 'integer',
+        'facility_id' => 'integer',
+        'event_id' => 'string',
         'record_id' => 'integer'
     ];
 
@@ -140,19 +174,71 @@ class Vaccination extends Model
      * @var array
      */
     public static $rules = [
-        'patient_id' => 'required|integer',
+        'client_id' => 'required|integer',
         'vaccine_id' => 'required|integer',
-        'provider_id' => 'required|integer',
+        'provider_id' => 'nullable|integer',
         'date' => 'required',
-        'type_of_strategy' => 'required|string|max:255',
-        'vaccine_batch_number' => 'required|string|max:255',
+        'dose_number' => 'required|string|max:255',
+        'date_of_next_dose' => 'nullable',
+        'type_of_strategy' => 'nullable|string|max:255',
+        'vaccine_batch_number' => 'nullable|string|max:255',
         'vaccine_batch_expiration_date' => 'nullable',
-        'vaccinating_organization_id' => 'required|string|max:255',
-        'vaccinating_country' => 'required|string|max:255',
+        'vaccinating_organization' => 'nullable|string|max:255',
+        'vaccinating_country_id' => 'required|integer',
+        'vaccination_certificate_id' => 'nullable|integer',
+        'facility_id' => 'required|integer',
+        'event_id' => 'nullable|string|max:255',
         'record_id' => 'required|integer',
         'created_at' => 'nullable',
-        'updated_at' => 'nullable'
+        'updated_at' => 'nullable',
+        'deleted_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function client(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Client::class, 'client_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function provider(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Provider::class, 'provider_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function facility(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Facility::class, 'facility_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Country::class, 'vaccinating_country_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function record(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Record::class, 'record_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function vaccine(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(\App\Models\Vaccine::class, 'vaccine_id');
+    }
 }

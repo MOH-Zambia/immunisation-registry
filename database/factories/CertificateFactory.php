@@ -22,23 +22,27 @@ class CertificateFactory extends Factory
     public function definition()
     {
         return [
-            'vaccination_certificate_id' => $this->faker->word,
-        'signature_algorithm' => $this->faker->word,
-        'certificate_issuing_authority_id' => $this->faker->randomDigitNotNull,
-        'vaccination_certificate_batch_number' => $this->faker->word,
-        'patient_id' => $this->faker->randomDigitNotNull,
-        'certificate_expiration_date' => $this->faker->word,
-        'innoculated_since_date' => $this->faker->word,
-        'recovery_date' => $this->faker->word,
-        'patient_status' => $this->faker->word,
-        'dose_1_id' => $this->faker->randomDigitNotNull,
-        'dose_2_id' => $this->faker->randomDigitNotNull,
-        'dose_3_id' => $this->faker->randomDigitNotNull,
-        'dose_4_id' => $this->faker->randomDigitNotNull,
-        'qr_code' => $this->faker->word,
-        'certificate_url' => $this->faker->word,
-        'created_at' => $this->faker->date('Y-m-d H:i:s'),
-        'updated_at' => $this->faker->date('Y-m-d H:i:s')
+            'certificate_uuid' => $this->faker->word,
+            'signature_algorithm' => $this->faker->word,
+            'certificate_issuing_authority_id' => $this->faker->randomDigitNotNull,
+            'vaccination_certificate_batch_number' => $this->faker->word,
+            'client_id' => $this->faker->randomDigitNotNull,
+            'certificate_expiration_date' => $this->faker->word,
+            'innoculated_since_date' => $this->faker->word,
+            'recovery_date' => $this->faker->word,
+            'client_status' => $this->faker->word,
+            'dose_1_date' => $this->faker->word,
+            'dose_2_date' => $this->faker->word,
+            'dose_3_date' => $this->faker->word,
+            'dose_4_date' => $this->faker->word,
+            'dose_5_date' => $this->faker->word,
+            'booster_dose_date' => $this->faker->word,
+            'qr_code' => $this->faker->word,
+            'qr_code_path' => $this->faker->word,
+            'certificate_url' => $this->faker->word,
+            'created_at' => $this->faker->date('Y-m-d H:i:s'),
+            'updated_at' => $this->faker->date('Y-m-d H:i:s'),
+            'deleted_at' => $this->faker->date('Y-m-d H:i:s')
         ];
     }
 }

@@ -10,10 +10,10 @@
     {!! Form::text('short_description', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
-<!-- Vaccine Code Field -->
+<!-- Cdc Cvx Code Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('vaccine_code', 'Vaccine Code:') !!}
-    {!! Form::text('vaccine_code', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+    {!! Form::label('cdc_cvx_code', 'Cdc Cvx Code:') !!}
+    {!! Form::text('cdc_cvx_code', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
 <!-- Vaccine Manufacturer Field -->
@@ -22,10 +22,16 @@
     {!! Form::text('vaccine_manufacturer', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
-<!-- Vaccine Type Field -->
+<!-- Cdc Mvx Code Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('vaccine_type', 'Vaccine Type:') !!}
-    {!! Form::text('vaccine_type', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+    {!! Form::label('cdc_mvx_code', 'Cdc Mvx Code:') !!}
+    {!! Form::text('cdc_mvx_code', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+</div>
+
+<!-- Vaccine Group Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('vaccine_group', 'Vaccine Group:') !!}
+    {!! Form::text('vaccine_group', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
 <!-- Commercial Formulation Field -->

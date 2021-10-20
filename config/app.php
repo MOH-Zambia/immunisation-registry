@@ -13,7 +13,7 @@ return [
     |
     */
 
-    'name' => env('APP_NAME', 'Laravel'),
+    'name' => env('APP_NAME', 'Immunisation Registry'),
 
     /*
     |--------------------------------------------------------------------------
@@ -174,8 +174,13 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 
+        LaravelQRCode\Providers\QRCodeServiceProvider::class,
         Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
-
+        OwenIt\Auditing\AuditingServiceProvider::class,
+        Yajra\DataTables\DataTablesServiceProvider::class,
+        Yajra\DataTables\HtmlServiceProvider::class,
+        Yajra\DataTables\ButtonsServiceProvider::class,
+        Yajra\DataTables\EditorServiceProvider::class,
     ],
 
     /*
@@ -190,7 +195,6 @@ return [
     */
 
     'aliases' => [
-
         'App' => Illuminate\Support\Facades\App::class,
         'Arr' => Illuminate\Support\Arr::class,
         'Artisan' => Illuminate\Support\Facades\Artisan::class,
@@ -231,7 +235,7 @@ return [
         'Form' => Collective\Html\FormFacade::class,
         'Html' => Collective\Html\HtmlFacade::class,
         'Flash' => Laracasts\Flash\Flash::class,
-
+        'QRCode' => LaravelQRCode\Facades\QRCode::class,
+        'DataTables' => Yajra\DataTables\Facades\DataTables::class,
     ],
-
 ];

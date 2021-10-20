@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Certificate",
- *      required={"vaccination_certificate_id", "signature_algorithm", "certificate_issuing_authority_id", "patient_id", "certificate_expiration_date", "dose_1_id", "qr_code", "certificate_url"},
+ *      required={"certificate_uuid", "client_id", "dose_1_date", "target_disease", "certificate_status", "qr_code", "qr_code_path", "certificate_url"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -17,11 +17,80 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="vaccination_certificate_id",
- *          description="vaccination_certificate_id",
+ *          property="certificate_uuid",
+ *          description="certificate_uuid",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
+ *          property="client_id",
+ *          description="client_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *     @SWG\Property(
+ *          property="africa_cdc_trusted_vaccine_code",
+ *          description="africa_cdc_trusted_vaccine_code",
  *          type="string"
  *      ),
  *      @SWG\Property(
+ *          property="innoculated_since_date",
+ *          description="innoculated_since_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
+ *          property="dose_1_date",
+ *          description="dose_1_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
+ *          property="dose_2_date",
+ *          description="dose_2_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
+ *          property="dose_3_date",
+ *          description="dose_3_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
+ *          property="dose_4_date",
+ *          description="dose_4_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
+ *          property="dose_5_date",
+ *          description="dose_5_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *      @SWG\Property(
+ *          property="booster_dose_date",
+ *          description="booster_dose_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *     @SWG\Property(
+ *          property="target_disease",
+ *          description="target_disease",
+ *          type="string",
+ *      ),
+ *     @SWG\Property(
+ *          property="certificate_expiration_date",
+ *          description="certificate_expiration_date",
+ *          type="string",
+ *          format="date"
+ *      ),
+ *     @SWG\Property(
+ *          property="certificate_status",
+ *          description="certificate_status",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
  *          property="signature_algorithm",
  *          description="signature_algorithm",
  *          type="string"
@@ -38,61 +107,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="patient_id",
- *          description="patient_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="certificate_expiration_date",
- *          description="certificate_expiration_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="innoculated_since_date",
- *          description="innoculated_since_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="recovery_date",
- *          description="recovery_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="patient_status",
- *          description="patient_status",
+ *          property="qr_code",
+ *          description="qr_code",
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="dose_1_id",
- *          description="dose_1_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="dose_2_id",
- *          description="dose_2_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="dose_3_id",
- *          description="dose_3_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="dose_4_id",
- *          description="dose_4_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *      @SWG\Property(
- *          property="qr_code",
- *          description="qr_code",
+ *          property="qr_code_path",
+ *          description="qr_code_path",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -111,6 +132,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="updated_at",
  *          type="string",
  *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="deleted_at",
+ *          description="deleted_at",
+ *          type="string",
+ *          format="date-time"
  *      )
  * )
  */
@@ -121,7 +148,7 @@ class Certificate extends Model
     use HasFactory;
 
     public $table = 'certificates';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -129,22 +156,26 @@ class Certificate extends Model
     protected $dates = ['deleted_at'];
 
 
-
     public $fillable = [
-        'vaccination_certificate_id',
+        'certificate_uuid',
+        'client_id',
+        'africa_cdc_trusted_vaccine_code',
+        'vaccine_id',
+        'innoculated_since_date',
+        'dose_1_date',
+        'dose_2_date',
+        'dose_3_date',
+        'dose_4_date',
+        'dose_5_date',
+        'booster_dose_date',
+        'target_disease',
+        'certificate_expiration_date',
+        'certificate_status',
         'signature_algorithm',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
-        'patient_id',
-        'certificate_expiration_date',
-        'innoculated_since_date',
-        'recovery_date',
-        'patient_status',
-        'dose_1_id',
-        'dose_2_id',
-        'dose_3_id',
-        'dose_4_id',
         'qr_code',
+        'qr_code_path',
         'certificate_url'
     ];
 
@@ -155,20 +186,25 @@ class Certificate extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'vaccination_certificate_id' => 'string',
+        'certificate_uuid' => 'string',
+        'client_id' => 'integer',
+        'africa_cdc_trusted_vaccine_code' => 'string',
+        'vaccine_id' => 'integer',
+        'innoculated_since_date' => 'date',
+        'dose_1_date' => 'date',
+        'dose_2_date' => 'date',
+        'dose_3_date' => 'date',
+        'dose_4_date' => 'date',
+        'dose_5_date' => 'date',
+        'booster_dose_date' => 'date',
+        'target_disease',
+        'certificate_expiration_date' => 'date',
+        'certificate_status' => 'string',
         'signature_algorithm' => 'string',
         'certificate_issuing_authority_id' => 'integer',
         'vaccination_certificate_batch_number' => 'string',
-        'patient_id' => 'integer',
-        'certificate_expiration_date' => 'date',
-        'innoculated_since_date' => 'date',
-        'recovery_date' => 'date',
-        'patient_status' => 'string',
-        'dose_1_id' => 'integer',
-        'dose_2_id' => 'integer',
-        'dose_3_id' => 'integer',
-        'dose_4_id' => 'integer',
         'qr_code' => 'string',
+        'qr_code_path' => 'string',
         'certificate_url' => 'string'
     ];
 
@@ -178,24 +214,52 @@ class Certificate extends Model
      * @var array
      */
     public static $rules = [
-        'vaccination_certificate_id' => 'required|string|max:36',
-        'signature_algorithm' => 'required|string|max:255',
-        'certificate_issuing_authority_id' => 'required|integer',
-        'vaccination_certificate_batch_number' => 'nullable|string|max:255',
-        'patient_id' => 'required|integer',
-        'certificate_expiration_date' => 'required',
+        'certificate_uuid' => 'required|string|max:36',
+        'client_id' => 'required|integer',
+        'africa_cdc_trusted_vaccine_code' => 'nullable|string|max:255',
+        'vaccine_id' => 'required|integer',
         'innoculated_since_date' => 'nullable',
-        'recovery_date' => 'nullable',
-        'patient_status' => 'nullable|string|max:255',
-        'dose_1_id' => 'required|integer',
-        'dose_2_id' => 'nullable|integer',
-        'dose_3_id' => 'nullable|integer',
-        'dose_4_id' => 'nullable|integer',
+        'dose_1_date' => 'required',
+        'dose_2_date' => 'nullable',
+        'dose_3_date' => 'nullable',
+        'dose_4_date' => 'nullable',
+        'dose_5_date' => 'nullable',
+        'booster_dose_date' => 'nullable',
+        'target_disease' => 'required|string|max:255',
+        'certificate_expiration_date' => 'nullable',
+        'certificate_status' => 'required|string|max:255',
+        'signature_algorithm' => 'nullable|string|max:255',
+        'certificate_issuing_authority_id' => 'nullable|integer',
+        'vaccination_certificate_batch_number' => 'nullable|string|max:255',
         'qr_code' => 'required|string|max:65535',
+        'qr_code_path' => 'required|string|max:255',
         'certificate_url' => 'required|string|max:255',
         'created_at' => 'nullable',
-        'updated_at' => 'nullable'
+        'updated_at' => 'nullable',
+        'deleted_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function client()
+    {
+        return $this->belongsTo(\App\Models\Client::class, 'client_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     **/
+    public function vaccine()
+    {
+        return $this->belongsTo(\App\Models\Vaccine::class, 'vaccine_id');
+    }
+
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function vaccinations()
+    {
+        return $this->hasMany(\App\Models\Vaccination::class, 'certificate_id');
+    }
 }

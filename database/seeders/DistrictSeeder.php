@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Grimzy\LaravelMysqlSpatial\Types\Polygon;
+use Grimzy\LaravelMysqlSpatial\Types\MultiPolygon;
 
 use App\Models\District;
 use App\Models\Province;
@@ -14,7 +15,7 @@ class DistrictSeeder extends Seeder
     /**
      * Path of the seed file relative to the `database` directory.
      */
-    const DATABASE_FILE_PATH = 'data/Districts.json';
+    const DATABASE_FILE_PATH = 'data/Districts.geojson';
 
 
     /**
@@ -50,7 +51,7 @@ class DistrictSeeder extends Seeder
                 'population' => $feature->properties->POPULATION,
                 // 'pop_density' => $feature->properties->POP_DENSIT,
                 // 'area_sq_km' => $feature->properties->AREA_SQ_KM,       
-                'geometry' => Polygon::fromJson(json_encode($feature->geometry)),
+                'geometry' => MultiPolygon::fromJson(json_encode($feature->geometry)),
             ]);
 
             $district->save();

@@ -2,10 +2,46 @@
 
 namespace Database\Seeders;
 
+/*
+ * © Copyright 2021 Ministry of Health, GRZ.
+ * 
+ * This File is part of Immunisation Registry (IR)
+ * 
+ * IR is free software; you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation; either version 3 of the License, or
+ * (at your option) any later version.
+ * 
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ * 
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+ 
+/**
+ * The script FacilitySeeder
+ * 
+ * This script seeds facilities into the database.
+ * @package IR
+ * @subpackage DatabaseSeeder
+ * @access public
+ * @author Chisanga Louis Siwale <Chisanga.Siwaled@moh.gov.zm>
+ * @copyright Copyright &copy; 2021 Ministry of Health, GRZ. 
+ * @since v1.0
+ * @version v1.0
+ */
+
 use Illuminate\Database\Seeder;
-use Grimzy\LaravelMysqlSpatial\Types\Polygon;
+use Grimzy\LaravelMysqlSpatial\Types\Point;
 
 use App\Models\Facility;
+use App\Models\District;
+
+use Exception;
 
 class FacilitySeeder extends Seeder
 {
@@ -61,34 +97,36 @@ class FacilitySeeder extends Seeder
             $file = fopen($file_path, self::FILE_MODE_READ);
 
             // if the first row should be skipped, read the first row of the file
-            if (HAS_HEADER_ROW ) {
+            if (self::HAS_HEADER_ROW ) {
                 fgetcsv($file);
             }
 
             // while there's a row to be read in the file, read the next row
             while ($row = fgetcsv($file)) {
+                $district = District::where('name', '=', $row[1])->first();
 
-                // Make the new facility model
-                $facility = new Facility([
-                    'province' => $row[0],                    
-                    'district' => $row[1],                    
-                    'name' => $row[2],
-                    'HMIS_code' => $row[3],
-                    'DHIS2_UID' => $row[4],
-                    'smartcare_GUID' => $row[5],
-                    'eLMIS_ID' => $row[6],
-                    'iHRIS_ID' => $row[7],
-                    'ownership' => $row[9],
-                    'facility_type' => $row[10],
-                    'catchment_population_head_count' => $row[11],
-                    'catchment_population_cso' => $row[12],
-                    'operation_status' => $row[13],
-                    'location_type' => $row[8],
-                    'location' => new Point($row[13], $row[12]),	// (lat, lng) 
-                ]);
+                if(!empty($district)){
+                    // Make the new facility model
+                    $facility = new Facility([                   
+                        'district_id' => $district->id,                    
+                        'name' => $row[2],
+                        'HMIS_code' => $row[3],
+                        'DHIS2_UID' => $row[4],
+                        'smartcare_GUID' => $row[5],
+                        'eLMIS_ID' => $row[6],
+                        'iHRIS_ID' => $row[7],
+                        'ownership' => $row[9],
+                        'facility_type' => $row[10],
+                        'catchment_population_head_count' => empty($row[13]) ? null : $row[13],
+                        'catchment_population_cso' => empty($row[14]) ? null : $row[14],
+                        'operation_status' => $row[15],
+                        'location_type' => $row[8],
+                        'location' => new Point($row[12], $row[11]),	// (lat, lng) 
+                    ]);
 
-                // throw an exception unless the neighborhood could be saved
-                throw_unless($facility->save(), new Exception("Failed to save facility '$name'"));
+                    // throw an exception unless the facility could be saved
+                    throw_unless($facility->save(), new Exception("Failed to save facility '$row[2]'"));
+                }
             }
         } finally {
             // if the file has been opened, close it

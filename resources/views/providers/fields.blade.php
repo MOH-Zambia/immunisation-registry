@@ -1,3 +1,9 @@
+<!-- Provider Id Field -->
+<div class="form-group col-sm-6">
+    {!! Form::label('provider_id', 'Provider Id:') !!}
+    {!! Form::text('provider_id', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+</div>
+
 <!-- First Name Field -->
 <div class="form-group col-sm-6">
     {!! Form::label('first_name', 'First Name:') !!}

@@ -10,10 +10,10 @@
     <p>{{ $vaccine->short_description }}</p>
 </div>
 
-<!-- Vaccine Code Field -->
+<!-- Cdc Cvx Code Field -->
 <div class="col-sm-12">
-    {!! Form::label('vaccine_code', 'Vaccine Code:') !!}
-    <p>{{ $vaccine->vaccine_code }}</p>
+    {!! Form::label('cdc_cvx_code', 'Cdc Cvx Code:') !!}
+    <p>{{ $vaccine->cdc_cvx_code }}</p>
 </div>
 
 <!-- Vaccine Manufacturer Field -->
@@ -22,10 +22,16 @@
     <p>{{ $vaccine->vaccine_manufacturer }}</p>
 </div>
 
-<!-- Vaccine Type Field -->
+<!-- Cdc Mvx Code Field -->
 <div class="col-sm-12">
-    {!! Form::label('vaccine_type', 'Vaccine Type:') !!}
-    <p>{{ $vaccine->vaccine_type }}</p>
+    {!! Form::label('cdc_mvx_code', 'Cdc Mvx Code:') !!}
+    <p>{{ $vaccine->cdc_mvx_code }}</p>
+</div>
+
+<!-- Vaccine Group Field -->
+<div class="col-sm-12">
+    {!! Form::label('vaccine_group', 'Vaccine Group:') !!}
+    <p>{{ $vaccine->vaccine_group }}</p>
 </div>
 
 <!-- Commercial Formulation Field -->

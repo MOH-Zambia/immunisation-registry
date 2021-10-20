@@ -1,0 +1,8 @@
+﻿product_name,short_description,cdc_cvx_code,manufacturer,cdc_mvx_code,product_name_status,vaccine_group
+"AstraZeneca COVID-19 Vaccine (Tradenames include VAXZEVRIA, COVISHIELD)","SARS-COV-2 COVID-19 vaccine, vector-nr, rS-ChAdOx1, PF, 0.5 mL ",210,AstraZeneca,ASZ,Active,COVID-19
+Coronavac (Sinovac) COVID-19 Vaccine,"SARS-COV-2 COVID-19 IV (CoronaVac, Sinovac)",511,Sinovac ,SNV,Active,COVID-19
+Janssen (J&J) COVID-19 Vaccine,"SARS-COV-2 COVID-19 vaccine, vector-nr, rS-Ad26, PF, 0.5 mL",212,Janssen,JSN,Active,COVID-19
+Moderna COVID-19 Vaccine (Spikevax),"SARS-COV-2 COVID-19, mRNA, LNP-S, PF, 100 mcg/0.5 mL dose",207,"Moderna US, Inc.",MOD,Active,COVID-19
+Novavax COVID-19 Vaccine,"SARS-COV-2 COVID-19 vaccine, Subunit, rS-nanoparticle+Matrix-M1 Adjuvant, PF, 0.5 mL",211,"Novavax, Inc.",NVX,Active,COVID-19
+Pfizer-BioNTech COVID-19 Vaccine (COMIRNATY),"SARS-COV-2 COVID-19, mRNA, LNP-S, PF, 30 mcg/0.3 mL dose",208,"Pfizer, Inc",PFR,Active,COVID-19
+Sinopharm (BIBP) COVID-19 Vaccine,"SARS-COV-2 COVID-19 IV Vaccine (BIBP, Sinopharm)",510,Sinopharm-Biotech,SPH,Active,COVID-19

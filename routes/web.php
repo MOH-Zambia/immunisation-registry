@@ -13,13 +13,30 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('welcome');
+//Route::get('/', function () {
+//    return view('index');
+//});
+
+Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('index');
+
+Route::get('/about', function () {
+    return view('about');
 });
+
+Route::get('/contact', function () {
+    return view('contact');
+});
+
+Route::get('/help', function () {
+    return view('help');
+});
+
+Route::get('/certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
+
 
 Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin');
 
 Route::resource('providers', App\Http\Controllers\ProviderController::class);
 
@@ -29,13 +46,9 @@ Route::resource('users', App\Http\Controllers\UserController::class);
 
 Route::resource('vaccines', App\Http\Controllers\VaccineController::class);
 
-Route::resource('patients', App\Http\Controllers\PatientController::class);
+Route::resource('clients', App\Http\Controllers\ClientController::class);
 
 Route::resource('certificates', App\Http\Controllers\CertificateController::class);
-
-Route::resource('patientIDs', App\Http\Controllers\PatientIDController::class);
-
-Route::resource('patientIDTypes', App\Http\Controllers\PatientIDTypeController::class);
 
 Route::resource('facilities', App\Http\Controllers\FacilityController::class);
 
@@ -49,18 +62,24 @@ Route::resource('countries', App\Http\Controllers\CountryController::class);
 
 Route::resource('records', App\Http\Controllers\RecordController::class);
 
-Route::resource('providerIDs', App\Http\Controllers\ProviderIDController::class);
-
-Route::resource('providerIDs', App\Http\Controllers\ProviderIDController::class);
-
 Route::resource('facilityTypes', App\Http\Controllers\FacilityTypeController::class);
 
-Route::resource('iDTypes', App\Http\Controllers\IDTypeController::class);
+Route::resource('importLogs', App\Http\Controllers\ImportLogController::class);
 
 
-Route::resource('patientIDs', App\Http\Controllers\PatientIDController::class);
+// Auth::routes();
 
-Route::resource('iDTypes', App\Http\Controllers\IDTypeController::class);
-Auth::routes();
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+
+
+
+
+
+
+
+
+
+
+
+

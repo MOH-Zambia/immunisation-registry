@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Vaccine",
- *      required={"product_name", "short_description", "vaccine_code", "vaccine_manufacturer", "vaccine_type", "commercial_formulation", "vaccine_status"},
+ *      required={"product_name", "short_description", "vaccine_manufacturer", "vaccine_status"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -27,8 +27,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="vaccine_code",
- *          description="vaccine_code",
+ *          property="cdc_cvx_code",
+ *          description="cdc_cvx_code",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -37,8 +37,13 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="vaccine_type",
- *          description="vaccine_type",
+ *          property="cdc_mvx_code",
+ *          description="cdc_mvx_code",
+ *          type="string"
+ *      ),
+ *      @SWG\Property(
+ *          property="vaccine_group",
+ *          description="vaccine_group",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -67,6 +72,12 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="updated_at",
  *          type="string",
  *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="deleted_at",
+ *          description="deleted_at",
+ *          type="string",
+ *          format="date-time"
  *      )
  * )
  */
@@ -77,7 +88,7 @@ class Vaccine extends Model
     use HasFactory;
 
     public $table = 'vaccines';
-    
+
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
@@ -89,9 +100,10 @@ class Vaccine extends Model
     public $fillable = [
         'product_name',
         'short_description',
-        'vaccine_code',
+        'cdc_cvx_code',
         'vaccine_manufacturer',
-        'vaccine_type',
+        'cdc_mvx_code',
+        'vaccine_group',
         'commercial_formulation',
         'vaccine_status',
         'notes'
@@ -106,9 +118,10 @@ class Vaccine extends Model
         'id' => 'integer',
         'product_name' => 'string',
         'short_description' => 'string',
-        'vaccine_code' => 'string',
+        'cdc_cvx_code' => 'string',
         'vaccine_manufacturer' => 'string',
-        'vaccine_type' => 'string',
+        'cdc_mvx_code' => 'string',
+        'vaccine_group' => 'string',
         'commercial_formulation' => 'string',
         'vaccine_status' => 'string',
         'notes' => 'string'
@@ -122,15 +135,28 @@ class Vaccine extends Model
     public static $rules = [
         'product_name' => 'required|string|max:255',
         'short_description' => 'required|string|max:255',
-        'vaccine_code' => 'required|string|max:255',
+        'cdc_cvx_code' => 'nullable|string|max:255',
         'vaccine_manufacturer' => 'required|string|max:255',
-        'vaccine_type' => 'required|string|max:255',
-        'commercial_formulation' => 'required|string|max:255',
+        'cdc_mvx_code' => 'nullable|string|max:255',
+        'vaccine_group' => 'nullable|string|max:255',
+        'commercial_formulation' => 'nullable|string|max:255',
         'vaccine_status' => 'required|string|max:255',
         'notes' => 'nullable|string',
         'created_at' => 'nullable',
-        'updated_at' => 'nullable'
+        'updated_at' => 'nullable',
+        'deleted_at' => 'nullable'
     ];
 
-    
+    /**
+     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     **/
+    public function vaccinations()
+    {
+        return $this->hasMany(\App\Models\Vaccination::class, 'vaccine_id');
+    }
+
+    public function certificates()
+    {
+        return $this->hasMany(\App\Models\Certificate::class, 'vaccine_id');
+    }
 }

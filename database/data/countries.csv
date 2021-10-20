@@ -1,0 +1,194 @@
+"id","name","alpha2","alpha3","created_at","updated_at","deleted_at"
+"4","Afghanistan","af","afg",NULL,NULL,NULL
+"8","Albania","al","alb",NULL,NULL,NULL
+"12","Algeria","dz","dza",NULL,NULL,NULL
+"20","Andorra","ad","and",NULL,NULL,NULL
+"24","Angola","ao","ago",NULL,NULL,NULL
+"28","Antigua and Barbuda","ag","atg",NULL,NULL,NULL
+"31","Azerbaijan","az","aze",NULL,NULL,NULL
+"32","Argentina","ar","arg",NULL,NULL,NULL
+"36","Australia","au","aus",NULL,NULL,NULL
+"40","Austria","at","aut",NULL,NULL,NULL
+"44","Bahamas","bs","bhs",NULL,NULL,NULL
+"48","Bahrain","bh","bhr",NULL,NULL,NULL
+"50","Bangladesh","bd","bgd",NULL,NULL,NULL
+"51","Armenia","am","arm",NULL,NULL,NULL
+"52","Barbados","bb","brb",NULL,NULL,NULL
+"56","Belgium","be","bel",NULL,NULL,NULL
+"64","Bhutan","bt","btn",NULL,NULL,NULL
+"68","Bolivia (Plurinational State of)","bo","bol",NULL,NULL,NULL
+"70","Bosnia and Herzegovina","ba","bih",NULL,NULL,NULL
+"72","Botswana","bw","bwa",NULL,NULL,NULL
+"76","Brazil","br","bra",NULL,NULL,NULL
+"84","Belize","bz","blz",NULL,NULL,NULL
+"90","Solomon Islands","sb","slb",NULL,NULL,NULL
+"96","Brunei Darussalam","bn","brn",NULL,NULL,NULL
+"100","Bulgaria","bg","bgr",NULL,NULL,NULL
+"104","Myanmar","mm","mmr",NULL,NULL,NULL
+"108","Burundi","bi","bdi",NULL,NULL,NULL
+"112","Belarus","by","blr",NULL,NULL,NULL
+"116","Cambodia","kh","khm",NULL,NULL,NULL
+"120","Cameroon","cm","cmr",NULL,NULL,NULL
+"124","Canada","ca","can",NULL,NULL,NULL
+"132","Cabo Verde","cv","cpv",NULL,NULL,NULL
+"140","Central African Republic","cf","caf",NULL,NULL,NULL
+"144","Sri Lanka","lk","lka",NULL,NULL,NULL
+"148","Chad","td","tcd",NULL,NULL,NULL
+"152","Chile","cl","chl",NULL,NULL,NULL
+"156","China","cn","chn",NULL,NULL,NULL
+"170","Colombia","co","col",NULL,NULL,NULL
+"174","Comoros","km","com",NULL,NULL,NULL
+"178","Congo","cg","cog",NULL,NULL,NULL
+"180","Congo, Democratic Republic of the","cd","cod",NULL,NULL,NULL
+"188","Costa Rica","cr","cri",NULL,NULL,NULL
+"191","Croatia","hr","hrv",NULL,NULL,NULL
+"192","Cuba","cu","cub",NULL,NULL,NULL
+"196","Cyprus","cy","cyp",NULL,NULL,NULL
+"203","Czechia","cz","cze",NULL,NULL,NULL
+"204","Benin","bj","ben",NULL,NULL,NULL
+"208","Denmark","dk","dnk",NULL,NULL,NULL
+"212","Dominica","dm","dma",NULL,NULL,NULL
+"214","Dominican Republic","do","dom",NULL,NULL,NULL
+"218","Ecuador","ec","ecu",NULL,NULL,NULL
+"222","El Salvador","sv","slv",NULL,NULL,NULL
+"226","Equatorial Guinea","gq","gnq",NULL,NULL,NULL
+"231","Ethiopia","et","eth",NULL,NULL,NULL
+"232","Eritrea","er","eri",NULL,NULL,NULL
+"233","Estonia","ee","est",NULL,NULL,NULL
+"242","Fiji","fj","fji",NULL,NULL,NULL
+"246","Finland","fi","fin",NULL,NULL,NULL
+"250","France","fr","fra",NULL,NULL,NULL
+"262","Djibouti","dj","dji",NULL,NULL,NULL
+"266","Gabon","ga","gab",NULL,NULL,NULL
+"268","Georgia","ge","geo",NULL,NULL,NULL
+"270","Gambia","gm","gmb",NULL,NULL,NULL
+"276","Germany","de","deu",NULL,NULL,NULL
+"288","Ghana","gh","gha",NULL,NULL,NULL
+"296","Kiribati","ki","kir",NULL,NULL,NULL
+"300","Greece","gr","grc",NULL,NULL,NULL
+"308","Grenada","gd","grd",NULL,NULL,NULL
+"320","Guatemala","gt","gtm",NULL,NULL,NULL
+"324","Guinea","gn","gin",NULL,NULL,NULL
+"328","Guyana","gy","guy",NULL,NULL,NULL
+"332","Haiti","ht","hti",NULL,NULL,NULL
+"340","Honduras","hn","hnd",NULL,NULL,NULL
+"348","Hungary","hu","hun",NULL,NULL,NULL
+"352","Iceland","is","isl",NULL,NULL,NULL
+"356","India","in","ind",NULL,NULL,NULL
+"360","Indonesia","id","idn",NULL,NULL,NULL
+"364","Iran (Islamic Republic of)","ir","irn",NULL,NULL,NULL
+"368","Iraq","iq","irq",NULL,NULL,NULL
+"372","Ireland","ie","irl",NULL,NULL,NULL
+"376","Israel","il","isr",NULL,NULL,NULL
+"380","Italy","it","ita",NULL,NULL,NULL
+"384","Côte d'Ivoire","ci","civ",NULL,NULL,NULL
+"388","Jamaica","jm","jam",NULL,NULL,NULL
+"392","Japan","jp","jpn",NULL,NULL,NULL
+"398","Kazakhstan","kz","kaz",NULL,NULL,NULL
+"400","Jordan","jo","jor",NULL,NULL,NULL
+"404","Kenya","ke","ken",NULL,NULL,NULL
+"408","Korea (Democratic People's Republic of)","kp","prk",NULL,NULL,NULL
+"410","Korea, Republic of","kr","kor",NULL,NULL,NULL
+"414","Kuwait","kw","kwt",NULL,NULL,NULL
+"417","Kyrgyzstan","kg","kgz",NULL,NULL,NULL
+"418","Lao People's Democratic Republic","la","lao",NULL,NULL,NULL
+"422","Lebanon","lb","lbn",NULL,NULL,NULL
+"426","Lesotho","ls","lso",NULL,NULL,NULL
+"428","Latvia","lv","lva",NULL,NULL,NULL
+"430","Liberia","lr","lbr",NULL,NULL,NULL
+"434","Libya","ly","lby",NULL,NULL,NULL
+"438","Liechtenstein","li","lie",NULL,NULL,NULL
+"440","Lithuania","lt","ltu",NULL,NULL,NULL
+"442","Luxembourg","lu","lux",NULL,NULL,NULL
+"450","Madagascar","mg","mdg",NULL,NULL,NULL
+"454","Malawi","mw","mwi",NULL,NULL,NULL
+"458","Malaysia","my","mys",NULL,NULL,NULL
+"462","Maldives","mv","mdv",NULL,NULL,NULL
+"466","Mali","ml","mli",NULL,NULL,NULL
+"470","Malta","mt","mlt",NULL,NULL,NULL
+"478","Mauritania","mr","mrt",NULL,NULL,NULL
+"480","Mauritius","mu","mus",NULL,NULL,NULL
+"484","Mexico","mx","mex",NULL,NULL,NULL
+"492","Monaco","mc","mco",NULL,NULL,NULL
+"496","Mongolia","mn","mng",NULL,NULL,NULL
+"498","Moldova, Republic of","md","mda",NULL,NULL,NULL
+"499","Montenegro","me","mne",NULL,NULL,NULL
+"504","Morocco","ma","mar",NULL,NULL,NULL
+"508","Mozambique","mz","moz",NULL,NULL,NULL
+"512","Oman","om","omn",NULL,NULL,NULL
+"516","Namibia","na","nam",NULL,NULL,NULL
+"520","Nauru","nr","nru",NULL,NULL,NULL
+"524","Nepal","np","npl",NULL,NULL,NULL
+"528","Netherlands","nl","nld",NULL,NULL,NULL
+"548","Vanuatu","vu","vut",NULL,NULL,NULL
+"554","New Zealand","nz","nzl",NULL,NULL,NULL
+"558","Nicaragua","ni","nic",NULL,NULL,NULL
+"562","Niger","ne","ner",NULL,NULL,NULL
+"566","Nigeria","ng","nga",NULL,NULL,NULL
+"578","Norway","no","nor",NULL,NULL,NULL
+"583","Micronesia (Federated States of)","fm","fsm",NULL,NULL,NULL
+"584","Marshall Islands","mh","mhl",NULL,NULL,NULL
+"585","Palau","pw","plw",NULL,NULL,NULL
+"586","Pakistan","pk","pak",NULL,NULL,NULL
+"591","Panama","pa","pan",NULL,NULL,NULL
+"598","Papua New Guinea","pg","png",NULL,NULL,NULL
+"600","Paraguay","py","pry",NULL,NULL,NULL
+"604","Peru","pe","per",NULL,NULL,NULL
+"608","Philippines","ph","phl",NULL,NULL,NULL
+"616","Poland","pl","pol",NULL,NULL,NULL
+"620","Portugal","pt","prt",NULL,NULL,NULL
+"624","Guinea-Bissau","gw","gnb",NULL,NULL,NULL
+"626","Timor-Leste","tl","tls",NULL,NULL,NULL
+"634","Qatar","qa","qat",NULL,NULL,NULL
+"642","Romania","ro","rou",NULL,NULL,NULL
+"643","Russian Federation","ru","rus",NULL,NULL,NULL
+"646","Rwanda","rw","rwa",NULL,NULL,NULL
+"659","Saint Kitts and Nevis","kn","kna",NULL,NULL,NULL
+"662","Saint Lucia","lc","lca",NULL,NULL,NULL
+"670","Saint Vincent and the Grenadines","vc","vct",NULL,NULL,NULL
+"674","San Marino","sm","smr",NULL,NULL,NULL
+"678","Sao Tome and Principe","st","stp",NULL,NULL,NULL
+"682","Saudi Arabia","sa","sau",NULL,NULL,NULL
+"686","Senegal","sn","sen",NULL,NULL,NULL
+"688","Serbia","rs","srb",NULL,NULL,NULL
+"690","Seychelles","sc","syc",NULL,NULL,NULL
+"694","Sierra Leone","sl","sle",NULL,NULL,NULL
+"702","Singapore","sg","sgp",NULL,NULL,NULL
+"703","Slovakia","sk","svk",NULL,NULL,NULL
+"704","Viet Nam","vn","vnm",NULL,NULL,NULL
+"705","Slovenia","si","svn",NULL,NULL,NULL
+"706","Somalia","so","som",NULL,NULL,NULL
+"710","South Africa","za","zaf",NULL,NULL,NULL
+"716","Zimbabwe","zw","zwe",NULL,NULL,NULL
+"724","Spain","es","esp",NULL,NULL,NULL
+"728","South Sudan","ss","ssd",NULL,NULL,NULL
+"729","Sudan","sd","sdn",NULL,NULL,NULL
+"740","Suriname","sr","sur",NULL,NULL,NULL
+"748","Eswatini","sz","swz",NULL,NULL,NULL
+"752","Sweden","se","swe",NULL,NULL,NULL
+"756","Switzerland","ch","che",NULL,NULL,NULL
+"760","Syrian Arab Republic","sy","syr",NULL,NULL,NULL
+"762","Tajikistan","tj","tjk",NULL,NULL,NULL
+"764","Thailand","th","tha",NULL,NULL,NULL
+"768","Togo","tg","tgo",NULL,NULL,NULL
+"776","Tonga","to","ton",NULL,NULL,NULL
+"780","Trinidad and Tobago","tt","tto",NULL,NULL,NULL
+"784","United Arab Emirates","ae","are",NULL,NULL,NULL
+"788","Tunisia","tn","tun",NULL,NULL,NULL
+"792","Turkey","tr","tur",NULL,NULL,NULL
+"795","Turkmenistan","tm","tkm",NULL,NULL,NULL
+"798","Tuvalu","tv","tuv",NULL,NULL,NULL
+"800","Uganda","ug","uga",NULL,NULL,NULL
+"804","Ukraine","ua","ukr",NULL,NULL,NULL
+"807","North Macedonia","mk","mkd",NULL,NULL,NULL
+"818","Egypt","eg","egy",NULL,NULL,NULL
+"826","United Kingdom of Great Britain and Northern Ireland","gb","gbr",NULL,NULL,NULL
+"834","Tanzania, United Republic of","tz","tza",NULL,NULL,NULL
+"840","United States of America","us","usa",NULL,NULL,NULL
+"854","Burkina Faso","bf","bfa",NULL,NULL,NULL
+"858","Uruguay","uy","ury",NULL,NULL,NULL
+"860","Uzbekistan","uz","uzb",NULL,NULL,NULL
+"862","Venezuela (Bolivarian Republic of)","ve","ven",NULL,NULL,NULL
+"882","Samoa","ws","wsm",NULL,NULL,NULL
+"887","Yemen","ye","yem",NULL,NULL,NULL
+"894","Zambia","zm","zmb",NULL,NULL,NULL
