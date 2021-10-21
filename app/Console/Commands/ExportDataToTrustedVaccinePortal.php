@@ -3,8 +3,13 @@
 namespace App\Console\Commands;
 
 use App\Models\Certificate;
+use GuzzleHttp\Exception\ConnectException;
+use GuzzleHttp\Exception\RequestException;
+use GuzzleHttp\Exception\TransferException;
 use Illuminate\Console\Command;
 use GuzzleHttp;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ExportDataToTrustedVaccinePortal extends Command
 {
@@ -44,6 +49,13 @@ class ExportDataToTrustedVaccinePortal extends Command
      */
     public function handle()
     {
+        $number_of_booklets = 0;
+        $script_start_time = microtime(true);
+        $script_start_date_time = date('Y-m-d H:i:s');
+
+        Log::info("$script_start_date_time: Generating and sending booklets");
+        $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Generating and sending booklets</info>");
+
 //        $httpClient = new GuzzleHttp\Client([
 //            // Base URI is used with relative requests
 //            'base_url' => env('TRUSTED_VACCINE_BOOKLET_URL')
@@ -55,9 +67,11 @@ class ExportDataToTrustedVaccinePortal extends Command
         $certificates = Certificate::whereNull('africa_cdc_trusted_vaccine_code')->get();
 
         foreach ($certificates as $certificate){
+            $startTime = microtime(true);
+
             $booklet = array();
 
-            $currentDate = date("d-m-Y");
+            $currentDate = date("Y-m-d");
             $birthDate = $certificate->client->date_of_birth->format('Y-m-d');
 
             $age = date_diff(date_create($birthDate), date_create($currentDate));
@@ -83,8 +97,6 @@ class ExportDataToTrustedVaccinePortal extends Command
             );
 
             $booklet['booklet_issuer'] = array(
-                'first_name' => '',
-                'last_name' => '',
                 'email' => 'phazambia@pana.org',
                 'dial_code' => '',
                 'phone_number' => '',
@@ -109,26 +121,62 @@ class ExportDataToTrustedVaccinePortal extends Command
                 );
             }
 
-            dd(json_encode($booklet));
+            $json = json_encode($booklet, JSON_PRETTY_PRINT);
 
             $headers = [
                 'Authorization' => 'Token '.env('TRUSTED_VACCINE_TOKEN'),
                 'Accept'        => 'application/json',
                 'Content-Type'  => 'application/json'
             ];
+            try {
+                $response = $httpClient->request('POST', env('TRUSTED_VACCINE_BOOKLET_URL'), [
+                    'json' => $booklet,
+                    'headers' => $headers
+                ]);
 
-            $response = $httpClient->request('POST', env('TRUSTED_VACCINE_BOOKLET_URL'), [
-                'json' => $booklet,
-                'headers' => $headers
-            ]);
+                $body = json_decode($response->getBody()->getContents(), true);
+                $certificate->africa_cdc_trusted_vaccine_code = $body['data']['code'];
+                $certificate->save();
 
-            $body = json_decode($response->getBody()->getContents(), true);
-            $certificate->africa_cdc_trusted_vaccine_code = $body['data']['code'];
-            $certificate->save();
+                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                $time = date('Y-m-d H:i:s');
+                Log::info( "$time Booklet saved: Certificate $certificate->certificate_uuid, Trusted Vaccine Code {$body['data']['code']} ({$runTime}ms)");
+                $this->getOutput()->writeln("<info>$time Booklet saved:</info> Certificate $certificate->certificate_uuid, Trusted Vaccine Code {$body['data']['code']} ({$runTime}ms)");
+                $this->getOutput()->writeln("<info>$json</info>");
 
-//            dd(json_decode($response->getBody()));
-//            dd(json_decode($response->getBody()->getContents(), true)['data']['code']);
+                $number_of_booklets++;
+            } catch (ConnectException $e) {
+                // Connection exceptions are not caught by RequestException
+                $message = $e->getMessage();
+                $time = date('Y-m-d H:i:s');
+                Log::error( " $time ConnectException: $message");
+                $this->getOutput()->writeln("<error>$time ConnectException: $message </error>");
+            } catch (RequestException $e) {
+                $message = $e->getMessage();
+                $time = date('Y-m-d H:i:s');
+
+                Log::error( "$time RequestException - $message");
+                Log::error( "$json");
+
+                $this->getOutput()->writeln("<error>$time RequestException: $message</error>");
+                $this->getOutput()->writeln("<info>$json</info>");
+            } catch (TransferException $e) {
+                $message = $e->getMessage();
+                $time = date('Y-m-d H:i:s');
+                Log::error( "$time TransferException: $message");
+                $this->getOutput()->writeln("<error>$time TransferException: $message</error>");
+            }catch (Exception $e) {
+                $message = $e->getMessage();
+                $time = date('Y-m-d H:i:s');
+                Log::error( "$time Exception: $message");
+                $this->getOutput()->writeln("<error>$time Exception: $message</error>");
+            }
         }
+
+        $script_end_time = date('Y-m-d H:i:s');
+        $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
+        Log::info("$script_end_time Completed generating $number_of_booklets booklets: Duration: $script_run_time");
+        $this->getOutput()->writeln("<info>$script_end_time Script completed:</info> Completed generating $number_of_booklets booklets. Duration: $script_run_time");
 
         return Command::SUCCESS;
     }

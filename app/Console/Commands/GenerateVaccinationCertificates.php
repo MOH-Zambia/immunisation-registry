@@ -79,6 +79,11 @@ class GenerateVaccinationCertificates extends Command
      */
     public function handle()
     {
+        $path = "img/qrcodes/";
+        if (!file_exists($path)) {
+            mkdir($path, 0777, true);
+        }
+
         $number_of_certificates = 0;
         $script_start_time = microtime(true);
         $script_start_date_time = date('Y-m-d H:i:s');
@@ -271,11 +276,11 @@ class GenerateVaccinationCertificates extends Command
             }
         }
 
-        $script_start_end_time = date('Y-m-d H:i:s');
+        $script_end_time = date('Y-m-d H:i:s');
         $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
-        Log::info("$script_start_end_time: Completed generating certificates: Duration: $script_run_time Number of Certificate: $number_of_certificates");
-        $this->getOutput()->writeln("<info>Script completed:</info> Completed generating certificates. Duration: $script_run_time");
+        Log::info("$script_end_time Completed generating $number_of_certificates certificates: Duration: $script_run_time");
+        $this->getOutput()->writeln("<info>$script_end_time Script completed:</info> Completed generating $number_of_certificates certificates. Duration: $script_run_time");
 
-        return 0;
+        return Command::SUCCESS;
     }
 }

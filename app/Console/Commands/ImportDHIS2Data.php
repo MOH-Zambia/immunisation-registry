@@ -57,7 +57,7 @@ class ImportDHIS2Data extends Command
      *
      * @var string
      */
-    protected $signature = 'command:ImportDHIS2Data';
+    protected $signature = 'command:ImportDHIS2Data {programStartDate} {programEndDate}';
 
     /**
      * The console command description.
@@ -207,7 +207,7 @@ class ImportDHIS2Data extends Command
     /**
      * @throws GuzzleHttp\Exception\GuzzleException
      */
-    public function loadEvents(){
+    public function loadEvents($programStartDate, $programEndDate){
         $httpClient = new GuzzleHttp\Client();
 
         // disable cert verification
@@ -229,8 +229,8 @@ class ImportDHIS2Data extends Command
                         'query' => [
                             'orgUnit'=>$facility->DHIS2_UID,
                             'program'=>'yDuAzyqYABS',
-                            'programStartDate'=>'2020-04-01',
-                            'programEndDate'=>'2021-08-27'
+                            'programStartDate'=> $programStartDate,
+                            'programEndDate'=> $programEndDate
                         ]
                     ]);
 
@@ -240,7 +240,7 @@ class ImportDHIS2Data extends Command
                         foreach($response_body['events'] as $event){
                             DB::beginTransaction();
 
-                            $number_of_events++;
+
                             $startTime = microtime(true);
 
                             if($event['status'] == 'COMPLETED') { //Process only completed events
@@ -326,6 +326,8 @@ class ImportDHIS2Data extends Command
                                         'hash' => sha1(json_encode($event)),
                                     ]);
 
+                                    $number_of_events++;
+
                                     $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                     $time = date('Y-m-d H:i:s');
                                     $this->getOutput()->writeln("<info>$time Event saved:</info> {$event['event']} ({$runTime}ms)");
@@ -375,10 +377,10 @@ class ImportDHIS2Data extends Command
             }
         } //End foreach($facilities as $facility)
 
-        $script_start_end_time = date('Y-m-d H:i:s');
+        $script_end_time = date('Y-m-d H:i:s');
         $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
-        Log::info("$script_start_end_time Script completed loading data from DHIS2 Covax instance: Duration: $script_run_time Number of Events: $number_of_events");
-        $this->getOutput()->writeln("<info>$script_start_end_time Script completed:</info> Completed loading data from DHIS2 Covax instance. Duration: $script_run_time");
+        Log::info("$script_end_time Script completed loading data from DHIS2 Covax instance: Duration: $script_run_time Number of Events: $number_of_events");
+        $this->getOutput()->writeln("<info>$script_end_time Script completed:</info> Completed loading $number_of_events events from DHIS2 Covax instance. Duration: $script_run_time");
     }
 
     /**
@@ -388,7 +390,11 @@ class ImportDHIS2Data extends Command
      */
     public function handle()
     {
-        self::loadEvents();
+        $programStartDate = $this->argument('programStartDate');
+        $programEndDate = $this->argument('programEndDate');
+
+        self::loadEvents($programStartDate, $programEndDate);
+
         return Command::SUCCESS;
     }
 }
