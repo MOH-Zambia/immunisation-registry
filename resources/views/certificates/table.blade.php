@@ -13,35 +13,29 @@
                 <th>Dose 2 Date</th>
                 <th>Dose 3 Date</th>
                 <th>Booster Dose Date</th>
-                <th colspan="3">Action</th>
+                <th>Action</th>
             </tr>
         </thead>
         <tbody>
         @foreach($certificates as $certificate)
             <tr>
-                <td>{{ $certificate->certificate_uuid }}</td>
-                <td>{{ $certificate->africa_cdc_trusted_vaccine_code }}</td>
-                <td>{{ $certificate->client->last_name }}</td>
-                <td>{{ $certificate->client->first_name }}</td>
-                <td>{{ $certificate->client->other_names }}</td>
+                <td><a href="{{ route('certificates.show', [$certificate->id]) }}"> {{ $certificate->certificate_uuid }}</a> </td>
+                <td>{{ $certificate->trusted_vaccine_code }}</td>
+                <td><a href="{{ route('clients.show', [$certificate->client_id]) }}"> {{ $certificate->client->last_name }} </a></td>
+                <td><a href="{{ route('clients.show', [$certificate->client_id]) }}"> {{ $certificate->client->first_name }} </a></td>
+                <td><a href="{{ route('clients.show', [$certificate->client_id]) }}"> {{ $certificate->client->other_names }} </a></td>
                 <td>{{ $certificate->certificate_issuing_authority_id }}</td>
                 <td>{{ $certificate->certificate_expiration_date }}</td>
                 <td>{{ $certificate->dose_1_date }}</td>
                 <td>{{ $certificate->dose_2_date }}</td>
                 <td>{{ $certificate->dose_3_date }}</td>
                 <td>{{ $certificate->booster_dose_date }}</td>
-                <td width="120">
-                    {!! Form::open(['route' => ['certificates.destroy', $certificate->id], 'method' => 'delete']) !!}
+                <td>
                     <div class='btn-group'>
                         <a href="{{ route('certificates.show', [$certificate->id]) }}" class='btn btn-default btn-xs'>
                             <i class="far fa-eye"></i>
                         </a>
-                        <a href="{{ route('certificates.edit', [$certificate->id]) }}" class='btn btn-default btn-xs'>
-                            <i class="far fa-edit"></i>
-                        </a>
-                        {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
                     </div>
-                    {!! Form::close() !!}
                 </td>
             </tr>
         @endforeach

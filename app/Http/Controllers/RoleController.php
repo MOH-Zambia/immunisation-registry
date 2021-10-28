@@ -73,6 +73,7 @@ class RoleController extends AppBaseController
     public function show($id)
     {
         $role = $this->roleRepository->find($id);
+        $users = $role->users;
 
         if (empty($role)) {
             Flash::error('Role not found');
@@ -80,7 +81,9 @@ class RoleController extends AppBaseController
             return redirect(route('roles.index'));
         }
 
-        return view('roles.show')->with('role', $role);
+        return view('roles.show')
+            ->with('role', $role)
+            ->with('users', $users);
     }
 
     /**

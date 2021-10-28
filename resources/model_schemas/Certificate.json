@@ -36,7 +36,7 @@
         "inView": true
     },
     {
-        "name": "africa_cdc_trusted_vaccine_code",
+        "name": "trusted_vaccine_code",
         "dbType": "string,255",
         "htmlType": "text",
         "validations": "nullable|string|max:255|string|max:255",

@@ -17,7 +17,16 @@ class RouteServiceProvider extends ServiceProvider
      *
      * @var string
      */
-    public const ADMIN = '/admin';
+    public const HOME = '/';
+
+    /**
+     * The path to the "dashboard" route for your application.
+     *
+     * This is used to redirect admin users after login.
+     *
+     * @var string
+     */
+    public const DASHBOARD = '/dashboard';
 
     /**
      * The controller namespace for the application.

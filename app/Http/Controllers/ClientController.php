@@ -8,6 +8,7 @@ use App\Repositories\ClientRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Auth;
 use Response;
 
 class ClientController extends AppBaseController
@@ -52,16 +53,16 @@ class ClientController extends AppBaseController
      *
      * @return Response
      */
-    public function store(CreateClientRequest $request)
-    {
-        $input = $request->all();
-
-        $client = $this->clientRepository->create($input);
-
-        Flash::success('Client saved successfully.');
-
-        return redirect(route('clients.index'));
-    }
+//    public function store(CreateClientRequest $request)
+//    {
+//        $input = $request->all();
+//
+//        $client = $this->clientRepository->create($input);
+//
+//        Flash::success('Client saved successfully.');
+//
+//        return redirect(route('clients.index'));
+//    }
 
     /**
      * Display the specified Client.
@@ -72,6 +73,16 @@ class ClientController extends AppBaseController
      */
     public function show($id)
     {
+        // User role
+        $role = Auth::user()->role['name'];
+
+        if($role == 'Authenticated User') {
+            if($id != Auth::user()->client['id']){
+                Flash::error('Unauthorised access');
+                return back();
+            }
+        }
+
         $client = $this->clientRepository->find($id);
 
         if (empty($client)) {
@@ -90,18 +101,18 @@ class ClientController extends AppBaseController
      *
      * @return Response
      */
-    public function edit($id)
-    {
-        $client = $this->clientRepository->find($id);
-
-        if (empty($client)) {
-            Flash::error('Client not found');
-
-            return redirect(route('clients.index'));
-        }
-
-        return view('clients.edit')->with('client', $client);
-    }
+//    public function edit($id)
+//    {
+//        $client = $this->clientRepository->find($id);
+//
+//        if (empty($client)) {
+//            Flash::error('Client not found');
+//
+//            return redirect(route('clients.index'));
+//        }
+//
+//        return view('clients.edit')->with('client', $client);
+//    }
 
     /**
      * Update the specified Client in storage.
@@ -111,22 +122,22 @@ class ClientController extends AppBaseController
      *
      * @return Response
      */
-    public function update($id, UpdateClientRequest $request)
-    {
-        $client = $this->clientRepository->find($id);
-
-        if (empty($client)) {
-            Flash::error('Client not found');
-
-            return redirect(route('clients.index'));
-        }
-
-        $client = $this->clientRepository->update($request->all(), $id);
-
-        Flash::success('Client updated successfully.');
-
-        return redirect(route('clients.index'));
-    }
+//    public function update($id, UpdateClientRequest $request)
+//    {
+//        $client = $this->clientRepository->find($id);
+//
+//        if (empty($client)) {
+//            Flash::error('Client not found');
+//
+//            return redirect(route('clients.index'));
+//        }
+//
+//        $client = $this->clientRepository->update($request->all(), $id);
+//
+//        Flash::success('Client updated successfully.');
+//
+//        return redirect(route('clients.index'));
+//    }
 
     /**
      * Remove the specified Client from storage.
@@ -137,20 +148,20 @@ class ClientController extends AppBaseController
      *
      * @return Response
      */
-    public function destroy($id)
-    {
-        $client = $this->clientRepository->find($id);
-
-        if (empty($client)) {
-            Flash::error('Client not found');
-
-            return redirect(route('clients.index'));
-        }
-
-        $this->clientRepository->delete($id);
-
-        Flash::success('Client deleted successfully.');
-
-        return redirect(route('clients.index'));
-    }
+//    public function destroy($id)
+//    {
+//        $client = $this->clientRepository->find($id);
+//
+//        if (empty($client)) {
+//            Flash::error('Client not found');
+//
+//            return redirect(route('clients.index'));
+//        }
+//
+//        $this->clientRepository->delete($id);
+//
+//        Flash::success('Client deleted successfully.');
+//
+//        return redirect(route('clients.index'));
+//    }
 }

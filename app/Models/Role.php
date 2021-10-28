@@ -21,6 +21,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="name",
  *          type="string"
  *      ),
+ *     @SWG\Property(
+ *          property="description",
+ *          description="description",
+ *          type="string"
+ *      ),
  *      @SWG\Property(
  *          property="created_at",
  *          description="created_at",
@@ -52,7 +57,8 @@ class Role extends Model
 
 
     public $fillable = [
-        'name'
+        'name',
+        'description'
     ];
 
     /**
@@ -62,7 +68,8 @@ class Role extends Model
      */
     protected $casts = [
         'id' => 'integer',
-        'name' => 'string'
+        'name' => 'string',
+        'description' => 'string'
     ];
 
     /**
@@ -72,6 +79,7 @@ class Role extends Model
      */
     public static $rules = [
         'name' => 'required|string|max:255',
+        'description' => 'required|string|max:767',
         'created_at' => 'nullable',
         'updated_at' => 'nullable'
     ];

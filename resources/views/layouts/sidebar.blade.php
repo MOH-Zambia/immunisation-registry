@@ -1,5 +1,5 @@
 <aside class="main-sidebar sidebar-dark-primary elevation-4">
-    <a href="{{ route('admin') }}" class="brand-link mr-3">
+    <a href="{{ route('dashboard') }}" class="brand-link mr-3">
         <img src="{{url('img/apple-icon-152x152.png')}}"
              alt="{{ config('app.name') }} Logo"
              class="brand-image img-circle elevation-3">

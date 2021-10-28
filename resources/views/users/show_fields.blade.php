@@ -1,13 +1,19 @@
 <!-- User Role Id Field -->
 <div class="col-sm-12">
-    {!! Form::label('user_role_id', 'User Role Id:') !!}
-    <p>{{ $user->user_role_id }}</p>
+    {!! Form::label('role_id', 'User Role:') !!}
+    <p>{{ $user->role['name'] }}</p>
 </div>
 
-<!-- Name Field -->
+<!-- Last Name Field -->
 <div class="col-sm-12">
-    {!! Form::label('name', 'Name:') !!}
-    <p>{{ $user->name }}</p>
+    {!! Form::label('last_name', 'Last Name:') !!}
+    <p>{{ $user->last_name }}</p>
+</div>
+
+<!-- Last Name Field -->
+<div class="col-sm-12">
+    {!! Form::label('firt_name', 'First Name:') !!}
+    <p>{{ $user->first_name }}</p>
 </div>
 
 <!-- Email Field -->
@@ -16,33 +22,15 @@
     <p>{{ $user->email }}</p>
 </div>
 
-<!-- Email Code Field -->
-<div class="col-sm-12">
-    {!! Form::label('email_code', 'Email Code:') !!}
-    <p>{{ $user->email_code }}</p>
-</div>
-
-<!-- Password Field -->
-<div class="col-sm-12">
-    {!! Form::label('password', 'Password:') !!}
-    <p>{{ $user->password }}</p>
-</div>
-
 <!-- Last Login Field -->
 <div class="col-sm-12">
     {!! Form::label('last_login', 'Last Login:') !!}
     <p>{{ $user->last_login }}</p>
 </div>
 
-<!-- Ip Field -->
+<!-- Last Login IP Field -->
 <div class="col-sm-12">
-    {!! Form::label('ip', 'Ip:') !!}
-    <p>{{ $user->ip }}</p>
-</div>
-
-<!-- Salt Field -->
-<div class="col-sm-12">
-    {!! Form::label('salt', 'Salt:') !!}
-    <p>{{ $user->salt }}</p>
+    {!! Form::label('last_login_ip', 'Last Login IP:') !!}
+    <p>{{ $user->last_login_ip }}</p>
 </div>
 

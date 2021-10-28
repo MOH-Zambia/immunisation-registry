@@ -28,8 +28,8 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *     @SWG\Property(
- *          property="africa_cdc_trusted_vaccine_code",
- *          description="africa_cdc_trusted_vaccine_code",
+ *          property="trusted_vaccine_code",
+ *          description="trusted_vaccine_code",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -159,7 +159,7 @@ class Certificate extends Model
     public $fillable = [
         'certificate_uuid',
         'client_id',
-        'africa_cdc_trusted_vaccine_code',
+        'trusted_vaccine_code',
         'vaccine_id',
         'innoculated_since_date',
         'dose_1_date',
@@ -188,7 +188,7 @@ class Certificate extends Model
         'id' => 'integer',
         'certificate_uuid' => 'string',
         'client_id' => 'integer',
-        'africa_cdc_trusted_vaccine_code' => 'string',
+        'trusted_vaccine_code' => 'string',
         'vaccine_id' => 'integer',
         'innoculated_since_date' => 'date',
         'dose_1_date' => 'date',
@@ -216,7 +216,7 @@ class Certificate extends Model
     public static $rules = [
         'certificate_uuid' => 'required|string|max:36',
         'client_id' => 'required|integer',
-        'africa_cdc_trusted_vaccine_code' => 'nullable|string|max:255',
+        'trusted_vaccine_code' => 'nullable|string|max:255',
         'vaccine_id' => 'required|integer',
         'innoculated_since_date' => 'nullable',
         'dose_1_date' => 'required',

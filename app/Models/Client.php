@@ -158,19 +158,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  */
 class Client extends Model
 {
-    use SoftDeletes;
-
-    use HasFactory;
+    use SoftDeletes, HasFactory;
 
     public $table = 'clients';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
         'client_uid',
@@ -281,7 +276,8 @@ class Client extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
+     * Get the user record associated with the client.
      **/
     public function user()
     {

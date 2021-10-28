@@ -20,19 +20,21 @@
                 <td>{{ $user->email }}</td>
                 <td>{{ $user->last_login }}</td>
                 <td>{{ $user->ip }}</td>
-                <td width="120">
-                    {!! Form::open(['route' => ['users.destroy', $user->id], 'method' => 'delete']) !!}
-                    <div class='btn-group'>
-                        <a href="{{ route('users.show', [$user->id]) }}" class='btn btn-default btn-xs'>
-                            <i class="far fa-eye"></i>
-                        </a>
-                        <a href="{{ route('users.edit', [$user->id]) }}" class='btn btn-default btn-xs'>
-                            <i class="far fa-edit"></i>
-                        </a>
-                        {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
-                    </div>
-                    {!! Form::close() !!}
-                </td>
+                @if(Auth::user()->role_id == 1)
+                    <td width="120">
+                        {!! Form::open(['route' => ['users.destroy', $user->id], 'method' => 'delete']) !!}
+                        <div class='btn-group'>
+                            <a href="{{ route('users.show', [$user->id]) }}" class='btn btn-default btn-xs'>
+                                <i class="far fa-eye"></i>
+                            </a>
+                            <a href="{{ route('users.edit', [$user->id]) }}" class='btn btn-default btn-xs'>
+                                <i class="far fa-edit"></i>
+                            </a>
+                            {!! Form::button('<i class="far fa-trash-alt"></i>', ['type' => 'submit', 'class' => 'btn btn-danger btn-xs', 'onclick' => "return confirm('Are you sure?')"]) !!}
+                        </div>
+                        {!! Form::close() !!}
+                    </td>
+                @endif
             </tr>
         @endforeach
         </tbody>

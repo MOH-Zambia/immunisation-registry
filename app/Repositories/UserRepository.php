@@ -24,7 +24,7 @@ class UserRepository extends BaseRepository
         'email_code',
         'password',
         'last_login',
-        'ip',
+        'last_login_ip',
         'salt'
     ];
 

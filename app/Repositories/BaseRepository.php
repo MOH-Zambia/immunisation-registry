@@ -68,9 +68,9 @@ abstract class BaseRepository
      * @param array $columns
      * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator
      */
-    public function paginate($perPage, $columns = ['*'])
+    public function paginate($perPage, $search = [], $skip = null, $limit = null, $columns = ['*'])
     {
-        $query = $this->allQuery();
+        $query = $this->allQuery($search, $skip, $limit);
 
         return $query->paginate($perPage, $columns);
     }

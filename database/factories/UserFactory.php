@@ -30,8 +30,8 @@ class UserFactory extends Factory
             'email_code' => Str::random(10),
             'email_verified_at' => now(),
             'last_login' => now(),
+            'last_login_ip' => $this->faker->ipv4,
             'password'  => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
-            'ip' => $this->faker->ipv4,
             'salt' => Str::random(10),
             'created_at' => $this->faker->dateTimeBetween('-9 month', '+1 month'),
         ];

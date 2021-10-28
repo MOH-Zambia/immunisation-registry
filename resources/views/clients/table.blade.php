@@ -2,7 +2,7 @@
     <table id="clients-table" class="table table-bordered table-striped">
         <thead>
             <tr>
-                <th>Client ID</th>
+                <th>Client UID</th>
                 <th>Card Number</th>
                 <th>NRC</th>
                 <th>Passport Number</th>
