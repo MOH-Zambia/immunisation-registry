@@ -12,6 +12,9 @@
                        href="{{ route('roles.index') }}">
                         Back
                     </a>
+                    <a href="{{ route('roles.edit', [$role->id]) }}" class="btn btn-default float-right mr-2">
+                        Edit Role
+                    </a>
                 </div>
             </div>
         </div>

@@ -17,7 +17,7 @@ class CreateCertificatesTable extends Migration
             $table->increments('id');
             $table->uuid('certificate_uuid')->unique(); //e.g 01/ZM/1532F4ED22C0BE2BF30540947C93D322#74D0CC9A
             $table->integer('client_id')->unsigned()->unique();
-            $table->string('africa_cdc_trusted_vaccine_code')->nullable();
+            $table->string('trusted_vaccine_code')->nullable(); //Africa CDC Trusted Vaccine Code
             $table->integer('vaccine_id')->unsigned();
             $table->date('innoculated_since_date');
             $table->date('dose_1_date');

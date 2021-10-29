@@ -22,6 +22,7 @@
         "infyomlabs/laravel-generator": "^3.0",
         "infyomlabs/swagger-generator": "dev-master",
         "laravel/framework": "^8.40",
+        "laravel/sanctum": "^2.12",
         "laravel/tinker": "^2.5",
         "laravel/ui": "^3.3",
         "laravelcollective/html": "^6.2",

@@ -8,6 +8,7 @@ use App\Repositories\VaccinationRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
+use Illuminate\Support\Facades\Auth;
 use Response;
 
 class VaccinationController extends AppBaseController
@@ -30,6 +31,13 @@ class VaccinationController extends AppBaseController
     public function index(Request $request)
     {
         $vaccinations = $this->vaccinationRepository->paginate(20);
+
+        // User role
+        $role = Auth::user()->role['name'];
+
+        if($role == 'Authenticated User') {
+            $vaccinations = $this->vaccinationRepository->paginate(20, ['client_id' => Auth::user()->client['id']]);
+        }
 
         return view('vaccinations.index')
             ->with('vaccinations', $vaccinations);

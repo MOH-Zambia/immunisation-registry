@@ -53,7 +53,7 @@
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                     <img src="{{url('img/apple-icon-152x152.png')}}"
                          class="user-image img-circle elevation-2" alt="User Image">
-                    <span class="d-none d-md-inline">{{ Auth::user()->name }}</span>
+                    <span class="d-none d-md-inline">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
                     <!-- User image -->
@@ -63,12 +63,11 @@
                              alt="User Image">
                         <p>
                             {{ Auth::user()->name }}
-                            <small>Member since {{ Auth::user()->created_at->format('M. Y') }}</small>
                         </p>
                     </li>
                     <!-- Menu Footer-->
                     <li class="user-footer">
-                        <a href="#" class="btn btn-default btn-flat">Profile</a>
+                        <a href="/users/{{ Auth::user()->id }}" class="btn btn-default btn-flat">Profile</a>
                         <a href="#" class="btn btn-default btn-flat float-right"
                            onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
                             Sign out
@@ -88,6 +87,7 @@
 <!-- Content Wrapper. Contains page content -->
     <div class="content-wrapper">
         <section class="content">
+            @include('flash::message')
             @yield('content')
         </section>
     </div>
@@ -145,6 +145,9 @@
     $("input[data-bootstrap-switch]").each(function(){
         $(this).bootstrapSwitch('state', $(this).prop('checked'));
     });
+
+    $('#flash-overlay-modal').modal();
+    // $('div.alert').not('.alert-important').delay(3000).fadeOut(350);
 </script>
 
 @yield('third_party_scripts')

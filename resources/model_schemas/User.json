@@ -96,7 +96,7 @@
         "inView": true
     },
     {
-        "name": "ip",
+        "name": "last_login_ip",
         "dbType": "string,255:nullable",
         "htmlType": "text",
         "validations": "nullable|string|max:255|nullable|string|max:255",

@@ -7,8 +7,12 @@ use App\Http\Requests\UpdateUserRequest;
 use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
 use Flash;
 use Response;
+
+use App\Models\Role;
 
 class UserController extends AppBaseController
 {
@@ -72,6 +76,16 @@ class UserController extends AppBaseController
      */
     public function show($id)
     {
+        // User role
+        $role = Auth::user()->role['name'];
+
+        if($role == 'Authenticated User') {
+            if($id != Auth::user()->id){
+                Flash::error('Unauthorised access');
+                return back();
+            }
+        }
+
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
@@ -92,7 +106,18 @@ class UserController extends AppBaseController
      */
     public function edit($id)
     {
+        // User role
+        $role = Auth::user()->role['name'];
+
+        if($role == 'Authenticated User') {
+            if($id != Auth::user()->id){
+                Flash::error('Unauthorised access');
+                return back();
+            }
+        }
+
         $user = $this->userRepository->find($id);
+        $roles = Role::all();
 
         if (empty($user)) {
             Flash::error('User not found');
@@ -100,7 +125,9 @@ class UserController extends AppBaseController
             return redirect(route('users.index'));
         }
 
-        return view('users.edit')->with('user', $user);
+        return view('users.edit')
+            ->with('user', $user)
+            ->with('roles', $roles);
     }
 
     /**
@@ -113,6 +140,16 @@ class UserController extends AppBaseController
      */
     public function update($id, UpdateUserRequest $request)
     {
+        // User role
+        $role = Auth::user()->role['name'];
+
+        if($role == 'Authenticated User') {
+            if($id != Auth::user()->id){
+                Flash::error('Unauthorised access');
+                return back();
+            }
+        }
+
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {
@@ -121,7 +158,23 @@ class UserController extends AppBaseController
             return redirect(route('users.index'));
         }
 
-        $user = $this->userRepository->update($request->all(), $id);
+        $input = $request->all();
+
+        if ($request->filled('password')) {
+            //Validate password
+            If($input['password'] != $input['confirm_password']){
+                Flash::error('Password is not same as confirm password');
+                return back();
+            }
+
+            $input['password'] = Hash::make($input['password']);
+        } else {
+            Flash::error('Please enter password');
+            return back();
+        }
+
+
+        $user = $this->userRepository->update($input, $id);
 
         Flash::success('User updated successfully.');
 
@@ -139,6 +192,16 @@ class UserController extends AppBaseController
      */
     public function destroy($id)
     {
+        // User role
+        $role = Auth::user()->role['name'];
+
+        if($role == 'Authenticated User') {
+            if($id != Auth::user()->id){
+                Flash::error('Unauthorised access');
+                return back();
+            }
+        }
+
         $user = $this->userRepository->find($id);
 
         if (empty($user)) {

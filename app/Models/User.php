@@ -2,10 +2,11 @@
 
 namespace App\Models;
 
-use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Laravel\Sanctum\HasApiTokens;
 
 /**
  * @SWG\Definition(
@@ -54,8 +55,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  *          type="string"
  *      ),
  *      @SWG\Property(
- *          property="ip",
- *          description="ip",
+ *          property="last_login_ip",
+ *          description="last_login_ip",
  *          type="string"
  *      ),
  *      @SWG\Property(
@@ -85,19 +86,14 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
  */
 class User extends Authenticatable
 {
-    use SoftDeletes;
-
-    use HasFactory;
+    use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
     public $table = 'users';
 
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
         'role_id',
@@ -107,7 +103,7 @@ class User extends Authenticatable
         'email_code',
         'password',
         'last_login',
-        'ip',
+        'last_login_ip',
         'salt'
     ];
 
@@ -125,7 +121,7 @@ class User extends Authenticatable
         'email_code' => 'string',
         'password' => 'string',
         'last_login' => 'string',
-        'ip' => 'string',
+        'last_login_ip' => 'string',
         'salt' => 'string'
     ];
 
@@ -138,11 +134,11 @@ class User extends Authenticatable
         'role_id' => 'required|integer',
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
-        'email' => 'required|string|max:255',
+        'email' => 'required|string|email|max:255',
         'email_code' => 'nullable|string|max:255',
         'password' => 'required|string|max:255',
         'last_login' => 'nullable|string|max:255',
-        'ip' => 'nullable|string|max:255',
+        'last_login_ip' => 'nullable|string|max:255',
         'salt' => 'nullable|string|max:255',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
@@ -155,5 +151,13 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsTo(\App\Models\Role::class, 'role_id');
+    }
+
+    /**
+     * Get the user that owns the user account.
+     */
+    public function client()
+    {
+        return $this->hasOne(\App\Models\Client::class);
     }
 }

@@ -1,7 +1,7 @@
 <!-- Client Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('client_id', 'Client Id:') !!}
-    {!! Form::text('client_id', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+    {!! Form::label('client_uid', 'Client UID:') !!}
+    {!! Form::text('client_uid', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
 <!-- Card Number Field -->
@@ -12,7 +12,7 @@
 
 <!-- Nrc Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('NRC', 'Nrc:') !!}
+    {!! Form::label('NRC', 'NRC:') !!}
     {!! Form::text('NRC', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
@@ -124,12 +124,8 @@
 
 <!-- Facility Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('facility_id', 'Facility Id:') !!}
+    {!! Form::label('facility_id', 'Facility:') !!}
     {!! Form::number('facility_id', null, ['class' => 'form-control']) !!}
 </div>
 
-<!-- Record Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('record_id', 'Record Id:') !!}
-    {!! Form::number('record_id', null, ['class' => 'form-control']) !!}
-</div>
+

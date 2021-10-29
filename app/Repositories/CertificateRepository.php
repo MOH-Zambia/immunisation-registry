@@ -19,7 +19,7 @@ class CertificateRepository extends BaseRepository
     protected $fieldSearchable = [
         'certificate_uuid',
         'client_id',
-        'africa_cdc_trusted_vaccine_code',
+        'trusted_vaccine_code',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
         'vaccine_id',

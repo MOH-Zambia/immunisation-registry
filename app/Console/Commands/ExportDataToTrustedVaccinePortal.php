@@ -2,14 +2,15 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Certificate;
+use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;
 use Illuminate\Console\Command;
 use GuzzleHttp;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
+
+use App\Models\Certificate;
+
 
 class ExportDataToTrustedVaccinePortal extends Command
 {
@@ -64,7 +65,7 @@ class ExportDataToTrustedVaccinePortal extends Command
         $httpClient = new GuzzleHttp\Client();
 
 //        $certificates = Certificate::all();
-        $certificates = Certificate::whereNull('africa_cdc_trusted_vaccine_code')->get();
+        $certificates = Certificate::whereNull('trusted_vaccine_code')->get();
 
         foreach ($certificates as $certificate){
             $startTime = microtime(true);
@@ -76,7 +77,7 @@ class ExportDataToTrustedVaccinePortal extends Command
 
             $age = date_diff(date_create($birthDate), date_create($currentDate));
 
-            $booklet['card_number'] = $certificate->certificate_uuid;
+            $booklet['card_number'] = $certificate->client->client_uid;
 
             $booklet['patient_info'] = array(
                 'first_name' => $certificate->client->first_name,
@@ -87,7 +88,7 @@ class ExportDataToTrustedVaccinePortal extends Command
                 'age_unit' => '',
                 'email' => $certificate->client->contact_email_address,
                 'dail_code' => '+260',
-                'phone_number' => ltrim ($certificate->client->contact_number, '0'),
+                'phone_number' => ltrim($certificate->client->contact_number, '0'),
                 'user_code' => '',
                 'nationality' => $certificate->client->country->name,
                 'county_of_residence' => $certificate->client->facility->district->province->name,
@@ -97,7 +98,7 @@ class ExportDataToTrustedVaccinePortal extends Command
             );
 
             $booklet['booklet_issuer'] = array(
-                'email' => 'phazambia@pana.org',
+                'email' => 'ir@moh.gov.zm',
                 'dial_code' => '',
                 'phone_number' => '',
                 'user_code' => ''
@@ -135,13 +136,13 @@ class ExportDataToTrustedVaccinePortal extends Command
                 ]);
 
                 $body = json_decode($response->getBody()->getContents(), true);
-                $certificate->africa_cdc_trusted_vaccine_code = $body['data']['code'];
+                $certificate->trusted_vaccine_code = $body['data']['code'];
                 $certificate->save();
 
                 $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                 $time = date('Y-m-d H:i:s');
-                Log::info( "$time Booklet saved: Certificate $certificate->certificate_uuid, Trusted Vaccine Code {$body['data']['code']} ({$runTime}ms)");
-                $this->getOutput()->writeln("<info>$time Booklet saved:</info> Certificate $certificate->certificate_uuid, Trusted Vaccine Code {$body['data']['code']} ({$runTime}ms)");
+                Log::info( "$time Booklet saved: Client UID ".$certificate->client['client_uid'].", Certificate $certificate->certificate_uuid, Trusted Vaccine Code {$body['data']['code']} ({$runTime}ms)");
+                $this->getOutput()->writeln("<info>$time Booklet saved:</info> Client UID ".$certificate->client['client_uid'].", Certificate $certificate->certificate_uuid, Trusted Vaccine Code {$body['data']['code']} ({$runTime}ms)");
                 $this->getOutput()->writeln("<info>$json</info>");
 
                 $number_of_booklets++;

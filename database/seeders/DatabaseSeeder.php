@@ -28,19 +28,22 @@ class DatabaseSeeder extends Seeder
 
         Role::create([
             'name' => 'Administrator',
+            'description' => 'System administrator'
         ]);
 
         Role::create([
             'name' => 'Moderator',
+            'description' => 'System manager'
         ]);
 
         Role::create([
             'name' => 'Authenticated User',
+            'description' => 'Public user with account on the system'
         ]);
 
         User::create([
             'role_id' => 1,
-            'first_name' => 'Administrator',
+            'first_name' => 'System',
             'last_name' => 'Administrator',
             'email' => 'ir@moh.gov.zm',
             'password' => '$2y$10$uh6UV1v7u7ZSOclAt5AeWu8.QriT0fasQ1zv1asG1fbzN4fdENy5m', //m0h1ct11

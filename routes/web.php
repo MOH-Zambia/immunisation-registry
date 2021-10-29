@@ -1,5 +1,6 @@
 <?php
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -12,10 +13,6 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
-//Route::get('/', function () {
-//    return view('index');
-//});
 
 Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('index');
 
@@ -36,38 +33,28 @@ Route::get('/certificate/{uuid}', [App\Http\Controllers\CertificateController::c
 
 Auth::routes();
 
-Route::get('/admin', [App\Http\Controllers\AdminController::class, 'index'])->name('admin');
+Route::group(['middleware' => 'auth'], function(){
+    Route::resource('clients', App\Http\Controllers\ClientController::class);
+    Route::resource('certificates', App\Http\Controllers\CertificateController::class);
+    Route::resource('vaccinations', App\Http\Controllers\VaccinationController::class);
+    Route::resource('users', App\Http\Controllers\UserController::class);
 
-Route::resource('providers', App\Http\Controllers\ProviderController::class);
+    Route::group(['middleware' => 'admin'], function(){
+        Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
+        Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+        Route::get('/clients', [App\Http\Controllers\ClientController::class, 'index'])->name('clients.index');
+        Route::resource('roles', App\Http\Controllers\RoleController::class);
+        Route::resource('facilities', App\Http\Controllers\FacilityController::class);
+        Route::resource('districts', App\Http\Controllers\DistrictController::class);
+        Route::resource('provinces', App\Http\Controllers\ProvinceController::class);
+        Route::resource('countries', App\Http\Controllers\CountryController::class);
+        Route::resource('providers', App\Http\Controllers\ProviderController::class);
+        Route::resource('vaccines', App\Http\Controllers\VaccineController::class);
+        Route::resource('records', App\Http\Controllers\RecordController::class);
+        Route::resource('importLogs', App\Http\Controllers\ImportLogController::class);
+    });
+});
 
-Route::resource('roles', App\Http\Controllers\RoleController::class);
-
-Route::resource('users', App\Http\Controllers\UserController::class);
-
-Route::resource('vaccines', App\Http\Controllers\VaccineController::class);
-
-Route::resource('clients', App\Http\Controllers\ClientController::class);
-
-Route::resource('certificates', App\Http\Controllers\CertificateController::class);
-
-Route::resource('facilities', App\Http\Controllers\FacilityController::class);
-
-Route::resource('districts', App\Http\Controllers\DistrictController::class);
-
-Route::resource('provinces', App\Http\Controllers\ProvinceController::class);
-
-Route::resource('vaccinations', App\Http\Controllers\VaccinationController::class);
-
-Route::resource('countries', App\Http\Controllers\CountryController::class);
-
-Route::resource('records', App\Http\Controllers\RecordController::class);
-
-Route::resource('facilityTypes', App\Http\Controllers\FacilityTypeController::class);
-
-Route::resource('importLogs', App\Http\Controllers\ImportLogController::class);
-
-
-// Auth::routes();
 
 
 
