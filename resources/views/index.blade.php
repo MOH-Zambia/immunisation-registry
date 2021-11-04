@@ -1,432 +1,204 @@
 <!DOCTYPE html>
 <html lang="{{ str_replace('_', '-', app()->getLocale()) }}">
-    <head>
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-        <title>Ministry of Health | Immunisation Registry</title>
+    <title>Ministry of Health | Immunisation Registry</title>
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
+          integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
+          crossorigin="anonymous"/>
 
-        <!-- Fonts -->
-        <!-- <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://cdn.boomcdn.com/libs/owl-carousel/2.3.4/assets/owl.carousel.min.css">
+    <link rel="stylesheet" href="https://cdn.boomcdn.com/libs/owl-carousel/2.3.4/assets/owl.theme.default.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@mdi/font@6.2.95/css/materialdesignicons.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.css">
 
-        <!-- Google Font: Source Sans Pro -->
-        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
 
-        <!-- Font Awesome -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.14.0/css/all.min.css"
-            integrity="sha512-1PKOgIY59xJ8Co8+NE6FZ+LOAZKjy+KY8iq0G4B3CyeY6wYHN3yt9PW0XpSriVlkMXe40PTKnXrLnZ9+fkDaog=="
-            crossorigin="anonymous"/>
-
-        <link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css"
-            rel="stylesheet">
-
-
-
-        <!-- AdminLTE -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.5/css/adminlte.min.css"
-            integrity="sha512-rVZC4rf0Piwtw/LsgwXxKXzWq3L0P6atiQKBNuXYRbg2FoRbSTIY0k2DxuJcs7dk4e/ShtMzglHKBOJxW8EQyQ=="
-            crossorigin="anonymous"/>
-
-        <!-- iCheck -->
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/icheck-bootstrap/3.0.1/icheck-bootstrap.min.css"
-            integrity="sha512-8vq2g5nHE062j3xor4XxPeZiPjmRDh6wlufQlfC6pdQ/9urJkU07NM0tEREeymP++NczacJ/Q59ul+/K2eYvcg=="
-            crossorigin="anonymous"/>
-
-        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/css/select2.min.css"
-            integrity="sha512-nMNlpuaDPrqlEls3IX/Q56H36qvBASwb3ipuo3MxeWbsQB1881ox0cRv7UPTgBlriqoynt35KjEwgGUeUXIPnw=="
-            crossorigin="anonymous"/>
-
-        <link rel="stylesheet"
-            href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/css/bootstrap-datetimepicker.min.css"
-            integrity="sha512-aEe/ZxePawj0+G2R+AaIxgrQuKT68I28qh+wgLrcAJOz3rxCP+TwrK5SPN+E5I+1IQjNtcfvb96HDagwrKRdBw=="
-            crossorigin="anonymous"/>
-
-        <!-- leaflet -->
-        <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-
-        <!-- Custom styles -->
-        <link href="{{ asset('css/app.css') }}" rel="stylesheet" type="text/css">
-
-    </head>
-    <body class="hold-transition layout-top-nav">
-        <div class="wrapper">
-            <!-- Navbar -->
-            <nav class="main-header navbar navbar-expand-md navbar-light navbar-white">
-                <div class="container">
-                    <a href="{{ url('/') }}" class="navbar-brand">
-                        <img src="{{ url('img/apple-icon-152x152.png') }}" alt="Coat of Arms" class="brand-image img-circle elevation-3" style="opacity: .8">
-                        <span class="brand-text font-weight-light">Immunisation Registry</span>
+    <!-- Custom styles -->
+    <link href="{{ asset('css/style.css') }}" rel="stylesheet" type="text/css">
+</head>
+<body id="body" data-spy="scroll" data-target=".navbar" data-offset="100">
+<header id="header-section">
+    <div class="alert-bar aos-init aos-animate" data-aos="fade-down" data-aos-duration="500">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-12 content">
+                    <p class="text fa-pull-left">
+                        <span tabindex="0">Covid-19 Vaccine Registration and Appointment Request</span>
+                        <a class="alert-link" target="_blank" href="https://ir.moh.gov.zm/registration" tabindex="0">Click Here</a>
+                    </p>
+                    <a href="javascript: void();" class="alert-close-icon fa-pull-right" aria-label="Close Notification bar" tabindex="0">
+                        <span class="sr-only sr-only-focusable">Close Notification bar</span>
+                        <i class="fas fa-times"></i>
                     </a>
-
-                    <button class="navbar-toggler order-1" type="button" data-toggle="collapse" data-target="#navbarCollapse" aria-controls="navbarCollapse" aria-expanded="false" aria-label="Toggle navigation">
-                        <span class="navbar-toggler-icon"></span>
-                    </button>
-
-                    <div class="collapse navbar-collapse order-3" id="navbarCollapse">
-                    <!-- Left navbar links -->
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            <a href="index3.html" class="nav-link">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a href="#" class="nav-link">Contact</a>
-                        </li>
-                        <li class="nav-item dropdown">
-                            <a id="dropdownSubMenu1" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="nav-link dropdown-toggle">Dropdown</a>
-                        <ul aria-labelledby="dropdownSubMenu1" class="dropdown-menu border-0 shadow">
-                            <li><a href="#" class="dropdown-item">Some action </a></li>
-                            <li><a href="#" class="dropdown-item">Some other action</a></li>
-                            <li class="dropdown-divider"></li>
-                            <!-- Level two dropdown-->
-                            <li class="dropdown-submenu dropdown-hover">
-                                <a id="dropdownSubMenu2" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">Hover for action</a>
-                                <ul aria-labelledby="dropdownSubMenu2" class="dropdown-menu border-0 shadow">
-                                    <li>
-                                        <a tabindex="-1" href="#" class="dropdown-item">level 2</a>
-                                    </li>
-
-                                    <!-- Level three dropdown-->
-                                    <li class="dropdown-submenu">
-                                    <a id="dropdownSubMenu3" href="#" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-item dropdown-toggle">level 2</a>
-                                    <ul aria-labelledby="dropdownSubMenu3" class="dropdown-menu border-0 shadow">
-                                        <li><a href="#" class="dropdown-item">3rd level</a></li>
-                                        <li><a href="#" class="dropdown-item">3rd level</a></li>
-                                    </ul>
-                                    </li>
-                                    <!-- End Level three -->
-                                    <li><a href="#" class="dropdown-item">level 2</a></li>
-                                    <li><a href="#" class="dropdown-item">level 2</a></li>
-                                </ul>
-                            </li>
-                            <!-- End Level two -->
-                        </ul>
-                        </li>
-                    </ul>
-
-                    <!-- SEARCH FORM -->
-                    <form class="form-inline ml-0 ml-md-3">
-                        <div class="input-group input-group-sm">
-                        <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
-                        <div class="input-group-append">
-                            <button class="btn btn-navbar" type="submit">
-                            <i class="fas fa-search"></i>
-                            </button>
-                        </div>
-                        </div>
-                    </form>
-                    </div>
-
-                    <!-- Right navbar links -->
-                    <ul class="order-1 order-md-3 navbar-nav navbar-no-expand ml-auto">
-                        @if (Route::has('login'))
-                            <div class="hidden fixed top-0 right-0 px-6 py-4 sm:block">
-                                @auth
-                                    <a href="{{ url('/dashboard') }}" class="text-sm text-gray-700 underline">Admin</a>
-                                @else
-                                    <a href="{{ route('login') }}" class="text-sm text-gray-700 underline">Log in</a>
-
-                                    @if (Route::has('register'))
-                                        <a href="{{ route('register') }}" class="ml-4 text-sm text-gray-700 underline">Register</a>
-                                    @endif
-                                @endauth
-                            </div>
-                        @endif
-                    </ul>
+                    <!-- <i class="fa fa-close alert-close-icon"></i> -->
                 </div>
-            </nav>
-            <!-- /.navbar -->
-
-            <!-- Content Wrapper. Contains page content -->
-            <div class="content-wrapper">
-                <!-- Content Header (Page header) -->
-                <div class="content-header">
-
-                </div>
-                <!-- /.content-header -->
-
-                <!-- Main content -->
-                <div class="content">
-                    <div class="container">
-                        <!-- Small boxes (Stat box) -->
-                        <div class="row">
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box">
-                                    <div class="inner">
-                                        <h3>{{ $vaccinations }}</h3>
-
-                                        <p>Total Number of Doses</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="ion ion-stats-bars"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                            <!-- ./col -->
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box">
-                                    <div class="inner">
-                                        <h3>{{ $astrazeneca_doses }}</h3>
-
-                                        <p>AstraZeneca</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="ion ion-pie-graph"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                            <!-- ./col -->
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box">
-                                    <div class="inner">
-                                        <h3>{{ $janssen_doses }}</h3>
-
-                                        <p>Janssen (J&J)</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="ion ion-pie-graph"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                            <!-- ./col -->
-                            <div class="col-lg-3 col-6">
-                                <!-- small box -->
-                                <div class="small-box">
-                                    <div class="inner">
-                                        <h3>{{ $sinopharm_doses }}</h3>
-
-                                        <p>Sinopharm (BIBP)</p>
-                                    </div>
-                                    <div class="icon">
-                                        <i class="ion ion-pie-graph"></i>
-                                    </div>
-                                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                                </div>
-                            </div>
-                            <!-- ./col -->
-                        </div>
-                        <!-- /.row -->
-
-                        <!-- Map Row -->
-                        <div class="row">
-                            <section class="col-lg-12">
-                                <!-- Map card -->
-                                <div class="card">
-                                    <div class="card-header border-0">
-                                        <h3 class="card-title">
-                                            <i class="fas fa-map-marker-alt mr-1"></i>
-                                            Vaccine Doses
-                                        </h3>
-                                    </div>
-                                    <div class="card-body">
-                                        <div id="map" style="height: 250px; width: 100%;"></div>
-                                    </div>
-                                    <!-- /.card-body-->
-
-                                    <div class="card-footer bg-transparent">
-                                        <div class="row">
-                                            <div class="col-4 text-center">
-                                                <div id="sparkline-1"></div>
-                                                <div class="text-white">Visitors</div>
-                                            </div>
-                                            <!-- ./col -->
-                                            <div class="col-4 text-center">
-                                                <div id="sparkline-2"></div>
-                                                <div class="text-white">Online</div>
-                                            </div>
-                                            <!-- ./col -->
-                                            <div class="col-4 text-center">
-                                                <div id="sparkline-3"></div>
-                                                <div class="text-white">Sales</div>
-                                            </div>
-                                            <!-- ./col -->
-                                        </div>
-                                        <!-- /.row -->
-                                    </div>
-                                </div>
-                                <!-- /.card -->
-                            </section>
-                        </div>
-                        <!-- /.row -->
-                    <div class="row">
-                        <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-
-                            <p class="card-text">
-                                Some quick example text to build on the card title and make up the bulk of the card's
-                                content.
-                            </p>
-
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                            </div>
-                        </div>
-
-                        <div class="card card-primary card-outline">
-                            <div class="card-body">
-                            <h5 class="card-title">Card title</h5>
-
-                            <p class="card-text">
-                                Some quick example text to build on the card title and make up the bulk of the card's
-                                content.
-                            </p>
-                            <a href="#" class="card-link">Card link</a>
-                            <a href="#" class="card-link">Another link</a>
-                            </div>
-                        </div><!-- /.card -->
-                        </div>
-                        <!-- /.col-md-6 -->
-                        <div class="col-lg-6">
-                        <div class="card">
-                            <div class="card-header">
-                            <h5 class="card-title m-0">Featured</h5>
-                            </div>
-                            <div class="card-body">
-                            <h6 class="card-title">Special title treatment</h6>
-
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                            </div>
-                        </div>
-
-                        <div class="card card-primary card-outline">
-                            <div class="card-header">
-                            <h5 class="card-title m-0">Featured</h5>
-                            </div>
-                            <div class="card-body">
-                            <h6 class="card-title">Special title treatment</h6>
-
-                            <p class="card-text">With supporting text below as a natural lead-in to additional content.</p>
-                            <a href="#" class="btn btn-primary">Go somewhere</a>
-                            </div>
-                        </div>
-                        </div>
-                        <!-- /.col-md-6 -->
-                    </div>
-                    <!-- /.row -->
-                    </div><!-- /.container-fluid -->
-                </div>
-                <!-- /.content -->
             </div>
-            <!-- /.content-wrapper -->
-
-            <!-- Control Sidebar -->
-            <aside class="control-sidebar control-sidebar-dark">
-            <!-- Control sidebar content goes here -->
-            </aside>
-            <!-- /.control-sidebar -->
-
-            <!-- Main Footer -->
-            <footer class="main-footer">
-                <!-- To the right -->
-                <div class="float-right d-none d-sm-inline">
-                    Anything you want
-                </div>
-                <!-- Default to the left -->
-                <strong>Copyright &copy; 2014-2021 <a href="https://adminlte.io">AdminLTE.io</a>.</strong> All rights reserved.
-            </footer>
         </div>
-        <!-- ./wrapper -->
+    </div>
+    <nav class="navbar navbar-expand-lg pl-3 pl-sm-0" id="navbar">
+        <div class="container">
+            <div class="navbar-brand-wrapper d-flex w-100">
+                <img src="{{url('img/apple-icon-72x72.png')}}" alt="Zambian coat of arms">
+            </div>
+            <div class="collapse navbar-collapse navbar-menu-wrapper" id="navbarSupportedContent">
+                <ul class="navbar-nav align-items-lg-center align-items-start ml-auto">
+                    <li class="d-flex align-items-center justify-content-between pl-4 pl-lg-0">
+                        <div class="navbar-collapse-logo">
+                            <img src="{{url('img/Group2.svg')}}" alt="">
+                        </div>
+                        <button class="navbar-toggler close-button" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="mdi mdi-close navbar-toggler-icon pl-5"></span>
+                        </button>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#header-section">Home <span class="sr-only">(current)</span></a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#features-section">About</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="#digital-marketing-section">FAQ's</a>
+                    </li>
+                    @if (Route::has('login'))
+                        @auth
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('dashboard') }}">Dashboard</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('logout') }}">Logout</a>
+                            </li>
+                        @else
+                            <li class="nav-item">
+                                <a class="nav-link" href="{{ url('login') }}">Login</a>
+                            </li>
+                            @if (Route::has('register'))
+                                <li class="nav-item">
+                                    <a class="nav-link" href="{{ url('register') }}">Register</a>
+                                </li>
+                            @endif
+                        @endauth
+                    @endif
+                    <li class="nav-item btn-contact-us pl-4 pl-lg-0">
+                        <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Contact Us</button>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+</header>
+<div class="banner mt-lg-5">
+    <div class="container">
+        <div class="info p-4">
+{{--            <h4 class="font-weight-semibold">Ministry of Health<br>COVID-19 Vaccination Certification</h4>--}}
+            <h6 class="font-weight-normal text-muted pb-3"><i class="fas fa-info-circle"></i> This is the official Zambia COVID-19 Immunisation Registry</h6>
+            <ul>
+                <li>MOH has approved AstraZeneca, Janssen (J&J) and Sinopharm COVID-19 vaccine for emergency use, as safe and effective</li>
+                <li>MOH plans to provide the COVID-19 vaccine free of charge to all Zambian citizens and residents</li>
+                <li>Certain population groups should receive the vaccine first because they are at higher risk. The three priority population groups are: older people, people with certain chronic conditions and key healthcare workers</li>
+            </ul>
+            <div style="text-align: center;">
+                @if (Route::has('login'))
+                    @auth
+                        <a class="btn btn-opacity-success mr-1" href="{{ url('dashboard') }}">Dashboard</a>
+                    @else
+                        <a class="btn btn-opacity-success mr-1" href="{{ url('login') }}">Login</a>
+                        @if (Route::has('register'))
+                            <a class="btn btn-opacity-light mr-1" href="{{ url('register') }}">Register</a>
+                        @endif
+                    @endauth
+                @endif
+            </div>
+        </div>
+    </div>
+</div>
+<div class="content-wrapper">
+    <div class="container">
+        <section class="features-overview" id="features-section" >
+{{--            <div class="content-header">--}}
+{{--                <h2>How does it works</h2>--}}
+{{--                <h6 class="section-subtitle text-muted">One theme that serves as an easy-to-use operational toolkit<br>that meets customer's needs.</h6>--}}
+{{--            </div>--}}
+            <div class="d-md-flex justify-content-between">
+                <div class="grid-margin d-flex justify-content-start">
+                    <div class="features-width">
+                        <img src="{{url('img/Group12.svg')}}" alt="" class="img-icons">
+                        <h5 class="py-3">Vaccination<br>Centres</h5>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                        <a href="#"><p class="readmore-link">Readmore</p></a>
+                    </div>
+                </div>
+                <div class="grid-margin d-flex justify-content-center">
+                    <div class="features-width">
+                        <img src="{{url('img/Group7.svg')}}" alt="" class="img-icons">
+                        <h5 class="py-3">COVID-19<br>Vaccination Programme</h5>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                        <a href="#"><p class="readmore-link">Readmore</p></a>
+                    </div>
+                </div>
+                <div class="grid-margin d-flex justify-content-end">
+                    <div class="features-width">
+                        <img src="{{url('img/Group5.svg')}}" alt="" class="img-icons">
+                        <h5 class="py-3">COVID-19 Vaccination<br>Certificate</h5>
+                        <p class="text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
+                        <a href="#"><p class="readmore-link">Readmore</p></a>
+                    </div>
+                </div>
+            </div>
+        </section>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.5.1/jquery.min.js"
-                integrity="sha512-bLT0Qm9VnAYZDflyKcBaQ2gg0hSYNQrJ8RilYldYQ1FxQYoCLtUjuuRuZo+fjqhx/qtq/1itJ0C2ejDxltZVFg=="
-                crossorigin="anonymous"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
-                integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
-                crossorigin="anonymous"></script>
 
-        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
-                integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
-                crossorigin="anonymous"></script>
+        <!-- Modal for Contact - us Button -->
+        <div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h4 class="modal-title" id="exampleModalLabel">Contact Us</h4>
+                    </div>
+                    <div class="modal-body">
+                        <form>
+                            <div class="form-group">
+                                <label for="Name">Name</label>
+                                <input type="text" class="form-control" id="Name" placeholder="Name">
+                            </div>
+                            <div class="form-group">
+                                <label for="Email">Email</label>
+                                <input type="email" class="form-control" id="Email-1" placeholder="Email">
+                            </div>
+                            <div class="form-group">
+                                <label for="Message">Message</label>
+                                <textarea class="form-control" id="Message" placeholder="Enter your Message"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-light" data-dismiss="modal">Close</button>
+                        <button type="button" class="btn btn-success">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 
-        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+<footer class="border-top">
+    <p class="text-center text-muted pt-4">Copyright © 2021 <a href="https://www.moh.gov.zm" class="px-1">Ministry of Health</a>All rights reserved.</p>
+</footer>
 
-        <!-- AdminLTE App -->
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/admin-lte/3.0.5/js/adminlte.min.js"
-                integrity="sha512-++c7zGcm18AhH83pOIETVReg0dr1Yn8XTRw+0bWSIWAVCAwz1s2PwnSj4z/OOyKlwSXc4RLg3nnjR22q0dhEyA=="
-                crossorigin="anonymous"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.27.0/moment.min.js"
-                integrity="sha512-rmZcZsyhe0/MAjquhTgiUcb4d9knaFc7b5xAfju483gbEXTkeJRUMIPk6s3ySZMYUHEcjKbjLjyddGWMrNEvZg=="
-                crossorigin="anonymous"></script>
+<script src="https://cdn.boomcdn.com/libs/owl-carousel/2.3.4/owl.carousel.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/aos/2.3.4/aos.js"></script>
 
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-datetimepicker/4.17.47/js/bootstrap-datetimepicker.min.js"
-                integrity="sha512-GDey37RZAxFkpFeJorEUwNoIbkTwsyC736KNSYucu1WJWFK9qTdzYub8ATxktr6Dwke7nbFaioypzbDOQykoRg=="
-                crossorigin="anonymous"></script>
-
-        <script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/select2/4.0.13/js/select2.min.js"
-                integrity="sha512-2ImtlRlf2VVmiGZsjm9bEyhjGW4dU7B6TNwh/hx/iSByxNENtj3WVE6o/9Lj4TJeVXPi4bnOIMXFIJJAeufa0A=="
-                crossorigin="anonymous"></script>
-
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-switch/3.3.4/js/bootstrap-switch.min.js" integrity="sha512-J+763o/bd3r9iW+gFEqTaeyi+uAphmzkE/zU8FxY6iAvD3nQKXa+ZAWkBI9QS9QkYEKddQoiy0I5GDxKf/ORBA==" crossorigin="anonymous"></script>
-
-        <!-- highcharts -->
-        <script src="https://code.highcharts.com/highcharts.js"></script>
-        <script src="https://code.highcharts.com/modules/exporting.js"></script>
-        <script src="https://code.highcharts.com/modules/export-data.js"></script>
-        <script src="https://code.highcharts.com/modules/accessibility.js"></script>
-
-        <!-- leaflet -->
-        <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-
-        <script type="text/javascript" src="https://leafletjs.com/examples/choropleth/us-states.js"></script>
-        <script type="text/javascript">
-            $(function () {
-                bsCustomFileInput.init();
-            });
-
-            $("input[data-bootstrap-switch]").each(function(){
-                $(this).bootstrapSwitch('state', $(this).prop('checked'));
-            });
-
-            var map = L.map('map').setView([37.8, -96], 4);
-
-            L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-                maxZoom: 18,
-                attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-                    'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-                id: 'mapbox/light-v9',
-                tileSize: 512,
-                zoomOffset: -1
-            }).addTo(map);
-
-            // get color depending on population density value
-            function getColor(d) {
-                return d > 1000 ? '#800026' :
-                    d > 500  ? '#BD0026' :
-                        d > 200  ? '#E31A1C' :
-                            d > 100  ? '#FC4E2A' :
-                                d > 50   ? '#FD8D3C' :
-                                    d > 20   ? '#FEB24C' :
-                                        d > 10   ? '#FED976' :
-                                            '#FFEDA0';
-            }
-
-            function style(feature) {
-                return {
-                    weight: 2,
-                    opacity: 1,
-                    color: 'white',
-                    dashArray: '3',
-                    fillOpacity: 0.7,
-                    fillColor: getColor(feature.properties.density)
-                };
-            }
-
-            var geojson = L.geoJson(statesData, {
-                style: style,
-            }).addTo(map);
-        </script>
-
-    </body>
+<!-- Custom Javascript -->
+<script href="{{ asset('js/landingpage.js') }}" type="text/javascript"></script>
+</body>
 </html>
