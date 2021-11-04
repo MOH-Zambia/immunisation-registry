@@ -87,7 +87,7 @@ class ExportDataToTrustedVaccinePortal extends Command
                 'age' => $age->format("%y"),
                 'age_unit' => '',
                 'email' => $certificate->client->contact_email_address,
-                'dail_code' => '+260',
+                'dial_code' => '+260',
                 'phone_number' => ltrim($certificate->client->contact_number, '0'),
                 'user_code' => '',
                 'nationality' => $certificate->client->country->name,
@@ -98,7 +98,7 @@ class ExportDataToTrustedVaccinePortal extends Command
             );
 
             $booklet['booklet_issuer'] = array(
-                'email' => 'ir@moh.gov.zm',
+                'email' => 'ir@moh.gov.zm', //phazambia@pana.org
                 'dial_code' => '',
                 'phone_number' => '',
                 'user_code' => ''

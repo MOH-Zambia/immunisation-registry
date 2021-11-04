@@ -1,5 +1,10 @@
 @extends('layouts.app')
 
+@section('third_party_stylesheets')
+    <!-- leaflet -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+@endsection
+
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -117,10 +122,11 @@
         </div>
         <!-- /.row -->
 
-        <!-- Map Row -->
+        <!-- Main row -->
         <div class="row">
-            <section class="col-lg-12">
-                <!-- Map card -->
+          <!-- Left col -->
+            <section class="col-lg-12 connectedSortable">
+                <!-- Users card -->
                 <div class="card">
                     <div class="card-header border-0">
                         <h3 class="card-title">
@@ -134,13 +140,8 @@
                 </div>
                 <!-- /.card-body-->
             </section>
-        </div>
-        <!-- /.row -->
 
-        <!-- Main row -->
-        <div class="row">
-          <!-- Left col -->
-          <section class="col-lg-12 connectedSortable">
+            <section class="col-lg-12 connectedSortable">
             <!-- Custom tabs (Charts with tabs)-->
             <div class="card">
               <div class="card-header">
@@ -174,15 +175,45 @@
             </div>
             <!-- /.card -->
           </section>
+
+            <section class="col-lg-12 connectedSortable">
+                <!-- Map card -->
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">
+                            <i class="fas fa-map-marker-alt mr-1"></i>
+                            Vaccine Doses
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="map"></div>
+                    </div>
+                    <!-- /.card-body-->
+
+                    <div class="card-footer bg-transparent">
+                        <div class="row">
+                            <div class="col-4 text-center">
+                                <div id="sparkline-1"></div>
+                                <div class="text-white">Visitors</div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-4 text-center">
+                                <div id="sparkline-2"></div>
+                                <div class="text-white">Online</div>
+                            </div>
+                            <!-- ./col -->
+                            <div class="col-4 text-center">
+                                <div id="sparkline-3"></div>
+                                <div class="text-white">Sales</div>
+                            </div>
+                            <!-- ./col -->
+                        </div>
+                        <!-- /.row -->
+                    </div>
+                </div>
+                <!-- /.card -->
+            </section>
           <!-- /.Left col -->
-          <!-- right col (We are only adding the ID to make the widgets sortable)-->
-          <section class="col-lg-5 connectedSortable">
-            <!-- solid sales graph -->
-
-            <!-- /.card -->
-
-          </section>
-          <!-- right col -->
         </div>
         <!-- /.row (main row) -->
       </div><!-- /.container-fluid -->
@@ -190,11 +221,15 @@
 @endsection
 
 @section('third_party_scripts')
+    <!-- highcharts -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="https://code.highcharts.com/modules/export-data.js"></script>
     <script src="https://code.highcharts.com/modules/accessibility.js"></script>
+
+    <!-- leaflet -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
+    <script type="text/javascript" src="https://leafletjs.com/examples/choropleth/us-states.js"></script>
 @endsection
 
 @push('page_scripts')
@@ -277,5 +312,51 @@
             },
             series: {!! json_encode($dataPoints) !!}
         });
+
+        $(function () {
+            bsCustomFileInput.init();
+        });
+
+        $("input[data-bootstrap-switch]").each(function(){
+            $(this).bootstrapSwitch('state', $(this).prop('checked'));
+        });
+
+        var map = L.map('map').setView([37.8, -96], 4);
+
+        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
+            maxZoom: 18,
+            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
+                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
+            id: 'mapbox/light-v9',
+            tileSize: 512,
+            zoomOffset: -1
+        }).addTo(map);
+
+        // get color depending on population density value
+        function getColor(d) {
+            return d > 1000 ? '#800026' :
+                d > 500  ? '#BD0026' :
+                    d > 200  ? '#E31A1C' :
+                        d > 100  ? '#FC4E2A' :
+                            d > 50   ? '#FD8D3C' :
+                                d > 20   ? '#FEB24C' :
+                                    d > 10   ? '#FED976' :
+                                        '#FFEDA0';
+        }
+
+        function style(feature) {
+            return {
+                weight: 2,
+                opacity: 1,
+                color: 'white',
+                dashArray: '3',
+                fillOpacity: 0.7,
+                fillColor: getColor(feature.properties.density)
+            };
+        }
+
+        var geojson = L.geoJson(statesData, {
+            style: style,
+        }).addTo(map);
     </script>
 @endpush
