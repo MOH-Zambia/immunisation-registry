@@ -50,7 +50,8 @@
                                     <!-- /.col -->
 
                                     <div class="col-sm-8 invoice-col">
-                                        <b>Certificate UUID {{ $certificate->certificate_uuid }}</b><br>
+                                        <b>Certificate UUID</b> {{ $certificate->certificate_uuid }}<br>
+                                        <b>Trusted Vaccine Code:</b> {{ $certificate->trusted_vaccine_code }}<br>
                                         <br>
                                         <b>Last Name:</b> {{ $certificate->client['last_name'] }}<br>
                                         <b>First Name:</b> {{ $certificate->client['first_name'] }}<br>
@@ -100,13 +101,17 @@
                                 <!-- this row will not appear when printing -->
                                 <div class="row no-print">
                                     <div class="col-12">
-                                        <button type="button" class="btn btn-success float-right" style="margin-right: 5px;">
+                                        <a href="invoice-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+
+                                        <button type="button" class="btn btn-success float-right btn-send" style="margin-right: 5px;">
                                             <i class="fas fa-share-square"></i> Send
+                                        </button>
+
+                                        <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                                            <i class="fas fa-download"></i> Generate PDF
                                         </button>
                                     </div>
                                 </div>
-                                <br>
-                                <br>
                             </div>
                             <!-- /.invoice -->
                         </div><!-- /.col -->
@@ -119,3 +124,27 @@
     <!-- /.content-wrapper -->
     <!-- /.content -->
 @endsection
+
+@push('page_scripts')
+    <script type="text/javascript">
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $(".btn-send").click(function(e){
+
+            e.preventDefault();
+
+            $.ajax({
+                type:'POST',
+                url:"{{ route('ajaxRequest.post') }}",
+                data:{id: {{$certificate->id}} },
+                success:function(data){
+                    alert(data.success);
+                }
+            });
+        });
+    </script>
+@endpush

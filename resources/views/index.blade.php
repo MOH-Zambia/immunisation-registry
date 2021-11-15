@@ -32,7 +32,7 @@
                         <span tabindex="0">Covid-19 Vaccine Registration and Appointment Request</span>
                         <a class="alert-link" target="_blank" href="https://ir.moh.gov.zm/registration" tabindex="0">Click Here</a>
                     </p>
-                    <a href="javascript: void();" class="alert-close-icon fa-pull-right" aria-label="Close Notification bar" tabindex="0">
+                    <a href="javascript:void(0);" class="alert-close-icon fa-pull-right" aria-label="Close Notification bar" tabindex="0">
                         <span class="sr-only sr-only-focusable">Close Notification bar</span>
                         <i class="fas fa-times"></i>
                     </a>
@@ -71,7 +71,13 @@
                                 <a class="nav-link" href="{{ url('dashboard') }}">Dashboard</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link" href="{{ url('logout') }}">Logout</a>
+                                <a class="nav-link" href="{{ url('logout') }}"
+                                   onclick="event.preventDefault(); document.getElementById('logout-form').submit();">
+                                    Logout
+                                </a>
+                                <form id="logout-form" action="{{ route('logout') }}" method="POST" class="d-none">
+                                    @csrf
+                                </form>
                             </li>
                         @else
                             <li class="nav-item">
@@ -96,8 +102,9 @@
     <div class="container">
         <div class="info p-4">
 {{--            <h4 class="font-weight-semibold">Ministry of Health<br>COVID-19 Vaccination Certification</h4>--}}
-            <h6 class="font-weight-normal text-muted pb-3"><i class="fas fa-info-circle"></i> This is the official Zambia COVID-19 Immunisation Registry</h6>
+            <h5 class="font-weight-normal pb-3 py-3"><i class="fas fa-info-circle"></i> This is the official Zambia COVID-19 Immunisation Registry</h5>
             <ul>
+                <li>Only people who are vaccinated can retrieve their COVID-19 Vaccine Digital Certificate</li>
                 <li>MOH has approved AstraZeneca, Janssen (J&J) and Sinopharm COVID-19 vaccine for emergency use, as safe and effective</li>
                 <li>MOH plans to provide the COVID-19 vaccine free of charge to all Zambian citizens and residents</li>
                 <li>Certain population groups should receive the vaccine first because they are at higher risk. The three priority population groups are: older people, people with certain chronic conditions and key healthcare workers</li>
@@ -125,28 +132,28 @@
 {{--                <h6 class="section-subtitle text-muted">One theme that serves as an easy-to-use operational toolkit<br>that meets customer's needs.</h6>--}}
 {{--            </div>--}}
             <div class="d-md-flex justify-content-between">
-                <div class="grid-margin d-flex justify-content-start">
-                    <div class="features-width">
-                        <img src="{{url('img/Group12.svg')}}" alt="" class="img-icons">
-                        <h5 class="py-3">Vaccination<br>Centres</h5>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
-                        <a href="#"><p class="readmore-link">Readmore</p></a>
-                    </div>
-                </div>
-                <div class="grid-margin d-flex justify-content-center">
+                <div class="col-4">
                     <div class="features-width">
                         <img src="{{url('img/Group7.svg')}}" alt="" class="img-icons">
-                        <h5 class="py-3">COVID-19<br>Vaccination Programme</h5>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
-                        <a href="#"><p class="readmore-link">Readmore</p></a>
+                        <h5 class="py-3">COVID-19 Vaccination <br>Programme</h5>
+                        <p class="text-muted">The outbreak of the Coronavirus Disease (COVID-19) was declared a Public Health Emergency of International Concern (PHEIC) on 30 January 2020, by the Director-General of the World Health Organisation (WHO).</p>
+                        <a href="#"><p class="readmore-link">Read more...</p></a>
                     </div>
                 </div>
-                <div class="grid-margin d-flex justify-content-end">
+                <div class="col-4">
                     <div class="features-width">
                         <img src="{{url('img/Group5.svg')}}" alt="" class="img-icons">
-                        <h5 class="py-3">COVID-19 Vaccination<br>Certificate</h5>
-                        <p class="text-muted">Lorem ipsum dolor sit amet, tincidunt vestibulum. Fusce egeabus consectetuer turpis, suspendisse.</p>
-                        <a href="#"><p class="readmore-link">Readmore</p></a>
+                        <h5 class="py-3">COVID-19 Vaccination <br>Certificate</h5>
+                        <p class="text-muted">Your proof of vaccination is your vaccine receipt or enhanced vaccine certificate with a QR code, sometimes called a vaccine passport or vaccine record. You can download an enhanced vaccine certificate with a QR code</p>
+                        <a href="#"><p class="readmore-link">Read more...</p></a>
+                    </div>
+                </div>
+                <div class="col-4">
+                    <div class="features-width">
+                        <img src="{{url('img/Group12.svg')}}" alt="" class="img-icons">
+                        <h5 class="py-3">Vaccination <br>Centres</h5>
+                        <p class="text-muted">Find a walk-in coronavirus (COVID-19) vaccination site</p>
+                        <a href="#"><p class="readmore-link">Read more...</p></a>
                     </div>
                 </div>
             </div>

@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use Exception;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
@@ -98,7 +99,7 @@ class ExportDataToTrustedVaccinePortal extends Command
             );
 
             $booklet['booklet_issuer'] = array(
-                'email' => 'ir@moh.gov.zm', //phazambia@pana.org
+                'email' => 'phazambia@pana.org', //ir@moh.gov.zm
                 'dial_code' => '',
                 'phone_number' => '',
                 'user_code' => ''
