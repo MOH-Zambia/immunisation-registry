@@ -36,6 +36,7 @@ namespace App\Console\Commands;
  */
 
 use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use GuzzleHttp;
@@ -150,31 +151,31 @@ class ImportDHIS2Data extends Command
                     'data' => json_encode($trackedEntityInstance),
                 ]);
 
-                $record->save();
+                if($record->save()){
+                    //Create new client
+                    $client = new Client([
+                        'client_uid' => $client_uid,
+                        'card_number' => $card_number,
+                        'NRC' => $NRC,
+                        'passport_number' => $passport_number,
+                        'first_name' => $first_name,
+                        'last_name' => $last_name,
+                        'sex' => $sex,
+                        'date_of_birth' => $date_of_birth,
+                        'contact_number' => $contact_number,
+                        'address_line1' => $address_line1,
+                        'occupation' => $occupation,
+                        'facility_id' => $facility_id,
+                        'record_id' => $record->id,
+                    ]);
 
-                //Create new client
-                $client = new Client([
-                    'client_uid' => $client_uid,
-                    'card_number' => $card_number,
-                    'NRC' => $NRC,
-                    'passport_number' => $passport_number,
-                    'first_name' => $first_name,
-                    'last_name' => $last_name,
-                    'sex' => $sex,
-                    'date_of_birth' => $date_of_birth,
-                    'contact_number' => $contact_number,
-                    'address_line1' => $address_line1,
-                    'occupation' => $occupation,
-                    'facility_id' => $facility_id,
-                    'record_id' => $record->id,
-                ]);
-
-                $client->save();
-
-                // Create record in ImportLog table
-                ImportLog::create([
-                    'hash' => sha1(json_encode($trackedEntityInstance)),
-                ]);
+                    if($client->save()){
+                        // Create record in ImportLog table
+                        ImportLog::create([
+                            'hash' => sha1(json_encode($trackedEntityInstance)),
+                        ]);
+                    }
+                }
 
                 $time = date('Y-m-d H:i:s');
                 $this->getOutput()->writeln("<info>$time Client saved:</info> {$client->id}");
@@ -240,7 +241,6 @@ class ImportDHIS2Data extends Command
                         foreach($response_body['events'] as $event){
                             DB::beginTransaction();
 
-
                             $startTime = microtime(true);
 
                             if($event['status'] == 'COMPLETED') { //Process only completed events
@@ -255,95 +255,104 @@ class ImportDHIS2Data extends Command
                                 // Check if hash of $event exist in import log
                                 $import_log = ImportLog::where('hash', sha1(json_encode($event)))->first();
 
-                                if(empty($import_log)){
-                                    $time = date('Y-m-d H:i:s');
-                                    $this->getOutput()
-                                        ->writeln("<info>$time Saving event:</info> Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
+                                try {
+                                    if (empty($import_log)) {
+                                        $time = date('Y-m-d H:i:s');
+                                        $this->getOutput()
+                                            ->writeln("<info>$time Saving event:</info> Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
 
-                                    //Store data in record table
-                                    $record = new Record([
-                                        'data_source' => 'MOH_DHIS2_COVAX',
-                                        'data_type' => 'EVENT',
-                                        'data' => json_encode($event),
-                                    ]);
-
-                                    $record->save();
-
-                                    //Create and save new vaccination event
-                                    $vaccine_id = null;
-                                    $dose_number = '1';
-                                    $date_of_next_dose = null;
-
-                                    foreach($event['dataValues'] as $dataValue){
-                                        if($dataValue['dataElement'] == 'bbnyNYD1wgS'){ //Vaccine Name
-                                            switch($dataValue['value']){
-                                                case 'AstraZeneca_zm':
-                                                    $vaccine_id = 1;
-                                                    break;
-                                                case 'Johnson_Johnsons_zm':
-                                                    $vaccine_id = 3;
-                                                    break;
-                                                case 'Sinopharm':
-                                                    $vaccine_id = 7;
-                                                    break;
-                                            }
-                                        } else if ($dataValue['dataElement'] == 'LUIsbsm3okG'){ // Dose Number
-                                            switch($dataValue['value']){
-                                                case 'DOSE1':
-                                                    $dose_number = '1';
-                                                    break;
-                                                case 'DOSE2':
-                                                    $dose_number = '2';
-                                                    break;
-                                                case 'DOSE3':
-                                                    $dose_number = '3';
-                                                    break;
-                                                case 'BOOSTER':
-                                                    $dose_number = 'Booster';
-                                                    break;
-                                            }
-                                        } else if ($dataValue['dataElement'] == 'FFWcps4MfuH'){ //Suggested date for next dose
-                                            $date_of_next_dose = $dataValue['value'];
-                                        }
-                                    }
-
-                                    if (!empty($vaccine_id)) {
-                                        $vaccination = new Vaccination([
-                                            'client_id' => $client->id,
-                                            'vaccine_id' => $vaccine_id,
-                                            'date' => $event['eventDate'],
-                                            'dose_number' => $dose_number,
-                                            'date_of_next_dose' => $date_of_next_dose,
-                                            'facility_id' => $facility->id,
-                                            'event_id' => $event_uid,
-                                            'record_id' => $record->id,
+                                        //Store data in record table
+                                        $record = new Record([
+                                            'data_source' => 'MOH_DHIS2_COVAX',
+                                            'data_type' => 'EVENT',
+                                            'data' => json_encode($event),
                                         ]);
-                                        $vaccination->save();
+
+                                        if ($record->save()) {
+                                            //Create and save new vaccination event
+                                            $vaccine_id = null;
+                                            $dose_number = '1';
+                                            $date_of_next_dose = null;
+
+                                            foreach ($event['dataValues'] as $dataValue) {
+                                                if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
+                                                    switch ($dataValue['value']) {
+                                                        case 'AstraZeneca_zm':
+                                                            $vaccine_id = 1;
+                                                            break;
+                                                        case 'Johnson_Johnsons_zm':
+                                                            $vaccine_id = 3;
+                                                            break;
+                                                        case 'Sinopharm':
+                                                            $vaccine_id = 7;
+                                                            break;
+                                                    }
+                                                } else if ($dataValue['dataElement'] == 'LUIsbsm3okG') { // Dose Number
+                                                    switch ($dataValue['value']) {
+                                                        case 'DOSE1':
+                                                            $dose_number = '1';
+                                                            break;
+                                                        case 'DOSE2':
+                                                            $dose_number = '2';
+                                                            break;
+                                                        case 'DOSE3':
+                                                            $dose_number = '3';
+                                                            break;
+                                                        case 'BOOSTER':
+                                                            $dose_number = 'Booster';
+                                                            break;
+                                                    }
+                                                } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
+                                                    $date_of_next_dose = $dataValue['value'];
+                                                }
+                                            }
+
+                                            if (!empty($vaccine_id)) {
+                                                $vaccination = new Vaccination([
+                                                    'client_id' => $client->id,
+                                                    'vaccine_id' => $vaccine_id,
+                                                    'date' => $event['eventDate'],
+                                                    'dose_number' => $dose_number,
+                                                    'date_of_next_dose' => $date_of_next_dose,
+                                                    'facility_id' => $facility->id,
+                                                    'event_id' => $event_uid,
+                                                    'record_id' => $record->id,
+                                                ]);
+
+                                                if ($vaccination->save()) {
+                                                    // Create record in ImportLog table
+                                                    ImportLog::create([
+                                                        'hash' => sha1(json_encode($event)),
+                                                    ]);
+                                                }
+                                            }
+                                        }
+
+                                        DB::commit(); //if no error on record, vaccination and importlog commit data to database
+
+                                        $number_of_events++;
+
+                                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                                        $time = date('Y-m-d H:i:s');
+                                        $this->getOutput()->writeln("<info>$time Event saved:</info> {$event['event']} ({$runTime}ms)");
+                                    } else {
+                                        $time = date('Y-m-d H:i:s');
+                                        $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because event already exist in the DATABASE!");
+                                        Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
                                     }
-
-                                    // Create record in ImportLog table
-                                    ImportLog::create([
-                                        'hash' => sha1(json_encode($event)),
-                                    ]);
-
-                                    $number_of_events++;
-
-                                    $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                                } catch (QueryException $e) {
+                                    $message = $e->getMessage();
                                     $time = date('Y-m-d H:i:s');
-                                    $this->getOutput()->writeln("<info>$time Event saved:</info> {$event['event']} ({$runTime}ms)");
-                                } else {
-                                    $time = date('Y-m-d H:i:s');
-                                    $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because event already exist in the DATABASE!");
-                                    Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
+                                    Log::error( "$time QueryException: $message");
+                                    $this->getOutput()->writeln("<error>$time Exception: $message</error>");
+
+                                    DB::rollback(); //Rollback database transaction if any error occurs
                                 }
                             } else {
                                 $time = date('Y-m-d H:i:s');
                                 $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because it is not COMPLETE!");
                                 Log::warning("$time Skipping event: {$event['event']} because it is not COMPLETE!");
                             }
-
-                            DB::commit();
-
                         } //End foreach
                     }//End if ($response->getStatusCode() == 200)
                 } catch (ConnectException $e) {
@@ -367,8 +376,6 @@ class ImportDHIS2Data extends Command
                     $time = date('Y-m-d H:i:s');
                     Log::error( "$time Exception: $message");
                     $this->getOutput()->writeln("<error>$time Exception: $message</error>");
-
-                    DB::rollback(); //Rollback database transaction
                 }
             } else {//if(!empty($facility->DHIS2_UID))
                 $time = date('Y-m-d H:i:s');

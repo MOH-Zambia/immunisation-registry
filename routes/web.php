@@ -38,6 +38,7 @@ Route::group(['middleware' => 'auth'], function(){
     Route::resource('certificates', App\Http\Controllers\CertificateController::class);
     Route::resource('vaccinations', App\Http\Controllers\VaccinationController::class);
     Route::resource('users', App\Http\Controllers\UserController::class);
+    Route::post('ajaxRequest', [App\Http\Controllers\TrustedVaccineController::class, 'ajaxRequestPost'])->name('ajaxRequest.post');
 
     Route::group(['middleware' => 'admin'], function(){
         Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
