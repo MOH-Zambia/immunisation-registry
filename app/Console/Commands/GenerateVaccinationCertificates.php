@@ -36,6 +36,7 @@ namespace App\Console\Commands;
  */
 
 use Illuminate\Console\Command;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
@@ -91,7 +92,7 @@ class GenerateVaccinationCertificates extends Command
         Log::info("$script_start_date_time: Generating certificates");
         $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Generating certificates</info>");
 
-        $astrazeneca_fully_vaccinated = \DB::table('vaccinations as dose1')->where([
+        $astrazeneca_fully_vaccinated = DB::table('vaccinations as dose1')->where([
                 ['dose1.vaccine_id', '=', 1], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
                 ['dose1.dose_number', '=', '1'],
             ])->join('vaccinations as dose2', function($join) {

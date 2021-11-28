@@ -1,5 +1,19 @@
 @extends('layouts.app')
 
+@push('page_css')
+    <style>
+        .vaccination_status{
+            background-color: #006430;
+            display: block;
+            text-align: center;
+            color: #ffffff;
+            font-size: 20px;
+            margin-bottom: 12px;
+        }
+    </style>
+
+@endpush
+
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -38,6 +52,8 @@
                                             {{ $certificate->target_disease }} Vaccination Certificate <br>
                                             <small class="text-center">{{ $certificate->created_at }}</small><br><br>
                                         </h4>
+
+                                        <span class="vaccination_status">Fully Vaccinated</span>
                                     </div>
                                     <!-- /.col -->
                                 </div>
@@ -75,6 +91,7 @@
                                                 <th>Date</th>
                                                 <th>Vaccine</th>
                                                 <th>Dose Number</th>
+                                                <th>Batch Number</th>
                                                 <th>Facility</th>
 {{--                                                <th>Vaccinating Organization</th>--}}
 {{--                                                <th>Country</th>--}}
@@ -86,6 +103,7 @@
                                                     <td>{{ $vaccinations['date']->format('d-M-Y') }}</td>
                                                     <td>{{ $vaccinations['vaccine']->product_name }}</td>
                                                     <td>{{ $vaccinations['dose_number'] }}</td>
+                                                    <td>{{ $vaccinations['vaccine']->batch_number }}</td>
                                                     <td>{{ $vaccinations['facility']->name }}</td>
 {{--                                                    <td>{{ $vaccinations['vaccinating_organization'] }}</td>--}}
 {{--                                                    <td>{{ $vaccinations['country']->name }}</td>--}}
@@ -107,7 +125,7 @@
                                             <i class="fas fa-share-square"></i> Send
                                         </button>
 
-                                        <button type="button" class="btn btn-primary float-right" style="margin-right: 5px;">
+                                        <button type="button" class="btn btn-warning float-right" style="margin-right: 5px;">
                                             <i class="fas fa-download"></i> Generate PDF
                                         </button>
                                     </div>

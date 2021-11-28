@@ -7,8 +7,9 @@ use App\Http\Requests\UpdateClientRequest;
 use App\Repositories\ClientRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
-use Flash;
+use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Auth;
+
 use Response;
 
 class ClientController extends AppBaseController
@@ -63,6 +64,62 @@ class ClientController extends AppBaseController
 //
 //        return redirect(route('clients.index'));
 //    }
+
+    /**
+     * Store a newly created Client in storage.
+     *
+     * @param Request $request
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verify(Request $request)
+    {
+        $input = $request->all();
+        dd($input);
+        if (array_key_exists('nrc', $input)) {
+            $client = Client::where([
+                ['NRC', '=', $input['nrc']],
+                ['last_name', '=', $input['last_name']],
+                ['first_name', '=', $input['first_name']],
+                ['other_names', '=', $input['other_names']]
+            ]);
+
+            if(empty($client)){
+                return response()->json(['success'=>'false']);
+            }
+            return response()->json(['success'=>'true']);
+        }
+
+        if (array_key_exists('passport', $input)) {
+            $client = Client::where([
+                ['passport', '=', $input['passport']],
+                ['last_name', '=', $input['last_name']],
+                ['first_name', '=', $input['first_name']],
+                ['other_names', '=', $input['other_names']]
+            ]);
+
+            if(empty($client)){
+                return response()->json(['success'=>'false']);
+            }
+            return response()->json(['success'=>'true']);
+        }
+
+        if (array_key_exists('drivers_license', $input)) {
+            $client = Client::where([
+                ['drivers_license', '=', $input['drivers_license']],
+                ['last_name', '=', $input['last_name']],
+                ['first_name', '=', $input['first_name']],
+                ['other_names', '=', $input['other_names']]
+            ]);
+
+            if(empty($client)){
+                return response()->json(['success'=>'false']);
+            }
+            return response()->json(['success'=>'true']);
+        }
+
+        return response()->json(['success'=>'false']);
+    }
 
     /**
      * Display the specified Client.

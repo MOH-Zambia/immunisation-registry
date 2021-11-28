@@ -16,6 +16,14 @@ use Illuminate\Support\Facades\Route;
 
 Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('index');
 
+Route::get('/get_vaccination_certificate', function () {
+    return view('get_vaccination_certificate');
+});
+
+Route::get('/verify_vaccination_certificate', function () {
+    return view('verify_vaccination_certificate');
+});
+
 Route::get('/about', function () {
     return view('about');
 });
@@ -28,8 +36,9 @@ Route::get('/help', function () {
     return view('help');
 });
 
-Route::get('/certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
 
+
+Route::get('/certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
 
 Auth::routes();
 
@@ -56,6 +65,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
 });
 
+Route::post('/verify', [App\Http\Controllers\ClientController::class, 'verify'])->name('clients.verify');
 
 
 
