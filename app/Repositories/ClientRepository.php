@@ -21,6 +21,7 @@ class ClientRepository extends BaseRepository
         'card_number',
         'NRC',
         'passport_number',
+        'drivers_license',
         'first_name',
         'last_name',
         'other_names',
@@ -38,8 +39,6 @@ class ClientRepository extends BaseRepository
         'next_of_kin_contact_email_address',
         'nationality',
         'facility_id',
-        'user_id',
-        'record_id'
     ];
 
     /**

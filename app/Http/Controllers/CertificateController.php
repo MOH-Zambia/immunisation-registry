@@ -117,6 +117,7 @@ class CertificateController extends AppBaseController
             Flash::error('Certificate not found');
 
 //            return redirect(route('certificates.index'));
+            return abort(404, 'Certificate not found!');
         }
 
         return view('certificate')->with('certificate', $certificate);

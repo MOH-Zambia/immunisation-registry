@@ -151,7 +151,7 @@
   padding-top: 40px;
     flex: 0 0 100%; /* flex-grow, flex-shrink, flex-basis */
 }
-.multi_step_form #msform fieldset .done_text .don_icon {
+.multi_step_form #msform fieldset .done_text .done_icon {
   height: 36px;
   width: 36px;
   line-height: 36px;
@@ -163,6 +163,20 @@
   color: #ffffff;
   text-align: center;
 }
+
+.multi_step_form #msform fieldset .done_text .cancel_icon {
+    height: 36px;
+    width: 36px;
+    line-height: 36px;
+    font-size: 22px;
+    margin-bottom: 10px;
+    background: #e3342f;
+    display: inline-block;
+    border-radius: 50%;
+    color: #ffffff;
+    text-align: center;
+}
+
 .multi_step_form #msform fieldset .done_text h6 {
   line-height: 23px;
 }

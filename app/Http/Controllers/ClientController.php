@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateClientRequest;
 use App\Http\Requests\UpdateClientRequest;
+use App\Models\Client;
 use App\Repositories\ClientRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Auth;
 
@@ -72,36 +74,33 @@ class ClientController extends AppBaseController
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function verify(Request $request)
+    public function verify(Request $request): \Illuminate\Http\JsonResponse
     {
         $input = $request->all();
-        dd($input);
+
         if (array_key_exists('nrc', $input)) {
+
             $client = Client::where([
                 ['NRC', '=', $input['nrc']],
                 ['last_name', '=', $input['last_name']],
                 ['first_name', '=', $input['first_name']],
                 ['other_names', '=', $input['other_names']]
-            ]);
+            ])->first();
 
-            if(empty($client)){
-                return response()->json(['success'=>'false']);
-            }
-            return response()->json(['success'=>'true']);
+            if(!empty($client))
+                return response()->json(['verification'=>'Successful']);
         }
 
         if (array_key_exists('passport', $input)) {
             $client = Client::where([
-                ['passport', '=', $input['passport']],
+                ['passport_number', '=', $input['passport']],
                 ['last_name', '=', $input['last_name']],
                 ['first_name', '=', $input['first_name']],
                 ['other_names', '=', $input['other_names']]
-            ]);
+            ])->first();
 
-            if(empty($client)){
-                return response()->json(['success'=>'false']);
-            }
-            return response()->json(['success'=>'true']);
+            if(!empty($client))
+                return response()->json(['verification'=>'Successful']);
         }
 
         if (array_key_exists('drivers_license', $input)) {
@@ -110,15 +109,25 @@ class ClientController extends AppBaseController
                 ['last_name', '=', $input['last_name']],
                 ['first_name', '=', $input['first_name']],
                 ['other_names', '=', $input['other_names']]
-            ]);
+            ])->first();
 
-            if(empty($client)){
-                return response()->json(['success'=>'false']);
-            }
-            return response()->json(['success'=>'true']);
+            if(!empty($client))
+                return response()->json(['verification'=>'Successful']);
         }
 
-        return response()->json(['success'=>'false']);
+        if (array_key_exists('email', $input)) {
+            $client = Client::where([
+                ['contact_email_address', '=', $input['email']],
+                ['last_name', '=', $input['last_name']],
+                ['first_name', '=', $input['first_name']],
+                ['other_names', '=', $input['other_names']]
+            ])->first();
+
+            if(!empty($client))
+                return response()->json(['verification'=>'Successful']);
+        }
+
+        return response()->json(['verification'=>'Unsuccessful']);
     }
 
     /**

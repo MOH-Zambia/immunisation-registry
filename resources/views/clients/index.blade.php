@@ -51,7 +51,10 @@
     <script>
         $(function () {
             $("#clients-table").DataTable({
-                "responsive": true, "lengthChange": false, "autoWidth": false,
+                "responsive": true,
+                "lengthChange": false,
+                // "pageLength": 50,
+                "autoWidth": true,
                 "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
             }).buttons().container().appendTo('#clients-table_wrapper .col-md-6:eq(0)');
         });

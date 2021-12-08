@@ -36,19 +36,24 @@ Route::get('/help', function () {
     return view('help');
 });
 
-
-
 Route::get('/certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
+Route::post('verify_client', [App\Http\Controllers\ClientController::class, 'verify'])->name('clients.verify');
+Route::post('sendOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendOTP'])->name('sendOTP');
+Route::post('verifyOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'verifyOTP'])->name('verifyOTP');
 
-Auth::routes();
+Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => 'auth'], function(){
-    Route::resource('clients', App\Http\Controllers\ClientController::class);
-    Route::resource('certificates', App\Http\Controllers\CertificateController::class);
-    Route::resource('vaccinations', App\Http\Controllers\VaccinationController::class);
-    Route::resource('users', App\Http\Controllers\UserController::class);
-    Route::post('ajaxRequest', [App\Http\Controllers\TrustedVaccineController::class, 'ajaxRequestPost'])->name('ajaxRequest.post');
+    //only verified account can access with this group
+    Route::group(['middleware' => ['verified']], function() {
+        Route::resource('clients', App\Http\Controllers\ClientController::class);
+        Route::resource('certificates', App\Http\Controllers\CertificateController::class);
+        Route::resource('vaccinations', App\Http\Controllers\VaccinationController::class);
+        Route::resource('users', App\Http\Controllers\UserController::class);
+        Route::post('ajaxRequest', [App\Http\Controllers\TrustedVaccineController::class, 'ajaxRequestPost'])->name('ajaxRequest.post');
+    });
 
+    //Only admins can access this group of routes
     Route::group(['middleware' => 'admin'], function(){
         Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
         Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
@@ -65,7 +70,7 @@ Route::group(['middleware' => 'auth'], function(){
     });
 });
 
-Route::post('/verify', [App\Http\Controllers\ClientController::class, 'verify'])->name('clients.verify');
+
 
 
 

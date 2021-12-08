@@ -111,7 +111,7 @@
             </ul>
             <div style="text-align: center;">
                 <a class="btn btn-opacity-light mr-1" href="{{ url('get_vaccination_certificate') }}">Get Vaccination Certificate</a>
-                <a class="btn btn-opacity-success mr-1" href="{{ url('clients.verify') }}">Verify Vaccination Certificate</a>
+                <a class="btn btn-opacity-success mr-1" href="{{ url('verify_vaccination_certificate') }}">Verify Vaccination Certificate</a>
             </div>
         </div>
     </div>

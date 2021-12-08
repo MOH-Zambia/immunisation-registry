@@ -14,14 +14,14 @@
         var left, opacity, scale; //fieldset properties which we will animate
         var animating; //flag to prevent quick multi-click glitches
         var proceed; //flag to prevent someone from proceeding with the form if the information provided is not in the database
-        let data = [];
+        var data = [];
 
         $(".next").click(function () {
             if (animating)
                 return false;
             animating = true;
 
-            //Make ajax call to verify details on the form
+            // Make ajax call to verify details on the form
             if(event.target.id === "personal_details"){
                 event.preventDefault();
                 proceed = false;
@@ -40,22 +40,26 @@
                 console.log(JSON.stringify(data));
 
                 $.ajax({
+                    // url: config.routes.verify,
+                    url: '/verify',
                     type:'POST',
-                    url: config.routes.verify,
                     data: JSON.stringify(data),
-                    success:function(data){
-                        // alert(data.success);
-                        proceed = true;
+                    success:function(response){
+                        console.log(response);
+                        if(response) {
+                            // $('.success').text(response.success);
+                            // $("#ajaxform")[0].reset();
+                            proceed = true;
+                        }
                     },
-                    error:function (){
-                        proceed = false
+                    error: function(error) {
+                        console.log(error);
                     }
                 });
             }
 
             if(proceed === false)
                 return false;
-
 
             current_fs = $(this).parent();
             next_fs = $(this).parent().next();

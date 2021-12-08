@@ -146,7 +146,5 @@ class TrustedVaccineController extends Controller
         } else {
             return response()->json(['success'=>'Certificate already sent']);
         }
-
-
     }
 }

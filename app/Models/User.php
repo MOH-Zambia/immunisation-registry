@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -20,7 +21,13 @@ use Laravel\Sanctum\HasApiTokens;
  *      ),
  *      @SWG\Property(
  *          property="role_id",
- *          description="user_role_id",
+ *          description="role_id",
+ *          type="integer",
+ *          format="int32"
+ *      ),
+ *     @SWG\Property(
+ *          property="client_id",
+ *          description="client_id",
  *          type="integer",
  *          format="int32"
  *      ),
@@ -84,7 +91,7 @@ use Laravel\Sanctum\HasApiTokens;
  *      )
  * )
  */
-class User extends Authenticatable
+class User extends Authenticatable implements MustVerifyEmail
 {
     use HasApiTokens, HasFactory, Notifiable, SoftDeletes;
 
@@ -115,6 +122,7 @@ class User extends Authenticatable
     protected $casts = [
         'id' => 'integer',
         'role_id' => 'integer',
+        'client_id' => 'integer',
         'first_name' => 'string',
         'last_name' => 'string',
         'email' => 'string',
@@ -154,10 +162,13 @@ class User extends Authenticatable
     }
 
     /**
-     * Get the user that owns the user account.
-     */
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * Get the client record associated with the user.
+     **/
     public function client()
     {
-        return $this->hasOne(\App\Models\Client::class);
+        return $this->belongsTo(\App\Models\Client::class, 'client_id');
     }
+
+
 }

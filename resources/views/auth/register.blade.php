@@ -4,6 +4,8 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>{{ config('app.name') }} | Registration Page</title>
     <!-- Normalize CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
@@ -26,8 +28,8 @@
     <article>
         <!-- Start Multiform HTML -->
         <section class="multi_step_form">
-            <form id="msform">
-
+            <form id="msform" method="post" action="{{ route('register') }}">
+                @csrf
                 <!-- Tittle -->
                 <div class="tittle">
                     <img src="{{ url('img/android-icon-96x96.png') }}" alt="Coat of Arms" style="opacity: .8"> <br><br>
@@ -38,27 +40,65 @@
                 <fieldset>
                     <h6>Please enter your personnal information provided during vaccination</h6>
                     <div class="form-group">
-{{--                        <label for="id_number">ID</label>--}}
-                        <input id="id_number" type="text" class="form-control" placeholder="ID Number">
+                        <input id="email"
+                               type="text"
+                               class="form-control @error('email') is-invalid @enderror"
+                               value="{{ old('email') }}"
+                               placeholder="E-Mail Address">
+                        @error('email')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <input id="last_name"
+                               type="text"
+                               class="form-control @error('last_name') is-invalid @enderror"
+                               value="{{ old('last_name') }}"
+                               placeholder="Last Name">
+                        @error('last_name')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <input id="first_name"
+                               type="text"
+                               class="form-control @error('first_name') is-invalid @enderror"
+                               value="{{ old('first_name') }}"
+                               placeholder="First Name">
+                        @error('first_name')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
+                    </div>
+
+                    <div class="form-group">
+                        <input id="other_names"
+                               type="text"
+                               class="form-control @error('other_names') is-invalid @enderror"
+                               value="{{ old('other_names') }}"
+                               placeholder="Other Names">
+                        @error('other_names')
+                            <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </div>
                     <div class="form-group">
-{{--                        <label for="vaccination_code">Vaccination Code</label>--}}
-                        <input id="vaccination_code" type="text" class="form-control" placeholder="Vaccination Code">
+                        <input type="password"
+                               name="password"
+                               class="form-control @error('password') is-invalid @enderror"
+                               placeholder="Password">
+                        @error('password')
+                        <span class="error invalid-feedback">{{ $message }}</span>
+                        @enderror
                     </div>
+
                     <div class="form-group">
-{{--                        <label for="last_name">Last Name</label>--}}
-                        <input id="last_name" type="text" class="form-control" placeholder="Last Name">
+                        <input type="password"
+                               name="password_confirmation"
+                               class="form-control"
+                               placeholder="Retype password">
                     </div>
-                    <div class="form-group">
-{{--                        <label for="first_name">First Name</label>--}}
-                        <input id="first_name" type="text" class="form-control" placeholder="First Name">
-                    </div>
-                    <div class="form-group">
-{{--                        <label for="other_names">Other Names</label>--}}
-                        <input id="other_names" type="text" class="form-control" placeholder="Other Names">
-                    </div>
-                    <button type="button" class="action-button previous_button">Back</button>
-                    <button type="button" class="next action-button">Continue</button>
+                    <input type="submit" class="action-button" value="Register"/>
                 </fieldset>
 
             </form>
@@ -67,14 +107,74 @@
     </article>
 </main>
 
-<footer class="credit">Author: Hyser - Distributed By: <a title="Awesome web design code & scripts" href="https://www.codehim.com?source=demo-page" target="_blank">CodeHim</a></footer>
+<!-- Modal -->
+<div class="modal fade" id="verificationErrorModal" tabindex="-1" role="dialog" aria-labelledby="verificationErrorModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="verificationErrorModalTitle">Verification failed</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                Your details were not found in the database
+            </div>
+        </div>
+    </div>
+</div>
 
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>
+{{--<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>--}}
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.11.0/umd/popper.min.js" integrity="sha384-b/U6ypiBEHpOf/4+1nzFpr53nxSS+GLCkfwBdFNTxtclqqenISfwAzpKaMNFNmj4" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/js/bootstrap.min.js" integrity="sha384-h0AbiXch4ZDo7tp9hKZ4TsHbi047NrKGLO3SEJAg45jXxnGIfYzk4Si90RDIqNm1" crossorigin="anonymous"></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.0.0-beta/js/bootstrap.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-easing/1.3/jquery.easing.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/12.1.2/js/intlTelInput.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js'></script>
 <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery-nice-select/1.1.0/js/jquery.nice-select.min.js'></script>
+
+<script type="text/javascript">
+    (function($) {
+        "use strict";
+
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+
+        $('input[type=submit]').click(function(e) {
+            e.preventDefault(); //prevent form submit when button is clicked
+
+            var data = {
+                "email": $("#email").val(),
+                "last_name": $("#last_name").val(),
+                "first_name": $("#first_name").val(),
+                "other_names": $("#other_names").val()
+            };
+
+            $.ajax({
+                url: "{{ route('clients.verify') }}",
+                type:"POST",
+                data: data,
+                success:function(response){
+                    if(response.verification === "successful") {
+                        console.log(response);
+                        $("#msform").submit(); //submit the form if details have been verified
+                    }else{
+                        console.log(response);
+                        $('#verificationErrorModal').modal('show');
+                    }
+                },
+                error: function(error) {
+                    console.log(error);
+                    $('#verificationErrorModal').modal('show');
+                }
+            });
+        });
+    })(jQuery);
+</script>
 
 </body>
 </html>

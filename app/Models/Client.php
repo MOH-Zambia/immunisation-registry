@@ -36,6 +36,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="passport_number",
  *          type="string"
  *      ),
+ *     @SWG\Property(
+ *          property="drivers_license",
+ *          description="drivers_license",
+ *          type="string"
+ *      ),
  *      @SWG\Property(
  *          property="first_name",
  *          description="first_name",
@@ -124,12 +129,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="integer",
  *          format="int32"
  *      ),
- *     @SWG\Property(
- *          property="user_id",
- *          description="user_id",
- *          type="integer",
- *          format="int32"
- *      ),
  *      @SWG\Property(
  *          property="record_id",
  *          description="record_id",
@@ -172,6 +171,7 @@ class Client extends Model
         'card_number',
         'NRC',
         'passport_number',
+        'drivers_license',
         'first_name',
         'last_name',
         'other_names',
@@ -189,7 +189,6 @@ class Client extends Model
         'next_of_kin_contact_email_address',
         'nationality',
         'facility_id',
-        'user_id',
         'record_id'
     ];
 
@@ -204,6 +203,7 @@ class Client extends Model
         'card_number' => 'string',
         'NRC' => 'string',
         'passport_number' => 'string',
+        'drivers_license' => 'string',
         'first_name' => 'string',
         'last_name' => 'string',
         'other_names' => 'string',
@@ -221,7 +221,6 @@ class Client extends Model
         'next_of_kin_contact_email_address' => 'string',
         'nationality' => 'integer',
         'facility_id' => 'integer',
-        'user_id' => 'integer',
         'record_id' => 'integer'
     ];
 
@@ -235,6 +234,7 @@ class Client extends Model
         'card_number' => 'nullable|string|max:255',
         'NRC' => 'nullable|string|max:255',
         'passport_number' => 'nullable|string|max:255',
+        'drivers_license' => 'nullable|string|max:255',
         'first_name' => 'required|string|max:255',
         'last_name' => 'required|string|max:255',
         'other_names' => 'nullable|string|max:255',
@@ -252,7 +252,6 @@ class Client extends Model
         'next_of_kin_contact_email_address' => 'nullable|string|max:255',
         'nationality' => 'required|integer',
         'facility_id' => 'required|integer',
-        'user_id' => 'nullable|integer',
         'record_id' => 'required|integer',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
@@ -276,12 +275,12 @@ class Client extends Model
     }
 
     /**
-     * @return \Illuminate\Database\Eloquent\Relations\belongsTo
-     * Get the user record associated with the client.
-     **/
+     * Get the user for the client account.
+     * @return \Illuminate\Database\Eloquent\Relations\hasOne
+     */
     public function user()
     {
-        return $this->belongsTo(\App\Models\User::class, 'user_id');
+        return $this->hasOne(\App\Models\User::class);
     }
 
     /**

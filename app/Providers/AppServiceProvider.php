@@ -25,7 +25,7 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot(UrlGenerator $url)
     {
-        Schema::defaultStringLength(256);
+//        Schema::defaultStringLength(256);
 
         if (env('APP_ENV') !== 'local') {
             $url->forceScheme('https');

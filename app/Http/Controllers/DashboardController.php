@@ -55,6 +55,24 @@ class DashboardController extends Controller
             ['vaccine_id', '=', 7],
         ])->count();
 
+        $pfizer_doses = Vaccination::where([
+            ['vaccine_id', '=', 6],
+        ])->count();
+
+        $moderna_first_dose = Vaccination::where([
+            ['vaccine_id', '=', 4],
+            ['dose_number', '=', '1'],
+        ])->count();
+
+        $moderna_second_dose = Vaccination::where([
+            ['vaccine_id', '=', 4],
+            ['dose_number', '=', '2'],
+        ])->count();
+
+        $moderna_doses = Vaccination::where([
+            ['vaccine_id', '=', 4],
+        ])->count();
+
         $users = User::select(DB::raw("COUNT(*) AS count"))
             ->whereYear('created_at', date('Y'))
             ->groupBy(DB::raw("Month(created_at)"))
@@ -122,9 +140,15 @@ class DashboardController extends Controller
             ->with('clients', $clients)
             ->with('vaccinations',  $vaccinations)
             ->with('certificates',  $certificates)
+            ->with('astrazeneca_first_dose',  $astrazeneca_first_dose)
+            ->with('astrazeneca_second_dose',  $astrazeneca_second_dose)
             ->with('astrazeneca_doses',  $astrazeneca_doses)
             ->with('janssen_doses',  $janssen_doses)
             ->with('sinopharm_doses',  $sinopharm_doses)
+            ->with('pfizer_doses',  $pfizer_doses)
+            ->with('moderna_first_dose',  $moderna_first_dose)
+            ->with('moderna_second_dose',  $moderna_second_dose)
+            ->with('moderna_doses',  $moderna_doses)
             ->with(compact('user_data', 'dataPoints', 'vaccines'));
     }
 }

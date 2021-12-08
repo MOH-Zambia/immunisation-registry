@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\Controller;
+use App\Models\Client;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
@@ -29,7 +30,7 @@ class RegisterController extends Controller
      *
      * @var string
      */
-    protected $redirectTo = RouteServiceProvider::DASHBOARD;
+    protected $redirectTo = RouteServiceProvider::HOME;
 
     /**
      * Create a new controller instance.
@@ -65,8 +66,16 @@ class RegisterController extends Controller
      */
     protected function create(array $data)
     {
+        $client = Client::where([
+            ['email', '=', $data['email']],
+            ['last_name', '=', $data['last_name']],
+            ['first_name', '=', $data['first_name']],
+            ['other_names', '=', $data['other_names']]
+        ])->first();
+
         return User::create([
             'role_id' => 3,
+
             'first_name' => $data['first_name'],
             'last_name' => $data['last_name'],
             'email' => $data['email'],
