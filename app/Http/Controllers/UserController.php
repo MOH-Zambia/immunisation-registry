@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateUserRequest;
 use App\Http\Requests\UpdateUserRequest;
+use App\Models\User;
 use App\Repositories\UserRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
@@ -13,6 +14,7 @@ use Flash;
 use Response;
 
 use App\Models\Role;
+use Yajra\DataTables\Facades\DataTables;
 
 class UserController extends AppBaseController
 {
@@ -33,10 +35,27 @@ class UserController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $users = $this->userRepository->all();
+//        $users = $this->userRepository->paginate(50);
 
-        return view('users.index')
-            ->with('users', $users);
+//        return view('users.index')
+//            ->with('users', $users);
+
+        return view('users.datatable');
+    }
+
+    public function datatable(Request $request)
+    {
+        if ($request->ajax()) {
+            return Datatables::of(User::all())
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a>
+                    <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

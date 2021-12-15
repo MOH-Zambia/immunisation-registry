@@ -11,7 +11,6 @@
             margin-bottom: 12px;
         }
     </style>
-
 @endpush
 
 @section('content')
