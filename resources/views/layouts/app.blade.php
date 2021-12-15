@@ -53,7 +53,7 @@
             <li class="nav-item dropdown user-menu">
                 <a href="#" class="nav-link dropdown-toggle" data-toggle="dropdown">
                     <img src="{{url('img/apple-icon-152x152.png')}}"
-                         class="user-image img-circle elevation-2" alt="User Image">
+                         class="user-image img-circle elevation-2" alt="Zambia coat of arms">
                     <span class="d-none d-md-inline">{{ Auth::user()->first_name }} {{ Auth::user()->last_name }}</span>
                 </a>
                 <ul class="dropdown-menu dropdown-menu-lg dropdown-menu-right">

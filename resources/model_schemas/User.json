@@ -19,9 +19,21 @@
         "searchable": true,
         "fillable": true,
         "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
+    },
+    {
+        "name": "client_id",
+        "dbType": "integer,false,true",
+        "htmlType": null,
+        "validations": "nullable|integer|integer",
+        "searchable": true,
+        "fillable": false,
+        "primary": false,
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
     },
     {
         "name": "first_name",
@@ -89,11 +101,11 @@
         "htmlType": "text",
         "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
-        "fillable": true,
+        "fillable": false,
         "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
     },
     {
         "name": "last_login_ip",
@@ -101,11 +113,11 @@
         "htmlType": "text",
         "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
-        "fillable": true,
+        "fillable": false,
         "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
     },
     {
         "name": "salt",
@@ -113,11 +125,11 @@
         "htmlType": "text",
         "validations": "nullable|string|max:255|nullable|string|max:255",
         "searchable": true,
-        "fillable": true,
+        "fillable": false,
         "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
     },
     {
         "name": "created_at",
@@ -158,5 +170,9 @@
     {
         "type": "relation",
         "relation": "mt1,Role,role_id"
+    },
+    {
+        "type": "relation",
+        "relation": "1t1,Client,client_id"
     }
 ]

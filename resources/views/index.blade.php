@@ -110,16 +110,8 @@
                 <li>Certain population groups should receive the vaccine first because they are at higher risk. The three priority population groups are: older people, people with certain chronic conditions and key healthcare workers</li>
             </ul>
             <div style="text-align: center;">
-                @if (Route::has('login'))
-                    @auth
-                        <a class="btn btn-opacity-success mr-1" href="{{ url('dashboard') }}">Dashboard</a>
-                    @else
-                        <a class="btn btn-opacity-success mr-1" href="{{ url('login') }}">Login</a>
-                        @if (Route::has('register'))
-                            <a class="btn btn-opacity-light mr-1" href="{{ url('register') }}">Register</a>
-                        @endif
-                    @endauth
-                @endif
+                <a class="btn btn-opacity-light mr-1" href="{{ url('get_vaccination_certificate') }}">Get Vaccination Certificate</a>
+                <a class="btn btn-opacity-success mr-1" href="{{ url('verify_vaccination_certificate') }}">Verify Vaccination Certificate</a>
             </div>
         </div>
     </div>

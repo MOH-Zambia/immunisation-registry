@@ -19,10 +19,11 @@ class CreateClientsTable extends Migration
             $table->string('card_number')->nullable();
             $table->string('NRC')->nullable();
             $table->string('passport_number')->nullable();
+            $table->string('drivers_license')->nullable();
             $table->string('first_name');
             $table->string('last_name');
             $table->string('other_names')->nullable();
-            $table->char('sex');
+            $table->char('sex', 1);
             $table->date('date_of_birth')->nullable();
             $table->string('place_of_birth')->nullable();
             $table->string('occupation')->nullable();
@@ -36,7 +37,6 @@ class CreateClientsTable extends Migration
             $table->string('next_of_kin_contact_email_address')->nullable();
             $table->integer('nationality')->unsigned()->default(248); //country_id
             $table->integer('facility_id')->unsigned();
-            $table->integer('user_id')->unsigned()->nullable();
             $table->integer('record_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
@@ -46,7 +46,6 @@ class CreateClientsTable extends Migration
 
         Schema::table('clients', function (Blueprint $table) {
             $table->foreign('facility_id')->references('id')->on('facilities');
-            $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('record_id')->references('id')->on('records');
             $table->foreign('nationality')->references('id')->on('countries');
         });

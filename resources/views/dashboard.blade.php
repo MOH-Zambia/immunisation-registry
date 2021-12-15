@@ -73,21 +73,51 @@
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
-          <div class="col-lg-2 col-4">
-            <!-- small box -->
-            <div class="small-box">
-              <div class="inner">
-                <h3>{{ $astrazeneca_doses }}</h3>
+            <!-- ./col -->
+            <div class="col-lg-2 col-4">
+                <!-- small box -->
+                <div class="small-box">
+                    <div class="inner">
+                        <h3>{{ $astrazeneca_first_dose }}</h3>
 
-                <p>AstraZeneca</p>
-              </div>
-              <div class="icon">
-                <i class="ion ion-pie-graph"></i>
-              </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                        <p>AstraZeneca Dose 1</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
             </div>
-          </div>
+            <!-- ./col -->
+            <div class="col-lg-2 col-4">
+                <!-- small box -->
+                <div class="small-box">
+                    <div class="inner">
+                        <h3>{{ $astrazeneca_second_dose }}</h3>
+
+                        <p>AstraZeneca Dose 2</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+              <!-- ./col -->
+              <div class="col-lg-2 col-4">
+                <!-- small box -->
+                <div class="small-box">
+                  <div class="inner">
+                    <h3>{{ $astrazeneca_doses }}</h3>
+
+                    <p>AstraZeneca</p>
+                  </div>
+                  <div class="icon">
+                    <i class="ion ion-pie-graph"></i>
+                  </div>
+                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+              </div>
           <!-- ./col -->
           <div class="col-lg-2 col-4">
             <!-- small box -->
@@ -118,7 +148,66 @@
               <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-          <!-- ./col -->
+            <!-- ./col -->
+            <div class="col-lg-2 col-4">
+                <!-- small box -->
+                <div class="small-box">
+                    <div class="inner">
+                        <h3>{{ $pfizer_doses }}</h3>
+
+                        <p>Pfizer</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-2 col-4">
+                <!-- small box -->
+                <div class="small-box">
+                    <div class="inner">
+                        <h3>{{ $moderna_first_dose }}</h3>
+
+                        <p>Moderna Dose 1</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-2 col-4">
+                <!-- small box -->
+                <div class="small-box">
+                    <div class="inner">
+                        <h3>{{ $moderna_second_dose }}</h3>
+
+                        <p>Moderna Dose 2</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
+            <!-- ./col -->
+            <div class="col-lg-2 col-4">
+                <!-- small box -->
+                <div class="small-box">
+                    <div class="inner">
+                        <h3>{{ $moderna_doses }}</h3>
+
+                        <p>Moderna</p>
+                    </div>
+                    <div class="icon">
+                        <i class="ion ion-pie-graph"></i>
+                    </div>
+                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                </div>
+            </div>
         </div>
         <!-- /.row -->
 

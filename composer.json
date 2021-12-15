@@ -33,7 +33,8 @@
         "werneckbh/laravel-qr-code": "^0.1.3",
         "yajra/laravel-datatables": "1.5",
         "yajra/laravel-datatables-oracle": "~9.0",
-        "ext-json": "*"
+        "ext-json": "*",
+        "ext-curl": "*"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
