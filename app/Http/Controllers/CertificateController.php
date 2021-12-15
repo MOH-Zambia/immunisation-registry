@@ -5,12 +5,14 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateCertificateRequest;
 use App\Http\Requests\UpdateCertificateRequest;
 use App\Models\Certificate;
+use App\Models\User;
 use App\Repositories\CertificateRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\Auth;
 use Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class CertificateController extends AppBaseController
 {
@@ -38,10 +40,28 @@ class CertificateController extends AppBaseController
 
         if($role == 'Authenticated User') {
             $certificates = $this->certificateRepository->paginate(50, ['client_id' => Auth::user()->client['id']]);
+            return view('certificates.index')
+                ->with('certificates', $certificates);
         }
 
-        return view('certificates.index')
-            ->with('certificates', $certificates);
+        return view('certificates.datatable');
+    }
+
+    public function datatable(Request $request)
+    {
+        if ($request->ajax()) {
+            $certificates = Certificate::join('clients', 'certificates.client_id', '=', 'clients.id')
+                ->select(['certificates.id', 'certificate_uuid', 'clients.last_name', 'clients.first_name', 'clients.other_names', 'dose_1_date', 'dose_2_date', 'booster_dose_date', 'trusted_vaccine_code']);
+
+            return Datatables::of($certificates)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $actionBtn = '<a href="/certificates/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

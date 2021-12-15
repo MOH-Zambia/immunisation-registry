@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\CreateVaccinationRequest;
 use App\Http\Requests\UpdateVaccinationRequest;
+use App\Models\Certificate;
+use App\Models\Vaccination;
 use App\Repositories\VaccinationRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\Auth;
 use Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class VaccinationController extends AppBaseController
 {
@@ -37,10 +40,30 @@ class VaccinationController extends AppBaseController
 
         if($role == 'Authenticated User') {
             $vaccinations = $this->vaccinationRepository->paginate(20, ['client_id' => Auth::user()->client['id']]);
+            return view('vaccinations.index')
+                ->with('vaccinations', $vaccinations);
         }
 
-        return view('vaccinations.index')
-            ->with('vaccinations', $vaccinations);
+        return view('vaccinations.datatable');
+    }
+
+    public function datatable(Request $request)
+    {
+        if ($request->ajax()) {
+            $vaccinations = Vaccination::join('clients', 'vaccinations.client_id', '=', 'clients.id')
+                ->join('vaccines', 'vaccinations.vaccine_id', '=', 'vaccines.id')
+                ->join('facilities', 'vaccinations.facility_id', '=', 'facilities.id')
+                ->select(['vaccinations.id', 'last_name', 'first_name', 'other_names', 'date', 'product_name', 'dose_number', 'vaccine_batch_number', 'facilities.name', 'certificate_id']);
+
+            return Datatables::of($vaccinations)
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $actionBtn = '<a href="/vaccinations/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

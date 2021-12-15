@@ -181,6 +181,7 @@ return [
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,
         Yajra\DataTables\EditorServiceProvider::class,
+        LaravelSmpp\LaravelSmppServiceProvider::class,
     ],
 
     /*

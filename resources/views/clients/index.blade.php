@@ -42,21 +42,4 @@
     </div>
 @endsection
 
-@section('third_party_scripts')
-    @include('layouts.datatables_js')
-@endsection
 
-<!-- Page specific script -->
-@push('page_scripts')
-    <script>
-        $(function () {
-            $("#clients-table").DataTable({
-                "responsive": true,
-                "lengthChange": false,
-                // "pageLength": 50,
-                "autoWidth": true,
-                "buttons": ["copy", "csv", "excel", "pdf", "print", "colvis"]
-            }).buttons().container().appendTo('#clients-table_wrapper .col-md-6:eq(0)');
-        });
-    </script>
-@endpush

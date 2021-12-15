@@ -17,3 +17,6 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::resource('certificates', App\Http\Controllers\API\CertificateAPIController::class);
+Route::resource('users', App\Http\Controllers\API\UserAPIController::class);

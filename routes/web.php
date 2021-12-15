@@ -41,6 +41,12 @@ Route::post('verify_client', [App\Http\Controllers\ClientController::class, 'ver
 Route::post('sendOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendOTP'])->name('sendOTP');
 Route::post('verifyOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'verifyOTP'])->name('verifyOTP');
 
+Route::get('clients/datatable', [App\Http\Controllers\ClientController::class, 'datatable'])->name('clients.datatable');
+Route::get('users/datatable', [App\Http\Controllers\UserController::class, 'datatable'])->name('users.datatable');
+Route::get('certificates/datatable', [App\Http\Controllers\CertificateController::class, 'datatable'])->name('certificates.datatable');
+Route::get('vaccinations/datatable', [App\Http\Controllers\VaccinationController::class, 'datatable'])->name('vaccinations.datatable');
+
+
 Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => 'auth'], function(){
@@ -56,8 +62,13 @@ Route::group(['middleware' => 'auth'], function(){
     //Only admins can access this group of routes
     Route::group(['middleware' => 'admin'], function(){
         Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-        Route::get('/users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+
+        Route::get('users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
+
+
         Route::get('/clients', [App\Http\Controllers\ClientController::class, 'index'])->name('clients.index');
+
+
         Route::resource('roles', App\Http\Controllers\RoleController::class);
         Route::resource('facilities', App\Http\Controllers\FacilityController::class);
         Route::resource('districts', App\Http\Controllers\DistrictController::class);

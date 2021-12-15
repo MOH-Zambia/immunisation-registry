@@ -13,6 +13,7 @@ use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Auth;
 
 use Response;
+use Yajra\DataTables\Facades\DataTables;
 
 class ClientController extends AppBaseController
 {
@@ -33,10 +34,27 @@ class ClientController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $clients = $this->clientRepository->paginate(50);
+//        $clients = $this->clientRepository->paginate(50);
 
-        return view('clients.index')
-            ->with('clients', $clients);
+//        return view('clients.index')
+//            ->with('clients', $clients);
+
+        return view('clients.datatable');
+    }
+
+    public function datatable(Request $request)
+    {
+        if ($request->ajax()) {
+            return Datatables::of(Client::all())
+                ->addIndexColumn()
+                ->addColumn('action', function($row){
+                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a>
+                    <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                    return $actionBtn;
+                })
+                ->rawColumns(['action'])
+                ->make(true);
+        }
     }
 
     /**

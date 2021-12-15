@@ -1,5 +1,9 @@
 @extends('layouts.app')
 
+@push('third_party_stylesheets')
+    @include('layouts.datatables_css')
+@endpush
+
 @section('content')
     <section class="content-header">
         <div class="container-fluid">
@@ -36,6 +40,6 @@
 
         </div>
     </div>
-
 @endsection
+
 
