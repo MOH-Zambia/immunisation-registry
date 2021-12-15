@@ -66,22 +66,7 @@ class ImportDHIS2Data extends Command
      * @var string
      */
     protected $description = 'Import DHIS2 Data from COVAX instance';
-
-    /**
-     * Base URL for trackedEntityInstances
-     */
-    const TRACKED_ENTITY_INSTANCES_URL = 'https://dhis2.moh.gov.zm/covax/api/trackedEntityInstances.json';
-
-    /**
-     * Base URL for enrollments
-     */
-    const ENROLLMENTS_URL = 'https://dhis2.moh.gov.zm/covax/api/enrollments.json';
-
-    /**
-     * Base URL for events
-     */
-    const EVENTS_URL = 'https://dhis2.moh.gov.zm/covax/api/events.json';
-
+    
     /**
      * Create a new command instance.
      *
@@ -98,7 +83,7 @@ class ImportDHIS2Data extends Command
         $httpClient = new GuzzleHttp\Client();
 
         try {
-            $response = $httpClient->request('GET', self::TRACKED_ENTITY_INSTANCES_URL . "?trackedEntityInstance={$tracked_entity_instance_uid}", [
+            $response = $httpClient->request('GET', env('DHIS2_BASE_URL'). "trackedEntityInstances.json?trackedEntityInstance={$tracked_entity_instance_uid}", [
                 'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
             ]);
 
@@ -223,7 +208,7 @@ class ImportDHIS2Data extends Command
         foreach($facilities as $facility){
             if(!empty($facility->DHIS2_UID)){
                 try {
-                    $response = $httpClient->request('GET', self::EVENTS_URL, [
+                    $response = $httpClient->request('GET', env('DHIS2_BASE_URL')."events.json", [
                         'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
                         'query' => [
                             'orgUnit'=>$facility->DHIS2_UID,
