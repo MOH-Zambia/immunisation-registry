@@ -66,7 +66,7 @@ class ImportDHIS2Data extends Command
      * @var string
      */
     protected $description = 'Import DHIS2 Data from COVAX instance';
-    
+
     /**
      * Create a new command instance.
      *
