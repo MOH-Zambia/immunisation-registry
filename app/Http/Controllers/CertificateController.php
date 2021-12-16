@@ -51,7 +51,17 @@ class CertificateController extends AppBaseController
     {
         if ($request->ajax()) {
             $certificates = Certificate::join('clients', 'certificates.client_id', '=', 'clients.id')
-                ->select(['certificates.id', 'certificate_uuid', 'clients.last_name', 'clients.first_name', 'clients.other_names', 'dose_1_date', 'dose_2_date', 'booster_dose_date', 'trusted_vaccine_code']);
+                ->select([
+                    'certificates.id',
+                    'certificate_uuid',
+                    'clients.last_name',
+                    'clients.first_name',
+                    'clients.other_names',
+                    'dose_1_date',
+                    'dose_2_date',
+                    'booster_dose_date',
+                    'trusted_vaccine_code'
+                ]);
 
             return Datatables::of($certificates)
                 ->addIndexColumn()
