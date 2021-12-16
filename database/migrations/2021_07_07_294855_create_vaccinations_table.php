@@ -28,7 +28,7 @@ class CreateVaccinationsTable extends Migration
             $table->integer('vaccinating_country_id')->unsigned()->default(248); //ZMB - ISO 3166 Country
             $table->integer('certificate_id')->unsigned()->nullable();
             $table->integer('facility_id')->unsigned();
-            $table->string('event_id')->nullable(); //DHIS2 event id
+            $table->string('event_id')->unique()->nullable(); //DHIS2 event id
             $table->integer('record_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
