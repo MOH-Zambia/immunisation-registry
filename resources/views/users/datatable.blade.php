@@ -56,28 +56,28 @@
                             <th>Email</th>
                             <th>Action</th>
                         </tr>
-                        <tr>
-                            <th>
-                            </th>
-                            <th>
-                                <input type="text" class="form-control filter-input"
-                                       placeholder="Search..." data-column="1" />
-                            </th>
-                            <th>
-                                <input type="text" class="form-control filter-input"
-                                       placeholder="Search..." data-column="2" />
-                            </th>
-                            <th>
-                                <input type="text" class="form-control filter-input"
-                                       placeholder="Search.." data-column="3" />
-                            </th>
-                            <th>
-                                <input type="text" class="form-control filter-input"
-                                       placeholder="Search..." data-column="4" />
-                            </th>
-                            <th>
-                            </th>
-                        </tr>
+{{--                        <tr>--}}
+{{--                            <th>--}}
+{{--                            </th>--}}
+{{--                            <th>--}}
+{{--                                <input type="text" class="form-control filter-input"--}}
+{{--                                       placeholder="Search..." data-column="1" />--}}
+{{--                            </th>--}}
+{{--                            <th>--}}
+{{--                                <input type="text" class="form-control filter-input"--}}
+{{--                                       placeholder="Search..." data-column="2" />--}}
+{{--                            </th>--}}
+{{--                            <th>--}}
+{{--                                <input type="text" class="form-control filter-input"--}}
+{{--                                       placeholder="Search.." data-column="3" />--}}
+{{--                            </th>--}}
+{{--                            <th>--}}
+{{--                                <input type="text" class="form-control filter-input"--}}
+{{--                                       placeholder="Search..." data-column="4" />--}}
+{{--                            </th>--}}
+{{--                            <th>--}}
+{{--                            </th>--}}
+{{--                        </tr>--}}
                     </thead>
                     <tbody>
                     </tbody>
@@ -101,8 +101,8 @@
                 ajax: "{{ route('users.datatable') }}",
                 columns: [
                     {
-                        data: 'DT_RowIndex',
-                        name: 'DT_RowIndex'
+                        data: 'id',
+                        name: 'users.id'
                     },
                     {
                         data: 'last_name',
@@ -113,8 +113,8 @@
                         name: 'first_name'
                     },
                     {
-                        data: 'role_id',
-                        name: 'role_id'
+                        data: 'name',
+                        name: 'roles.name'
                     },
                     {
                         data: 'email',

@@ -314,6 +314,7 @@ class ImportDHIS2Data extends Command
                                         $time = date('Y-m-d H:i:s');
                                         $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
+                                        Log::warning("$time Event saved: ({$runTime}ms) \n $event");
                                         $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
                                     } else {
                                         $time = date('Y-m-d H:i:s');
@@ -369,7 +370,7 @@ class ImportDHIS2Data extends Command
             } else {//if(!empty($facility->DHIS2_UID))
                 $time = date('Y-m-d H:i:s');
 
-                Log::error("$time Skipping facility: $facility has no DHIS2_UID");
+                Log::error("$time Skipping Facility ID: $facility->id,  Facility Name: $facility->name has no DHIS2_UID");
                 $this->getOutput()->writeln("<error>$time Skipping facility:</error> Facility ID: $facility->id, Facility name: $facility->name has no DHIS2_UID");
             }
         } //End foreach($facilities as $facility)

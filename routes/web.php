@@ -46,7 +46,6 @@ Route::get('users/datatable', [App\Http\Controllers\UserController::class, 'data
 Route::get('certificates/datatable', [App\Http\Controllers\CertificateController::class, 'datatable'])->name('certificates.datatable');
 Route::get('vaccinations/datatable', [App\Http\Controllers\VaccinationController::class, 'datatable'])->name('vaccinations.datatable');
 
-
 Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => 'auth'], function(){
