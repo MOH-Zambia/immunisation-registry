@@ -321,7 +321,7 @@ class ImportDHIS2Data extends Command
                                     } else {
                                         $time = date('Y-m-d H:i:s');
                                         $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because event already exist in the DATABASE!");
-                                        Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
+//                                        Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
                                     }
                                 } catch (QueryException $e) {
                                     DB::rollback(); //Rollback database transaction if any error occurs
