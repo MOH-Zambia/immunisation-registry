@@ -46,11 +46,16 @@ class UserController extends AppBaseController
     public function datatable(Request $request)
     {
         if ($request->ajax()) {
-            return Datatables::of(User::all())
+            $users = User::join('roles', 'users.role_id', '=', 'roles.id')
+                ->select(['users.id', 'last_name', 'first_name', 'name', 'email']);
+
+            return Datatables::of($users)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="javascript:void(0)" class="edit btn btn-success btn-sm">Edit</a>
-                    <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
+                    $actionBtn = '
+                        <a href="/users/'.$row->id.'" class="view btn btn-success btn-sm">View</a>
+                        <a href="/users/'.$row->id.'/edit" class="edit btn btn-warning btn-sm">Edit</a>
+                        <a href="javascript:void(0)" class="delete btn btn-danger btn-sm">Delete</a>';
                     return $actionBtn;
                 })
                 ->rawColumns(['action'])
