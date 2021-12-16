@@ -292,6 +292,8 @@ class ImportDHIS2Data extends Command
                                                         $vaccination->dose_number = 'Booster';
                                                         break;
                                                 }
+                                            }else if ($dataValue['dataElement'] == 'Yp1F4txx8tm'){ // Batch Number
+                                                $vaccination->vaccine_batch_number = $dataValue['value'];
                                             } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
                                                 $vaccination->date_of_next_dose = $dataValue['value'];
                                             }
