@@ -17,11 +17,11 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', [App\Http\Controllers\IndexController::class, 'index'])->name('index');
 
 Route::get('/get_vaccination_certificate', function () {
-    return view('get_vaccination_certificate');
+    return view('certificates.get_vaccination_certificate');
 });
 
 Route::get('/verify_vaccination_certificate', function () {
-    return view('verify_vaccination_certificate');
+    return view('certificates.verify_vaccination_certificate');
 });
 
 Route::get('/about', function () {
@@ -46,6 +46,8 @@ Route::get('users/datatable', [App\Http\Controllers\UserController::class, 'data
 Route::get('certificates/datatable', [App\Http\Controllers\CertificateController::class, 'datatable'])->name('certificates.datatable');
 Route::get('vaccinations/datatable', [App\Http\Controllers\VaccinationController::class, 'datatable'])->name('vaccinations.datatable');
 
+Route::get('/generatePDF/{uuid}', [App\Http\Controllers\CertificateController::class, 'generatePDF'])->name('generatePDF');
+
 Auth::routes(['verify' => true]);
 
 Route::group(['middleware' => 'auth'], function(){
@@ -61,10 +63,7 @@ Route::group(['middleware' => 'auth'], function(){
     //Only admins can access this group of routes
     Route::group(['middleware' => 'admin'], function(){
         Route::get('/dashboard', [App\Http\Controllers\DashboardController::class, 'index'])->name('dashboard');
-
         Route::get('users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
-
-
         Route::get('/clients', [App\Http\Controllers\ClientController::class, 'index'])->name('clients.index');
 
 
