@@ -182,6 +182,7 @@ return [
         Yajra\DataTables\ButtonsServiceProvider::class,
         Yajra\DataTables\EditorServiceProvider::class,
         LaravelSmpp\LaravelSmppServiceProvider::class,
+        Elibyy\TCPDF\ServiceProvider::class,
     ],
 
     /*
@@ -238,5 +239,6 @@ return [
         'Flash' => Laracasts\Flash\Flash::class,
         'QRCode' => LaravelQRCode\Facades\QRCode::class,
         'DataTables' => Yajra\DataTables\Facades\DataTables::class,
+        'PDF' => Elibyy\TCPDF\Facades\TCPDF::class,
     ],
 ];
