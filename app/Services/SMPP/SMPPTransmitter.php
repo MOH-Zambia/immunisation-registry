@@ -21,7 +21,7 @@ class SMPPTransmitter
     protected function connect()
     {
         // Create transport
-        $this->transport = new SocketTransport([config('smpp.smpp_service')], config('smpp.smpp_port'));
+        $this->transport = new SocketTransport([config('smpp.airtel_smpp_service')], config('smpp.airtel_smpp_port'));
         $this->transport->setRecvTimeout(30000);
         $this->transport->setSendTimeout(30000);
 
@@ -36,7 +36,7 @@ class SMPPTransmitter
         $this->transport->open();
 
         // Bind transmitter
-        $this->client->bindTransmitter(config('smpp.smpp_transmitter_id'), config('smpp.smpp_transmitter_password'));
+        $this->client->bindTransmitter(config('smpp.airtel_smpp_transmitter_id'), config('smpp.airtel_smpp_transmitter_password'));
     }
 
     protected function disconnect()
