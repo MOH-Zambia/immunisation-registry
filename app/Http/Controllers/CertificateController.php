@@ -265,7 +265,7 @@ class CertificateController extends AppBaseController
         PDF::setSignatureAppearance(180, 60, 15, 15);
 
         // save pdf file
-        PDF::Output(public_path('hello_world.pdf'), 'F');
+        PDF::Output(public_path('certificates/'.$covid19_certificate->uuid.'pdf'), 'F');
 
         PDF::reset();
 
