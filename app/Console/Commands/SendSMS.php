@@ -11,7 +11,7 @@ class SendSMS extends Command
      *
      * @var string
      */
-    protected $signature = 'smpp:SendSMS';
+    protected $signature = 'command:SendSMS';
 
     /**
      * The console command description.
@@ -37,8 +37,19 @@ class SendSMS extends Command
      */
     public function handle()
     {
-        $transmitter = new \App\Services\SMPP\SMPPTransmitter();
-        $transmitter->sendSms('Hello from transmitter :)', '909', '0969928546');
+        $smsc = "zamtel";
+        $username = "sms";
+        $password = "m0h1ct11";
+        $receipient = "+260969928546";
+        $msg=urlencode("Hello Stackoverflow Users!");
+
+        $ch= curl_init();
+        curl_setopt($ch, "http://localhost:13013/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&text=$msg");
+        curl_exec($ch);
+        curl_close($ch);
+
+//        $transmitter = new \App\Services\SMPP\SMPPTransmitter();
+//        $transmitter->sendSms('Hello from transmitter :)', '909', '0969928546');
 
         return Command::SUCCESS;
     }
