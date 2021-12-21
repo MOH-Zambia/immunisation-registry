@@ -37,6 +37,8 @@ class SendSMS extends Command
      */
     public function handle()
     {
+        $host = "192.168.10.103";
+        $port = 13013;
         $smsc = "zamtel";
         $username = "sms";
         $password = "m0h1ct11";
@@ -44,7 +46,7 @@ class SendSMS extends Command
         $msg=urlencode("Hello Stackoverflow Users!");
 
         $ch= curl_init();
-        curl_setopt($ch, "http://localhost:13013/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&text=$msg");
+        curl_setopt($ch, CURLOPT_URL,"http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&text=$msg");
         curl_exec($ch);
         curl_close($ch);
 
