@@ -43,10 +43,11 @@ class SendSMS extends Command
         $username = "sms";
         $password = "m0h1ct11";
         $receipient = "+260969928546";
-        $msg=urlencode("Hello Stackoverflow Users!");
+        $sender = "MOH";
+        $msg=urlencode("Hello from IR!");
 
         $ch= curl_init();
-        curl_setopt($ch, CURLOPT_URL,"http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&text=$msg");
+        curl_setopt($ch, CURLOPT_URL,"http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&from=$sender&text=$msg");
         curl_exec($ch);
         curl_close($ch);
 
