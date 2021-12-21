@@ -53,7 +53,7 @@ class SendSMS extends Command
         $message = urlencode("Ministry of Health Immunisation Registry , Your OPT is : $OTP");
 
         $ch= curl_init();
-        curl_setopt($ch, CURLOPT_URL,"http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&from=$sender&text=$msg");
+        curl_setopt($ch, CURLOPT_URL,"http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&from=$sender&text=$message");
         curl_exec($ch);
         curl_close($ch);
 
