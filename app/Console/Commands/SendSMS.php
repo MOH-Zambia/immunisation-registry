@@ -11,7 +11,7 @@ class SendSMS extends Command
      *
      * @var string
      */
-    protected $signature = 'command:SendSMS';
+    protected $signature = 'command:SendSMS {smsc} {receipient}';
 
     /**
      * The console command description.
@@ -37,14 +37,20 @@ class SendSMS extends Command
      */
     public function handle()
     {
+        $receipient = $this->argument('receipient');
+        $smsc = $this->argument('smsc');
+
+        $OTP = mt_rand(1000,9999);
+
         $host = "192.168.10.103";
         $port = 13013;
-        $smsc = "zamtel";
         $username = "sms";
         $password = "m0h1ct11";
-        $receipient = "+260969928546";
+//        $receipient = "+260969928546";
         $sender = "MOH";
-        $msg=urlencode("Hello from IR!");
+
+        //Your message to send, Adding URL encoding.
+        $message = urlencode("Ministry of Health Immunisation Registry , Your OPT is : $OTP");
 
         $ch= curl_init();
         curl_setopt($ch, CURLOPT_URL,"http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&from=$sender&text=$msg");
