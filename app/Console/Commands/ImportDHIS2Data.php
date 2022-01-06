@@ -79,7 +79,6 @@ class ImportDHIS2Data extends Command
 
     public function getTrackedEntityInstance($tracked_entity_instance_uid, $facility_id): ? Client
     {
-
         $httpClient = new GuzzleHttp\Client();
 
         try {
@@ -226,7 +225,7 @@ class ImportDHIS2Data extends Command
 
                             $startTime = microtime(true);
 
-                            if($event['status'] == 'COMPLETED') { //Process only completed events
+                            if($event['status'] == 'COMPLETED' || $event['status'] == 'ACTIVE') { //Process only completed and active events
                                 $event_uid = $event['event'];
                                 $tracked_entity_instance_uid = $event['trackedEntityInstance'];
                                 $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
@@ -258,6 +257,18 @@ class ImportDHIS2Data extends Command
                                         $vaccination->client_id = $client->id;
                                         $vaccination->date = $event['eventDate'];
 
+                                        switch ($event['programStage']) {
+                                            case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
+                                                $vaccination->dose_number = '1';
+                                                break;
+                                            case 'RiV7VDxXQLN': //programStage: Vaccination Dose 2
+                                                $vaccination->dose_number = '2';
+                                                break;
+                                            case 'jatC7jRwVKO': //programStage: Vaccination Booster Dose
+                                                $vaccination->dose_number = 'Booster';
+                                                break;
+                                        }
+
                                         foreach ($event['dataValues'] as $dataValue) {
                                             if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
                                                 switch ($dataValue['value']) {
@@ -277,22 +288,7 @@ class ImportDHIS2Data extends Command
                                                         $vaccination->vaccine_id = 4;
                                                         break;
                                                 }
-                                            } else if ($dataValue['dataElement'] == 'LUIsbsm3okG') { // Dose Number
-                                                switch ($dataValue['value']) {
-                                                    case 'DOSE1':
-                                                        $vaccination->dose_number = '1';
-                                                        break;
-                                                    case 'DOSE2':
-                                                        $vaccination->dose_number = '2';
-                                                        break;
-                                                    case 'DOSE3':
-                                                        $vaccination->dose_number = '3';
-                                                        break;
-                                                    case 'BOOSTER':
-                                                        $vaccination->dose_number = 'Booster';
-                                                        break;
-                                                }
-                                            }else if ($dataValue['dataElement'] == 'Yp1F4txx8tm'){ // Batch Number
+                                            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm'){ // Batch Number
                                                 $vaccination->vaccine_batch_number = $dataValue['value'];
                                             } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
                                                 $vaccination->date_of_next_dose = $dataValue['value'];
@@ -303,7 +299,10 @@ class ImportDHIS2Data extends Command
                                         $vaccination->event_id = $event_uid;
                                         $vaccination->record_id = $record->id;
 
-                                        $vaccination->save();
+                                        if (Vaccination::where('event_id', $event_uid)->exists())
+                                            $vaccination->update();
+                                        else
+                                            $vaccination->save();
 
                                         // Create record in ImportLog table
                                         ImportLog::create([
@@ -337,8 +336,8 @@ class ImportDHIS2Data extends Command
                                 $time = date('Y-m-d H:i:s');
                                 $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
-                                $this->getOutput()->writeln("<comment>$time Skipping event because it is not COMPLETE!</comment>\n $event");
-                                Log::warning("$time Skipping event because it is not COMPLETE! \n $event");
+                                $this->getOutput()->writeln("<comment>$time Skipping event because event status it is not COMPLETE or ACTIVE</comment>\n $event");
+                                Log::warning("$time Skipping event because event status it is not COMPLETE or ACTIVE \n $event");
                             }
 
                             DB::commit(); //if no error on record, vaccination and importlog commit data to database

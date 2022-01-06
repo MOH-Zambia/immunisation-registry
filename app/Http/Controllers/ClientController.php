@@ -108,18 +108,15 @@ class ClientController extends AppBaseController
     public function verify(Request $request): \Illuminate\Http\JsonResponse
     {
         $input = $request->all();
+        $client = null;
 
         if (array_key_exists('nrc', $input)) {
-
             $client = Client::where([
                 ['NRC', '=', $input['nrc']],
                 ['last_name', '=', $input['last_name']],
                 ['first_name', '=', $input['first_name']],
                 ['other_names', '=', $input['other_names']]
             ])->first();
-
-            if(!empty($client))
-                return response()->json(['verification'=>'Successful']);
         }
 
         if (array_key_exists('passport', $input)) {
@@ -129,9 +126,6 @@ class ClientController extends AppBaseController
                 ['first_name', '=', $input['first_name']],
                 ['other_names', '=', $input['other_names']]
             ])->first();
-
-            if(!empty($client))
-                return response()->json(['verification'=>'Successful']);
         }
 
         if (array_key_exists('drivers_license', $input)) {
@@ -141,9 +135,6 @@ class ClientController extends AppBaseController
                 ['first_name', '=', $input['first_name']],
                 ['other_names', '=', $input['other_names']]
             ])->first();
-
-            if(!empty($client))
-                return response()->json(['verification'=>'Successful']);
         }
 
         if (array_key_exists('email', $input)) {
@@ -153,12 +144,13 @@ class ClientController extends AppBaseController
                 ['first_name', '=', $input['first_name']],
                 ['other_names', '=', $input['other_names']]
             ])->first();
-
-            if(!empty($client))
-                return response()->json(['verification'=>'Successful']);
         }
 
-        return response()->json(['verification'=>'Unsuccessful']);
+        if(empty($client)){
+            return $this->sendError('Client not found');
+        } else {
+            return $this->sendSuccess($client->toJson());
+        }
     }
 
     /**

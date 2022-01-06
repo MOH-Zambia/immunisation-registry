@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Http\Controllers\AppBaseController;
 use App\Http\Controllers\Controller;
 use App\Models\Certificate;
 use App\Models\Client;
@@ -13,43 +14,30 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Laracasts\Flash\Flash;
 
 
-class OTPVerificationController extends Controller
+class OTPVerificationController extends AppBaseController
 {
-    private $API_KEY = 'API_KEY';
-    private $SENDER_ID = "VERIFY";
-    private $ROUTE_NO = 4;
-    private $RESPONSE_TYPE = 'json';
+    public function sendSMS(Request $request){
+        $input = $request->all();
 
-    public function sendMail($OTP, $email_address){
-        Mail::send('auth.otp_email', ['OTP' => $OTP], function(Message $message) use ($email_address){
-            $message->subject("Verification Code");
-            $message->to($email_address);
-        });
-
-        return true;
-    }
-
-
-    public function sendSMS($OTP, $mobile_number){
+        $OTP = mt_rand(1000,9999);
         $isError = 0;
         $errorMessage = true;
 
+        $host = env('KANNEL_HOST');
+        $port = env('KANNEL_PORT');
+        $smsc = env('KANNEL_SMSC');
+        $username = env('KANNEL_USERNAME');
+        $password = env('KANNEL_PASSWORD');
+        $recipient = $input['contact_number'];
+        $sender = env('KANNEL_SENDER');
+
         //Your message to send, Adding URL encoding.
-        $message = urlencode("Ministry of Health Immunisation Registry , Your OPT is : $OTP");
+        $message = urlencode("COVID-19 Immunisation Registry,\n Your OPT is : $OTP");
 
-        //Preparing post parameters
-        $postData = array(
-            'authkey' => $this->API_KEY,
-            'mobiles' => $mobile_number,
-            'message' => $message,
-            'sender' => $this->SENDER_ID,
-            'route' => $this->ROUTE_NO,
-            'response' => $this->RESPONSE_TYPE
-        );
-
-        $url = "https://control.msg91.com/sendhttp.php";
+        $url = "http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$recipient&from=$sender&text=$message";
 
         /** @var TYPE_NAME $ch */
         $ch = curl_init();
@@ -57,15 +45,14 @@ class OTPVerificationController extends Controller
         curl_setopt_array($ch, array(
             CURLOPT_URL => $url,
             CURLOPT_RETURNTRANSFER => true,
-            CURLOPT_POST => true,
-            CURLOPT_POSTFIELDS => $postData
+            CURLOPT_POST => true
         ));
 
         //Ignore SSL certificate verification
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
-        //get response
+        //Get response
         $output = curl_exec($ch);
 
         //Print error if any
@@ -73,11 +60,14 @@ class OTPVerificationController extends Controller
             $isError = true;
             $errorMessage = curl_error($ch);
         }
+
         curl_close($ch);
+
         if($isError){
-            return array('error' => 1 , 'message' => $errorMessage);
+            return $this->sendError($errorMessage);
         }else{
-            return array('error' => 0 );
+            Session::put('OTP', $OTP);
+            return $this->sendSuccess("OTP Sent!");
         }
     }
 
@@ -86,47 +76,24 @@ class OTPVerificationController extends Controller
      *
      * @return \Illuminate\Http\JsonResponse
      */
-    public function sendOTP(Request $request){
-        $client = null;
-        $response = array();
+    public function sendEmail(Request $request){
         $input = $request->all();
+        $OTP = mt_rand(1000,9999);
 
+        $contact_email_address = $input['contact_email_address'];
 
-        if (array_key_exists('email', $input)) {
-            if (array_key_exists('nrc', $input)) {
-                $client = Client::where([
-                    ['NRC', '=', $input['nrc']],
-                    ['contact_email_address', '=', $input['email']],
-                ])->first();
-            }
+        try{
+            Mail::send('auth.otp_email', ['OTP' => $OTP], function(Message $message) use ($contact_email_address){
+                $message->subject("COVID-19 Immunisation Registry Verification Code");
+                $message->to($contact_email_address);
+            });
 
-            if (array_key_exists('passport', $input)) {
-                $client = Client::where([
-                    ['passport', '=', $input['nrc']],
-                    ['contact_email_address', '=', $input['email']],
-                ])->first();
-            }
+            Session::put('OTP', $OTP);
 
-            if (array_key_exists('drivers_license', $input)) {
-                $client = Client::where([
-                    ['drivers_license', '=', $input['nrc']],
-                    ['contact_email_address', '=', $input['email']],
-                ])->first();
-            }
-
-            if(empty($client)){
-                $response["message"] = "Unsuccessful";
-            } else {
-                $OTP = mt_rand(1000,9999);
-                if($this->sendMail($OTP, $input['email'])){
-                    Session::put('OTP', $OTP);
-                    $response["message"] = "Successful";
-                } else
-                    $response["message"] = "Unsuccessful";
-            }
+            return $this->sendSuccess("OTP Sent!");
+        } catch (\Exception $e){
+            return $this->sendError($e->getMessage());
         }
-
-        return response()->json($response);
     }
 
     /**
@@ -135,49 +102,25 @@ class OTPVerificationController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function verifyOTP(Request $request){
-        $response = array();
-        $enteredOTP = $request->input('OTP');
         $input = $request->all();
-        $client = null;
+        $enteredOTP = $input['OTP'];
+        $client_id = $input['client_id'];
 
-        $OTP = $request->session()->get('OTP');
+        $sessionOTP = $request->session()->get('OTP');
 
-        if($OTP == $enteredOTP){
-            if (array_key_exists('email', $input)) {
-                if (array_key_exists('nrc', $input)) {
-                    $client = Client::where([
-                        ['NRC', '=', $input['nrc']],
-                        ['contact_email_address', '=', $input['email']],
-                    ])->first();
-                }
+        if($sessionOTP == $enteredOTP){
+            $certificate = Certificate::where('client_id', $client_id)->first();
 
-                if (array_key_exists('passport', $input)) {
-                    $client = Client::where([
-                        ['passport', '=', $input['nrc']],
-                        ['contact_email_address', '=', $input['email']],
-                    ])->first();
-                }
-
-                if (array_key_exists('drivers_license', $input)) {
-                    $client = Client::where([
-                        ['drivers_license', '=', $input['nrc']],
-                        ['contact_email_address', '=', $input['email']],
-                    ])->first();
-                }
-
-                if(empty($client) || empty($client['certificate'])){
-                    Flash::error('Certificate not found');
-                    return abort(404, 'Certificate not found!');
-                } else {
-                    return view('certificate')->with('certificate', $client['certificate']);
-                }
+            if(empty($certificate)){
+                return $this->sendError('Certificate not found!');
+            } else {
+                return $this->sendSuccess($certificate->certificate_url);
             }
+
             //Removing Session variable
             Session::forget('OTP');
-        }else{
-            $response['message'] = "Wrong OTP";
+        } else {
+            return $this->sendError("Wrong OTP");
         }
-
-        return response()->json($response);
     }
 }
