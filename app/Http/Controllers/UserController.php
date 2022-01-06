@@ -70,7 +70,9 @@ class UserController extends AppBaseController
      */
     public function create()
     {
-        return view('users.create');
+        $roles = Role::all();
+
+        return view('users.create')->with('roles', $roles);
     }
 
     /**
