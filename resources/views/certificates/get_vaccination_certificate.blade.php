@@ -21,6 +21,12 @@
     <link rel="stylesheet" href="{{ asset('css/register.css') }}">
     <!-- Demo CSS -->
     <link rel="stylesheet" href="{{ asset('css/demo.css') }}">
+
+    <style>
+        .send {
+            height: 48px;
+        }
+    </style>
 </head>
 <body>
 <main>
@@ -53,8 +59,6 @@
                         <option value="passport">Passport</option>
                         <option value="drivers_license">Drivers License</option>
                     </select>
-
-                    <button type="button" class="action-button previous previous_button mt-xl-5">Back</button>
                     <button type="button" class="next action-button mt-xl-5">Continue</button>
                 </fieldset>
                 <fieldset id="personal_details_fieldset">
@@ -73,6 +77,7 @@
                     <div class="form-group">
                         <input id="other_names" type="text" class="form-control" placeholder="Other Names">
                     </div>
+                    <input type="hidden" id="client_id" name="client_id">
                     <button type="button" class="action-button previous previous_button">Back</button>
                     <button id="verify_personal_details" type="button" class="action-button">Verify</button>
                     <button id="personal_details" type="button" class="next action-button">Continue</button>
@@ -86,17 +91,11 @@
 
                     <div id="verification_method_phone" class="row">
                         <h6>We will send you a SMS. Input the code to verify.</h6>
-                        <div class="form-row">
-                            <div class="form-group col-md-3">
-                                <input type="tel" id="phone" class="form-control" placeholder="+260">
-                            </div>
-                            <div class="form-group col-md-6">
-                                <input type="text" class="form-control" placeholder="09XXXXXXX">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <button id="otp" type="button" class="next action-button">Send</button>
-{{--                                <a href="#" class="action-button">Send</a>--}}
-                            </div>
+                        <div class="form-group col-md-9">
+                            <input id="contact_number" type="text" class="form-control" disabled>
+                        </div>
+                        <div class="form-group col-md-3">
+                            <button id="send_sms" type="button" class="send action-button">Send</button>
                         </div>
 
                         <div class="done_text">
@@ -105,14 +104,14 @@
 
                     <div id="verification_method_email" class="row">
                         <h6>We will send you an email. Input the code to verify.</h6>
-                        <div class="row">
-                            <div class="form-group col-md-9">
-                                <input type="email" id="email" class="form-control" placeholder="john@example.com">
-                            </div>
-                            <div class="form-group col-md-3">
-                                <button id="send" type="button" class="action-button">Send</button>
-                            </div>
+
+                        <div class="form-group col-md-9">
+                            <input id="contact_email_address" type="email" class="form-control" disabled>
                         </div>
+                        <div class="form-group col-md-3">
+                            <button id="send_email" type="button" class="send action-button">Send</button>
+                        </div>
+
                         <div class="done_text">
                         </div>
                     </div>
@@ -208,18 +207,17 @@
                 type:"POST",
                 data: data,
                 success: function(response){
-                    if(response.verification === "Successful") {
-                        // console.log(response);
-                        $(".next").show();
-                    }
-                    if(response.verification === "Unsuccessful"){
-                        // console.log(response);
-                        $('#verificationErrorModal').modal('show');
-                    }
+                    var client = JSON.parse(response.message);
+
+                    $("#contact_number").val(client.contact_number);
+                    $("#contact_email_address").val(client.contact_email_address);
+                    $("#client_id").val(client.id);
+
+                    $(".next").show();
                 },
                 error: function(error) {
                     // console.log(error);
-                    $('#verificationErrorModal').modal('show');
+                    $("#verificationErrorModal").modal('show');
                 }
             });
         });
@@ -364,7 +362,6 @@
             toggleInputIDType();
         });
 
-
         function toggleInputVerificationMethod() {
             if ($("#verification_method").val() === "phone") {
                 $("#verification_method_phone").show();
@@ -399,97 +396,63 @@
             };
         };
 
-        $("#send").click(function (event){
+        $("#send_sms").click(function (event){
             event.preventDefault();
-            var data = {};
 
-            if ($("#verification_method").val() === "email") {
-                if ($("#id_type").val() === "nrc") {
-                    data = {
-                        "nrc": $("#nrc").val(),
-                        "email": $("#email").val()
-                    };
+            $.ajax({
+                url: "{{ route('sendSMS') }}",
+                type:"POST",
+                data: { "contact_number": $("#contact_number").val() },
+                success: function(response){
+                    // console.log(response);
+                    $(".done_text").html('<a href="#" class="done_icon"><i class="ion-android-done"></i></a><h6>A verification code has been sent to your phone. <br>Please enter it here.</h6>');
+                },
+                error: function(error) {
+                    // console.log(error);
+                    $(".done_text").html('<a href="#" class="cancel_icon"><i class="ion-android-cancel"></i></a><h6>Failed to send a verification code to your phone.<br>Please try again or contact Helpdesk</h6>');
                 }
-                if ($("#id_type").val() === "passport") {
-                    data = {
-                        "passport": $("#passport").val(),
-                        "email": $("#email").val()
-                    };
-                }
-                if ($("#id_type").val() === "drivers_license") {
-                    data = {
-                        "drivers_license": $("#drivers_license").val(),
-                        "email": $("#email").val()
-                    };
-                }
+            });
+        });
 
-                $.ajax({
-                    url: "{{ route('sendOTP') }}",
-                    type:"POST",
-                    data: data,
-                    success: function(response){
-                        // console.log(response);
-                        if(response.message === "Successful") {
-                            $(".done_text").html('<a href="#" class="done_icon"><i class="ion-android-done"></i></a><h6>A verification code is sent to your email. <br>Please enter it here.</h6>');
-                        }
-                        if(response.message === "Unsuccessful"){
-                            $(".done_text").html('<a href="#" class="cancel_icon"><i class="ion-android-cancel"></i></a><h6>Failed to send a verification code to your email. <br>Please try again.</h6>');
-                        }
-                    },
-                    error: function(error) {
-                        $(".done_text").html('<a href="#" class="don_icon"><i class="ion-android-cancel"></i></a><h6>Failed to send a verification code to your email. <br>Please try again.</h6>');
-                    }
-                });
-            }
+        $("#send_email").click(function (event){
+            event.preventDefault();
+
+            $.ajax({
+                url: "{{ route('sendEmail') }}",
+                type:"POST",
+                data: { "contact_email_address": $("#contact_email_address").val() },
+                success: function(response){
+                    // console.log(response);
+                    $(".done_text").html('<a href="#" class="done_icon"><i class="ion-android-done"></i></a><h6>A verification code has been sent to your email. <br>Please enter it here.</h6>');
+                },
+                error: function(error) {
+                    // console.log(error);
+                    $(".done_text").html('<a href="#" class="don_icon"><i class="ion-android-cancel"></i></a><h6>Failed to send a verification code to your email. <br>Please try again or contact Helpdesk</h6>');
+                }
+            });
+
         });
 
         $("#finish").click(function (event){
             event.preventDefault();
-            var data = {};
 
-            if ($("#verification_method").val() === "email") {
-                let OTP = $("#code1").val() + $("#code2").val() + $("#code3").val() + $("#code4").val();
+            let OTP = $("#code1").val() + $("#code2").val() + $("#code3").val() + $("#code4").val();
+            let client_id = $("#client_id").val();
 
-                if ($("#id_type").val() === "nrc") {
-                    data = {
-                        "nrc": $("#nrc").val(),
-                        "email": $("#email").val(),
-                        "OTP": OTP
-                    };
+            $.ajax({
+                url: "{{ route('verifyOTP') }}",
+                type: "POST",
+                data: { "client_id": client_id, "OTP": OTP },
+                success: function (response) {
+                    // console.log(response);
+                    location.href = response.message;
+                },
+                error: function (error) {
+                    // console.log(error);
+                    alert("Unable to verify OTP. Please try again");
                 }
-                if ($("#id_type").val() === "passport") {
-                    data = {
-                        "passport": $("#passport").val(),
-                        "email": $("#email").val(),
-                        "OTP": OTP
-                    };
-                }
-                if ($("#id_type").val() === "drivers_license") {
-                    data = {
-                        "drivers_license": $("#drivers_license").val(),
-                        "email": $("#email").val(),
-                        "OTP": OTP
-                    };
-                }
-
-                $.ajax({
-                    url: "{{ route('verifyOTP') }}",
-                    type: "POST",
-                    data: data,
-                    success: function (response) {
-                        console.log(response);
-                        if (response.message === "Wrong OTP") {
-                            alert("Wrong OTP");
-                            return false;
-                        }
-                    },
-                    error: function (error) {
-
-                    }
-                });
-            }
+            });
         });
-
 
         /*Function Calls*/
         verificationForm ();

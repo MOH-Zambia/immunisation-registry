@@ -128,7 +128,7 @@ class UpdateTrackedEntityInstances extends Command
                     }
 
                     //Save client record
-                    $client->save();
+                    $client->update();
 
                     //Store data in record table
                     $record = new Record([

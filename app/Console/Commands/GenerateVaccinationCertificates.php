@@ -174,7 +174,7 @@ class GenerateVaccinationCertificates extends Command
             $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
 
             if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>JANSSEN Saving certificate for client: {$certificate_uuid}</comment> {$vaccination->client_id}");
+                $this->getOutput()->writeln("<comment>JANSSEN Saving certificate for client:</comment> {$vaccination->client_id}");
                 $startTime = microtime(true);
 
                 $certificate_uuid =  (string) Str::orderedUuid();
@@ -231,7 +231,7 @@ class GenerateVaccinationCertificates extends Command
             $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
 
             if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>SINOPHARM Saving certificate for client: {$certificate_uuid}</comment> {$vaccination->client_id}");
+                $this->getOutput()->writeln("<comment>SINOPHARM Saving certificate for client: </comment> {$vaccination->client_id}");
                 $startTime = microtime(true);
 
                 $certificate_uuid =  (string) Str::orderedUuid();
@@ -288,7 +288,7 @@ class GenerateVaccinationCertificates extends Command
             $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
 
             if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>PFIZER-BIONTECH Saving certificate for client: {$certificate_uuid}</comment> {$vaccination->client_id}");
+                $this->getOutput()->writeln("<comment>PFIZER-BIONTECH Saving certificate for client:</comment> {$vaccination->client_id}");
                 $startTime = microtime(true);
 
                 $certificate_uuid =  (string) Str::orderedUuid();
@@ -405,6 +405,31 @@ class GenerateVaccinationCertificates extends Command
 
                 $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                 $this->getOutput()->writeln("<info>Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
+            }
+        }
+
+        //Update certificate with booster shots
+        $booster_doses = Vaccination::where([
+            ['dose_number', '=', 'Booster'],
+        ])->whereNull('certificate_id')->get();
+
+        foreach($booster_doses as $booster_dose){
+            $this->getOutput()->writeln("<comment>Updating BOOSTER dose for:</comment> {$booster_dose->client_id}");
+            $startTime = microtime(true);
+
+            $certificate = Certificate::where([
+                ['client_id', '=', $booster_dose->client_id],
+            ])->first();
+
+            if(!empty($certificate)){
+                $booster_dose->certificate_id = $certificate->id;
+                $booster_dose->save();
+
+                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                $this->getOutput()->writeln("<info>Booster dose added to Certificate: {{$certificate->certificate_url}}</info> ({$runTime}ms)");
+            } else {
+                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                $this->getOutput()->writeln("<info>Certificate for client: </info> {$booster_dose->client_id} NOT FOUND! ({$runTime}ms)");
             }
         }
 

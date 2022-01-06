@@ -51,8 +51,6 @@
                                             {{ $certificate->target_disease }} Vaccination Certificate <br>
                                             <small class="text-center">{{ $certificate->created_at }}</small><br><br>
                                         </h4>
-
-                                        <span class="vaccination_status">Fully Vaccinated</span>
                                     </div>
                                     <!-- /.col -->
                                 </div>
