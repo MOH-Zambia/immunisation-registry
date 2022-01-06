@@ -225,119 +225,111 @@ class ImportDHIS2Data extends Command
 
                             $startTime = microtime(true);
 
-                            if($event['status'] == 'COMPLETED' || $event['status'] == 'ACTIVE') { //Process only completed and active events
-                                $event_uid = $event['event'];
-                                $tracked_entity_instance_uid = $event['trackedEntityInstance'];
-                                $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
+                            $event_uid = $event['event'];
+                            $tracked_entity_instance_uid = $event['trackedEntityInstance'];
+                            $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
 
-                                if(empty($client)){
-                                    $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
-                                }
+                            if(empty($client)){
+                                $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
+                            }
 
-                                // Check if hash of $event exist in import log
-                                $import_log = ImportLog::where('hash', sha1(json_encode($event)))->first();
+                            // Check if hash of $event exist in import log
+                            $import_log = ImportLog::where('hash', sha1(json_encode($event)))->first();
 
-                                try {
-                                    if (empty($import_log)) {
-                                        $time = date('Y-m-d H:i:s');
-                                        $this->getOutput()
-                                            ->writeln("<info>$time Saving event:</info> Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
+                            try {
+                                if (empty($import_log)) {
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()
+                                        ->writeln("<info>$time Saving event:</info> Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
 
-                                        //Store data in record table
-                                        $record = new Record([
-                                            'data_source' => 'MOH_DHIS2_COVAX',
-                                            'data_type' => 'EVENT',
-                                            'data' => json_encode($event),
-                                        ]);
+                                    //Store data in record table
+                                    $record = new Record([
+                                        'data_source' => 'MOH_DHIS2_COVAX',
+                                        'data_type' => 'EVENT',
+                                        'data' => json_encode($event),
+                                    ]);
 
-                                        $record->save();
+                                    $record->save();
 
-                                        //Create and save new vaccination event
-                                        $vaccination = new Vaccination();
-                                        $vaccination->client_id = $client->id;
-                                        $vaccination->date = $event['eventDate'];
+                                    //Create and save new vaccination event
+                                    $vaccination = new Vaccination();
+                                    $vaccination->client_id = $client->id;
+                                    $vaccination->date = $event['eventDate'];
 
-                                        switch ($event['programStage']) {
-                                            case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
-                                                $vaccination->dose_number = '1';
-                                                break;
-                                            case 'RiV7VDxXQLN': //programStage: Vaccination Dose 2
-                                                $vaccination->dose_number = '2';
-                                                break;
-                                            case 'jatC7jRwVKO': //programStage: Vaccination Booster Dose
-                                                $vaccination->dose_number = 'Booster';
-                                                break;
-                                        }
-
-                                        foreach ($event['dataValues'] as $dataValue) {
-                                            if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
-                                                switch ($dataValue['value']) {
-                                                    case 'AstraZeneca_zm':
-                                                        $vaccination->vaccine_id = 1;
-                                                        break;
-                                                    case 'Johnson_Johnsons_zm':
-                                                        $vaccination->vaccine_id = 3;
-                                                        break;
-                                                    case 'Sinopharm':
-                                                        $vaccination->vaccine_id = 7;
-                                                        break;
-                                                    case 'Pfizer':
-                                                        $vaccination->vaccine_id = 6;
-                                                        break;
-                                                    case 'Moderna':
-                                                        $vaccination->vaccine_id = 4;
-                                                        break;
-                                                }
-                                            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm'){ // Batch Number
-                                                $vaccination->vaccine_batch_number = $dataValue['value'];
-                                            } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
-                                                $vaccination->date_of_next_dose = $dataValue['value'];
-                                            }
-                                        }
-
-                                        $vaccination->facility_id = $facility->id;
-                                        $vaccination->event_id = $event_uid;
-                                        $vaccination->record_id = $record->id;
-
-                                        if (Vaccination::where('event_id', $event_uid)->exists())
-                                            $vaccination->update();
-                                        else
-                                            $vaccination->save();
-
-                                        // Create record in ImportLog table
-                                        ImportLog::create([
-                                            'hash' => sha1(json_encode($event)),
-                                        ]);
-
-                                        $number_of_events++;
-
-                                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                        $time = date('Y-m-d H:i:s');
-                                        $event = json_encode($event, JSON_UNESCAPED_SLASHES);
-
-                                        Log::warning("$time Event saved: ({$runTime}ms) \n $event");
-                                        $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
-                                    } else {
-                                        $time = date('Y-m-d H:i:s');
-                                        $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because event already exist in the DATABASE!");
-//                                        Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
+                                    switch ($event['programStage']) {
+                                        case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
+                                            $vaccination->dose_number = '1';
+                                            break;
+                                        case 'RiV7VDxXQLN': //programStage: Vaccination Dose 2
+                                            $vaccination->dose_number = '2';
+                                            break;
+                                        case 'jatC7jRwVKO': //programStage: Vaccination Booster Dose
+                                            $vaccination->dose_number = 'Booster';
+                                            break;
                                     }
-                                } catch (QueryException $e) {
-                                    DB::rollback(); //Rollback database transaction if any error occurs
 
-                                    $message = $e->getMessage();
+                                    foreach ($event['dataValues'] as $dataValue) {
+                                        if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
+                                            switch ($dataValue['value']) {
+                                                case 'AstraZeneca_zm':
+                                                    $vaccination->vaccine_id = 1;
+                                                    break;
+                                                case 'Johnson_Johnsons_zm':
+                                                    $vaccination->vaccine_id = 3;
+                                                    break;
+                                                case 'Sinopharm':
+                                                    $vaccination->vaccine_id = 7;
+                                                    break;
+                                                case 'Pfizer':
+                                                    $vaccination->vaccine_id = 6;
+                                                    break;
+                                                case 'Moderna':
+                                                    $vaccination->vaccine_id = 4;
+                                                    break;
+                                            }
+                                        } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm'){ // Batch Number
+                                            $vaccination->vaccine_batch_number = $dataValue['value'];
+                                        } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
+                                            $vaccination->date_of_next_dose = $dataValue['value'];
+                                        }
+                                    }
+
+                                    $vaccination->facility_id = $facility->id;
+                                    $vaccination->event_id = $event_uid;
+                                    $vaccination->record_id = $record->id;
+
+                                    if (Vaccination::where('event_id', $event_uid)->exists())
+                                        $vaccination->update();
+                                    else
+                                        $vaccination->save();
+
+                                    // Create record in ImportLog table
+                                    ImportLog::create([
+                                        'hash' => sha1(json_encode($event)),
+                                    ]);
+
+                                    $number_of_events++;
+
+                                    $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                     $time = date('Y-m-d H:i:s');
                                     $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
-                                    Log::error( "$time QueryException: $message \n $event");
-                                    $this->getOutput()->writeln("<error>$time QueryException: $message \n $event</error>");
+                                    Log::warning("$time Event saved: ({$runTime}ms) \n $event");
+                                    $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
+                                } else {
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because event already exist in the DATABASE!");
+//                                        Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
                                 }
-                            } else {
+                            } catch (QueryException $e) {
+                                DB::rollback(); //Rollback database transaction if any error occurs
+
+                                $message = $e->getMessage();
                                 $time = date('Y-m-d H:i:s');
                                 $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
-                                $this->getOutput()->writeln("<comment>$time Skipping event because event status it is not COMPLETE or ACTIVE</comment>\n $event");
-                                Log::warning("$time Skipping event because event status it is not COMPLETE or ACTIVE \n $event");
+                                Log::error( "$time QueryException: $message \n $event");
+                                $this->getOutput()->writeln("<error>$time QueryException: $message \n $event</error>");
                             }
 
                             DB::commit(); //if no error on record, vaccination and importlog commit data to database

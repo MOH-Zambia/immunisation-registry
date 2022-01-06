@@ -8,13 +8,8 @@
 <div class="form-group col-sm-6">
     <label for="role">Role</label>
     <select class="form-control" id="role">
-{{--        <option value="{!! $user->role['id'] !!}">{!! $user->role['name'] !!}</option>--}}
         @foreach($roles as $role)
-            @if($role['id'] = $user->role['id'])
-                <option selected value="{!! $role['id'] !!}">{!! $role['name'] !!}</option>
-            @else
-                <option value="{!! $role['id'] !!}">{!! $role['name'] !!}</option>
-            @endif
+            <option value="{!! $role['id'] !!}">{!! $role['name'] !!}</option>
         @endforeach
     </select>
 </div>
