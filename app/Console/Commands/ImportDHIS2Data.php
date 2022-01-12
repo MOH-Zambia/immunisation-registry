@@ -109,27 +109,33 @@ class ImportDHIS2Data extends Command
             $client->client_uid = $client_uid;
 
             foreach ($trackedEntityInstance['attributes'] as $attribute) {
-                if ($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
+                if ($attribute['attribute'] == 'zUQCBnWbBer') //Tracked Entity Attribute UID for Card Number
                     $client->card_number = $attribute['value'];
-                else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
+                else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Tracked Entity Attribute UID for NRC
                     $client->NRC = $attribute['value'];
-                else if ($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
+                else if ($attribute['attribute'] == 'pd02AeZHXWi') //Tracked Entity Attribute UID for Passport Number
                     $client->passport_number = $attribute['value'];
-                else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
+                else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Tracked Entity Attribute UID for First Name
                     $client->first_name = ucfirst(strtolower(trim($attribute['value'])));
-                else if ($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
+                else if ($attribute['attribute'] == 'aW66s2QSosT') //Tracked Entity Attribute UID for Surname
                     $client->last_name = ucfirst(strtolower(trim($attribute['value'])));
-                else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
+                else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Tracked Entity Attribute UID for Sex
                     $client->sex = $attribute['value'][0];
-                else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
+                else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Tracked Entity Attribute UID for Age
                     $client->date_of_birth = $attribute['value'];
-                else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
+                else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Tracked Entity Attribute UID for Mobile phone number
                     $client->contact_number = $attribute['value'];
-                else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Attribute ID for Email Address
+                else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Tracked Entity Attribute UID for Email Address
                     $client->contact_email_address = $attribute['value'];
-                else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
+                else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Tracked Entity Attribute UID for Address (current)
                     $client->address_line1 = $attribute['value'];
-                else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
+                else if ($attribute['attribute'] == 'gB3BrfkEmkC') //Tracked Entity Attribute UID for Guardian's NRC
+                    $client->guardian_NRC = $attribute['value'];
+                else if ($attribute['attribute'] == 'TodvbRCs4La') //Tracked Entity Attribute UID for Guardian's Passport Number
+                    $client->guardian_passport_number = $attribute['value'];
+                else if ($attribute['attribute'] == 'pjexi5YaAPa') //Tracked Entity Attribute UID for Guardian's Contact Number
+                    $client->guardian_contact_number = $attribute['value'];
+                else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Tracked Entity Attribute UID for Occupation
                     $client->occupation = $attribute['value'];
             }
 
