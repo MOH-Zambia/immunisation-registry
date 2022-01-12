@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Certificate",
- *      required={"certificate_uuid", "client_id", "dose_1_date", "target_disease", "certificate_status", "qr_code", "qr_code_path", "certificate_url"},
+ *      required={"certificate_uuid", "client_id", "target_disease", "certificate_status", "qr_code", "qr_code_path", "certificate_url"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -31,48 +31,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          property="trusted_vaccine_code",
  *          description="trusted_vaccine_code",
  *          type="string"
- *      ),
- *      @SWG\Property(
- *          property="innoculated_since_date",
- *          description="innoculated_since_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="dose_1_date",
- *          description="dose_1_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="dose_2_date",
- *          description="dose_2_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="dose_3_date",
- *          description="dose_3_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="dose_4_date",
- *          description="dose_4_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="dose_5_date",
- *          description="dose_5_date",
- *          type="string",
- *          format="date"
- *      ),
- *      @SWG\Property(
- *          property="booster_dose_date",
- *          description="booster_dose_date",
- *          type="string",
- *          format="date"
  *      ),
  *     @SWG\Property(
  *          property="target_disease",
@@ -160,14 +118,6 @@ class Certificate extends Model
         'certificate_uuid',
         'client_id',
         'trusted_vaccine_code',
-        'vaccine_id',
-        'innoculated_since_date',
-        'dose_1_date',
-        'dose_2_date',
-        'dose_3_date',
-        'dose_4_date',
-        'dose_5_date',
-        'booster_dose_date',
         'target_disease',
         'certificate_expiration_date',
         'certificate_status',
@@ -189,14 +139,6 @@ class Certificate extends Model
         'certificate_uuid' => 'string',
         'client_id' => 'integer',
         'trusted_vaccine_code' => 'string',
-        'vaccine_id' => 'integer',
-        'innoculated_since_date' => 'date',
-        'dose_1_date' => 'date',
-        'dose_2_date' => 'date',
-        'dose_3_date' => 'date',
-        'dose_4_date' => 'date',
-        'dose_5_date' => 'date',
-        'booster_dose_date' => 'date',
         'target_disease',
         'certificate_expiration_date' => 'date',
         'certificate_status' => 'string',
@@ -217,14 +159,6 @@ class Certificate extends Model
         'certificate_uuid' => 'required|string|max:36',
         'client_id' => 'required|integer',
         'trusted_vaccine_code' => 'nullable|string|max:255',
-        'vaccine_id' => 'required|integer',
-        'innoculated_since_date' => 'nullable',
-        'dose_1_date' => 'required',
-        'dose_2_date' => 'nullable',
-        'dose_3_date' => 'nullable',
-        'dose_4_date' => 'nullable',
-        'dose_5_date' => 'nullable',
-        'booster_dose_date' => 'nullable',
         'target_disease' => 'required|string|max:255',
         'certificate_expiration_date' => 'nullable',
         'certificate_status' => 'required|string|max:255',
@@ -245,14 +179,6 @@ class Certificate extends Model
     public function client()
     {
         return $this->belongsTo(\App\Models\Client::class, 'client_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function vaccine()
-    {
-        return $this->belongsTo(\App\Models\Vaccine::class, 'vaccine_id');
     }
 
     /**

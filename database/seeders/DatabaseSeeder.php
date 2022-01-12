@@ -41,6 +41,9 @@ class DatabaseSeeder extends Seeder
             'description' => 'Public user with account on the system'
         ]);
 
+        $host= gethostname();
+        $ip = gethostbyname($host);
+
         User::create([
             'role_id' => 1,
             'first_name' => 'System',
@@ -51,7 +54,5 @@ class DatabaseSeeder extends Seeder
         ]);
 
         User::factory(120)->create();
-
-
     }
 }

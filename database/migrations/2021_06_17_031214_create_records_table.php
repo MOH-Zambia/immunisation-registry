@@ -15,8 +15,10 @@ class CreateRecordsTable extends Migration
     {
         Schema::create('records', function (Blueprint $table) {
             $table->increments('id');
+            $table->string('record_id'); //Record identifier from data source
             $table->string('data_source');
             $table->string('data_type');
+            $table->string("hash");
             $table->json('data');
             $table->timestamps();
             $table->softDeletes();

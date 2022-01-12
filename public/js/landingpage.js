@@ -49,8 +49,10 @@ $(document).ready(function() {
       return false;
     });
 
-    $(".alert-close-icon").click(function () {
+    $(".alert-close-icon").click(function (event) {
+        event.preventDefault();
         $(".alert-bar").hide();
+        // alert("Hello world!");
     });
 
 });

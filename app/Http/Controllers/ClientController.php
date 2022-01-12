@@ -62,8 +62,7 @@ class ClientController extends AppBaseController
             return Datatables::of($clients)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="/clients/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
-                    return $actionBtn;
+                    return '<a href="/clients/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
                 })
                 ->rawColumns(['action'])
                 ->make(true);

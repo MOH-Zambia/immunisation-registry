@@ -102,6 +102,31 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          description="address_line2",
  *          type="string"
  *      ),
+ *     @SWG\Property(
+ *          property="guardian_name",
+ *          description="guardian_name",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
+ *          property="guardian_NRC",
+ *          description="guardian_NRC",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
+ *          property="guardian_passport_number",
+ *          description="guardian_passport_number",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
+ *          property="guardian_contact_number",
+ *          description="guardian_contact_number",
+ *          type="string"
+ *      ),
+ *     @SWG\Property(
+ *          property="guardian_contact_email_address",
+ *          description="guardian_contact_email_address",
+ *          type="string"
+ *      ),
  *      @SWG\Property(
  *          property="next_of_kin_name",
  *          description="next_of_kin_name",
@@ -184,6 +209,11 @@ class Client extends Model
         'contact_email_address',
         'address_line1',
         'address_line2',
+        'guardian_name',
+        'guardian_NRC',
+        'guardian_passport_number',
+        'guardian_contact_number',
+        'guardian_contact_email_address',
         'next_of_kin_name',
         'next_of_kin_contact_number',
         'next_of_kin_contact_email_address',
@@ -216,6 +246,11 @@ class Client extends Model
         'contact_email_address' => 'string',
         'address_line1' => 'string',
         'address_line2' => 'string',
+        'guardian_name' => 'string',
+        'guardian_NRC' => 'string',
+        'guardian_passport_number' => 'string',
+        'guardian_contact_number' => 'string',
+        'guardian_contact_email_address' => 'string',
         'next_of_kin_name' => 'string',
         'next_of_kin_contact_number' => 'string',
         'next_of_kin_contact_email_address' => 'string',
@@ -247,7 +282,11 @@ class Client extends Model
         'contact_email_address' => 'nullable|string|max:255',
         'address_line1' => 'nullable|string|max:255',
         'address_line2' => 'nullable|string|max:255',
-        'next_of_kin_name' => 'nullable|string|max:255',
+        'guardian_name' => 'nullable|string|max:255',
+        'guardian_NRC' => 'nullable|string|max:255',
+        'guardian_passport_number' => 'nullable|string|max:255',
+        'guardian_contact_number' => 'nullable|string|max:255',
+        'guardian_contact_email_address' => 'nullable|string|max:255',
         'next_of_kin_contact_number' => 'nullable|string|max:255',
         'next_of_kin_contact_email_address' => 'nullable|string|max:255',
         'nationality' => 'required|integer',
