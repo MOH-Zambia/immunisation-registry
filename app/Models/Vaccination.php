@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Vaccination",
- *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "record_id"},
+ *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "event_uid", "record_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -84,6 +84,11 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="integer",
  *          format="int32"
  *      ),
+ *     @SWG\Property(
+ *          property="event_uid",
+ *          description="event_uid",
+ *          type="string",
+ *      ),
  *      @SWG\Property(
  *          property="record_id",
  *          description="record_id",
@@ -121,10 +126,7 @@ class Vaccination extends Model
     const CREATED_AT = 'created_at';
     const UPDATED_AT = 'updated_at';
 
-
     protected $dates = ['deleted_at'];
-
-
 
     public $fillable = [
         'client_id',
@@ -140,7 +142,7 @@ class Vaccination extends Model
         'vaccinating_country_id',
         'vaccination_certificate_id',
         'facility_id',
-        'event_id',
+        'event_uid',
         'record_id'
     ];
 
@@ -164,7 +166,7 @@ class Vaccination extends Model
         'vaccinating_country_id' => 'integer',
         'vaccination_certificate_id' => 'integer',
         'facility_id' => 'integer',
-        'event_id' => 'string',
+        'event_uid' => 'string',
         'record_id' => 'integer'
     ];
 
@@ -187,7 +189,7 @@ class Vaccination extends Model
         'vaccinating_country_id' => 'required|integer',
         'vaccination_certificate_id' => 'nullable|integer',
         'facility_id' => 'required|integer',
-        'event_id' => 'nullable|string|max:255',
+        'event_uid' => 'nullable|string|max:255',
         'record_id' => 'required|integer',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
