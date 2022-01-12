@@ -53,6 +53,13 @@ class DatabaseSeeder extends Seeder
             'password' => '$2y$10$uh6UV1v7u7ZSOclAt5AeWu8.QriT0fasQ1zv1asG1fbzN4fdENy5m', //m0h1ct11
         ]);
 
-        User::factory(120)->create();
+        User::create([
+            'role_id' => 2,
+            'first_name' => 'DHIO',
+            'last_name' => 'User',
+            'email' => 'dhio.ir@moh.gov.zm',
+            'email_verified_at' => now(),
+            'password' => Hash::make('M0h@2021'), //M0h@2021
+        ]);
     }
 }

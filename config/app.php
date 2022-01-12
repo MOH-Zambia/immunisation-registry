@@ -176,7 +176,7 @@ return [
 
         LaravelQRCode\Providers\QRCodeServiceProvider::class,
         Grimzy\LaravelMysqlSpatial\SpatialServiceProvider::class,
-//        OwenIt\Auditing\AuditingServiceProvider::class,
+        OwenIt\Auditing\AuditingServiceProvider::class,
         Yajra\DataTables\DataTablesServiceProvider::class,
         Yajra\DataTables\HtmlServiceProvider::class,
         Yajra\DataTables\ButtonsServiceProvider::class,

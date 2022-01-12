@@ -91,7 +91,7 @@ class ImportDHIS2Data extends Command
             $client_uid = $trackedEntityInstance['trackedEntityInstance'];
 
             $time = date('Y-m-d H:i:s');
-            $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: </info>{$client_uid}");
+            $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: {$client_uid}</info>");
 
             //Store data in record table
             $record = new Record([
@@ -219,10 +219,18 @@ class ImportDHIS2Data extends Command
                                         $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
                                     }
 
-                                    //Create and save new vaccination event
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()
+                                        ->writeln("<info>$time Saving event: Event UID: $event_uid, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$tracked_entity_instance_uid}</info>");
+
+                                    // Retrieve the user by the attributes, or create it if it doesn't exist...
+//                                    $vaccination = Vaccination::firstOrNew(array('event_uid' => '$event_uid'));
                                     $vaccination = new Vaccination();
+
                                     $vaccination->client_id = $client->id;
                                     $vaccination->date = $event['eventDate'];
+                                    $vaccination->facility_id = $facility->id;
+                                    $vaccination->record_id = $record->id;
 
                                     switch ($event['programStage']) {
                                         case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
@@ -262,37 +270,14 @@ class ImportDHIS2Data extends Command
                                         }
                                     }
 
-                                    $vaccination->facility_id = $facility->id;
-                                    $vaccination->event_id = $event_uid;
-                                    $vaccination->record_id = $record->id;
+                                    $vaccination->save();
 
-                                    if (Vaccination::where('event_id', $event_uid)->exists()){
-                                        $time = date('Y-m-d H:i:s');
-                                        $this->getOutput()
-                                            ->writeln("<info>$time Updating event:</info>Event UID: $event_uid, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
+                                    $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                                    $time = date('Y-m-d H:i:s');
+                                    $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
-                                        $vaccination->update();
-
-                                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                        $time = date('Y-m-d H:i:s');
-                                        $event = json_encode($event, JSON_UNESCAPED_SLASHES);
-
-                                        Log::info("$time Event {$vaccination->event_id} updated: ({$runTime}ms) \n $event");
-                                        $this->getOutput()->writeln("<info>$time Event {$vaccination->event_id} updated: ({$runTime}ms)</info> \n $event");
-                                    } else {
-                                        $time = date('Y-m-d H:i:s');
-                                        $this->getOutput()
-                                            ->writeln("<info>$time Saving event:</info>Event UID: $event_uid, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
-
-                                        $vaccination->save();
-
-                                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                        $time = date('Y-m-d H:i:s');
-                                        $event = json_encode($event, JSON_UNESCAPED_SLASHES);
-
-                                        Log::info("$time Event saved: ({$runTime}ms) \n $event");
-                                        $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
-                                    }
+                                    Log::info("$time Event saved: ({$runTime}ms) \n $event");
+                                    $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
                                 }
 
                                 DB::commit(); //if no error on record, vaccination and importlog commit data to database
