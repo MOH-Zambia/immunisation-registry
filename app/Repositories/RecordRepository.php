@@ -17,8 +17,10 @@ class RecordRepository extends BaseRepository
      * @var array
      */
     protected $fieldSearchable = [
+        'record_id',
         'data_source',
         'data_type',
+        'hash',
         'data'
     ];
 

@@ -41,13 +41,13 @@
                     <thead>
                         <tr>
                             <th>Certificate UUID</th>
+                            <th>NRC</th>
                             <th>Last Name</th>
                             <th>First Name</th>
                             <th>Other Names</th>
-                            <th>Dose 1 Date</th>
-                            <th>Dose 2 Date</th>
-                            <th>Booster Dose Date</th>
                             <th>Trusted Vaccine Code</th>
+                            <th>Created At</th>
+                            <th>Updated At</th>
                             <th>Action</th>
                         </tr>
                     </thead>
@@ -74,7 +74,11 @@
                 columns: [
                     {
                         data: 'certificate_uuid',
-                        name: 'certificate_uuid'
+                        name: 'certificates.certificate_uuid'
+                    },
+                    {
+                        data: 'NRC',
+                        name: 'clients.NRC'
                     },
                     {
                         data: 'last_name',
@@ -89,20 +93,16 @@
                         name: 'clients.other_names'
                     },
                     {
-                        data: 'dose_1_date',
-                        name: 'dose_1_date'
-                    },
-                    {
-                        data: 'dose_2_date',
-                        name: 'dose_2_date'
-                    },
-                    {
-                        data: 'booster_dose_date',
-                        name: 'booster_dose_date'
-                    },
-                    {
                         data: 'trusted_vaccine_code',
-                        name: 'trusted_vaccine_code'
+                        name: 'certificates.trusted_vaccine_code'
+                    },
+                    {
+                        data: 'created_at',
+                        name: 'certificates.created_at'
+                    },
+                    {
+                        data: 'updated_at',
+                        name: 'certificates.updated_at'
                     },
                     {
                         data: 'action',

@@ -22,15 +22,6 @@ class CertificateRepository extends BaseRepository
         'trusted_vaccine_code',
         'certificate_issuing_authority_id',
         'vaccination_certificate_batch_number',
-        'vaccine_id',
-        'innoculated_since_date',
-        'recovery_date',
-        'dose_1_date',
-        'dose_2_date',
-        'dose_3_date',
-        'dose_4_date',
-        'dose_5_date',
-        'booster_dose_date',
         'target_disease',
         'certificate_expiration_date'
     ];

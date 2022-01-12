@@ -36,6 +36,7 @@ namespace App\Console\Commands;
  */
 
 use Illuminate\Console\Command;
+use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
@@ -61,7 +62,7 @@ class GenerateVaccinationCertificates extends Command
      *
      * @var string
      */
-    protected $description = 'Generates Vaccination Certificates for Clients';
+    protected $description = 'Generates vaccination certificates for clients';
 
     /**
      * Create a new command instance.
@@ -80,7 +81,7 @@ class GenerateVaccinationCertificates extends Command
      */
     public function handle()
     {
-        $path = "img/qrcodes/";
+        $path = "public/img/qrcodes/";
         if (!file_exists($path)) {
             mkdir($path, 0777, true);
         }
@@ -92,345 +93,75 @@ class GenerateVaccinationCertificates extends Command
         Log::info("$script_start_date_time: Generating certificates");
         $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Generating certificates</info>");
 
-        $astrazeneca_fully_vaccinated = DB::table('vaccinations as dose1')->where([
-                ['dose1.vaccine_id', '=', 1], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
-                ['dose1.dose_number', '=', '1'],
-            ])->join('vaccinations as dose2', function($join) {
-                $join->on('dose1.client_id', '=', 'dose2.client_id')
-                    ->where([
-                        ['dose2.vaccine_id', '=', 1], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
-                        ['dose2.dose_number', '=', '2'],
-                    ]);
-            })->get();
+        //Generate certificates
+        $vaccinations = Vaccination::whereNull('certificate_id')->get();
 
-        foreach($astrazeneca_fully_vaccinated as $vaccination){
-
-            $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
-
-            if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>ASTRAZENCA Saving certificate for client:</comment> {$vaccination->client_id}");
-                $startTime = microtime(true);
-
-                $certificate_uuid = Str::orderedUuid();
-
-                $dose1 = Vaccination::where([
-                    ['client_id', '=', $vaccination->client_id],
-                    ['dose_number', '=', '1'],
-                ])->whereNull('certificate_id')->first();
-
-                $dose2 = Vaccination::where([
-                    ['client_id', '=', $vaccination->client_id],
-                    ['dose_number', '=', '2'],
-                ])->whereNull('certificate_id')->first();
-
-                $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
-
-                //generate qrcode
-                //save qrcode image in our folder on this site
-                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
-
-                //generate qrcode
-                QRCode::url($certificate_url)
-                    ->setSize(6)
-                    ->setOutfile('public/'.$qr_code_path)
-                    ->png();
-
-                $qrcode = file_get_contents('public/'.$qr_code_path);
-
-                $certificate = new Certificate([
-                    'certificate_uuid' => $certificate_uuid,
-                    'client_id' => $vaccination->client_id,
-                    'vaccine_id' => $vaccination->vaccine_id,
-                    'innoculated_since_date' => $dose2->date,
-                    'dose_1_date' => $dose1->date,
-                    'dose_2_date' => $dose2->date,
-                    'target_disease' => 'COVID-19',
-                    'qr_code' => $qrcode,
-                    'qr_code_path' => $qr_code_path,
-                    'certificate_url' => $certificate_url,
-                ]);
-
-                $certificate->save();
-                $number_of_certificates++;
-
-                //Add reference to the certificate in the vaccination table
-                $dose1->certificate_id = $certificate->id;
-                $dose1->save();
-
-                $dose2->certificate_id = $certificate->id;
-                $dose2->save();
-
-                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                $this->getOutput()->writeln("<info>Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
-            }
-        }
-
-        $janssen_dose = Vaccination::where([
-            ['vaccine_id', '=', 3], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
-        ])->whereNull('certificate_id')->get();
-
-        foreach($janssen_dose as $vaccination){
-
-            $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
-
-            if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>JANSSEN Saving certificate for client:</comment> {$vaccination->client_id}");
-                $startTime = microtime(true);
-
-                $certificate_uuid =  (string) Str::orderedUuid();
-
-                $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
-
-                //generate qrcode
-                //save qrcode image in our folder on this site
-                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
-
-                QRCode::url($certificate_url)
-                    ->setSize(6)
-                    ->setOutfile('public/'.$qr_code_path)
-                    ->png();
-
-                $qrcode = file_get_contents('public/'.$qr_code_path);
-
-                // $qrcode = QrCode::format('png')
-                //     ->size(8)
-                //     ->margin(2)
-                //     ->generate($certificate_url);
-
-                $certificate = new Certificate([
-                    'certificate_uuid' => $certificate_uuid,
-                    'client_id' => $vaccination->client_id,
-                    'vaccine_id' => $vaccination->vaccine_id,
-                    'innoculated_since_date' => $vaccination->date,
-                    'dose_1_date' => $vaccination->date,
-                    'target_disease' => 'COVID-19',
-                    'qr_code' => $qrcode,
-                    'qr_code_path' => $qr_code_path,
-                    'certificate_url' => $certificate_url,
-                ]);
-
-                $certificate->save();
-                $number_of_certificates++;
-
-                //Add reference to the certificate in the vaccination table
-                $vaccination->certificate_id = $certificate->id;
-                $vaccination->save();
-
-                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                $this->getOutput()->writeln("<info>Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
-            }
-        }
-
-        //Sinopharm (BIBP) COVID-19 Vaccine - Vaccine ID 7
-        $sinopharm_dose = Vaccination::where([
-            ['vaccine_id', '=', 7],
-        ])->whereNull('certificate_id')->get();
-
-        foreach($sinopharm_dose as $vaccination){
-
-            $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
-
-            if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>SINOPHARM Saving certificate for client: </comment> {$vaccination->client_id}");
-                $startTime = microtime(true);
-
-                $certificate_uuid =  (string) Str::orderedUuid();
-
-                $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
-
-                //generate qrcode
-                //save qrcode image in our folder on this site
-                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
-
-                QRCode::url($certificate_url)
-                    ->setSize(6)
-                    ->setOutfile('public/'.$qr_code_path)
-                    ->png();
-
-                $qrcode = file_get_contents('public/'.$qr_code_path);
-
-                // $qrcode = QrCode::format('png')
-                //     ->size(8)
-                //     ->margin(2)
-                //     ->generate($certificate_url);
-
-                $certificate = new Certificate([
-                    'certificate_uuid' => $certificate_uuid,
-                    'client_id' => $vaccination->client_id,
-                    'vaccine_id' => $vaccination->vaccine_id,
-                    'innoculated_since_date' => $vaccination->date,
-                    'dose_1_date' => $vaccination->date,
-                    'target_disease' => 'COVID-19',
-                    'qr_code' => $qrcode,
-                    'qr_code_path' => $qr_code_path,
-                    'certificate_url' => $certificate_url,
-                ]);
-
-                $certificate->save();
-                $number_of_certificates++;
-
-                //Add reference to the certificate in the vaccination table
-                $vaccination->certificate_id = $certificate->id;
-                $vaccination->save();
-
-                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                $this->getOutput()->writeln("<info>Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
-            }
-        }
-
-        //Pfizer-BioNTech COVID-19 Vaccine (COMIRNATY) - Vaccine ID 6
-        $pfizer_dose = Vaccination::where([
-            ['vaccine_id', '=', 6],
-        ])->whereNull('certificate_id')->get();
-
-        foreach($pfizer_dose as $vaccination){
-
-            $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
-
-            if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>PFIZER-BIONTECH Saving certificate for client:</comment> {$vaccination->client_id}");
-                $startTime = microtime(true);
-
-                $certificate_uuid =  (string) Str::orderedUuid();
-                $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
-
-                //generate qrcode
-                //save qrcode image in our folder on this site
-                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
-
-                QRCode::url($certificate_url)
-                    ->setSize(6)
-                    ->setOutfile('public/'.$qr_code_path)
-                    ->png();
-
-                $qrcode = file_get_contents('public/'.$qr_code_path);
-
-                // $qrcode = QrCode::format('png')
-                //     ->size(8)
-                //     ->margin(2)
-                //     ->generate($certificate_url);
-
-                $certificate = new Certificate([
-                    'certificate_uuid' => $certificate_uuid,
-                    'client_id' => $vaccination->client_id,
-                    'vaccine_id' => $vaccination->vaccine_id,
-                    'innoculated_since_date' => $vaccination->date,
-                    'dose_1_date' => $vaccination->date,
-                    'target_disease' => 'COVID-19',
-                    'qr_code' => $qrcode,
-                    'qr_code_path' => $qr_code_path,
-                    'certificate_url' => $certificate_url,
-                ]);
-
-                $certificate->save();
-                $number_of_certificates++;
-
-                //Add reference to the certificate in the vaccination table
-                $vaccination->certificate_id = $certificate->id;
-                $vaccination->save();
-
-                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                $this->getOutput()->writeln("<info>Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
-            }
-        }
-
-        //Moderna COVID-19 Vaccine (Spikevax) - Vaccine ID 4
-        $moderna_fully_vaccinated = DB::table('vaccinations as dose1')->where([
-            ['dose1.vaccine_id', '=', 4], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
-            ['dose1.dose_number', '=', '1'],
-        ])->join('vaccinations as dose2', function($join) {
-            $join->on('dose1.client_id', '=', 'dose2.client_id')
-                ->where([
-                    ['dose2.vaccine_id', '=', 4], //Vaccine_id is hard coded - Ensure the value does not change or make code future proof
-                    ['dose2.dose_number', '=', '2'],
-                ]);
-        })->get();
-
-        foreach($moderna_fully_vaccinated as $vaccination){
-
-            $certificate = Certificate::where('client_id', $vaccination->client_id)->first();
-
-            if(empty($certificate)){
-                $this->getOutput()->writeln("<comment>MODERNA Saving certificate for client:</comment> {$vaccination->client_id}");
-                $startTime = microtime(true);
-
-                $certificate_uuid = Str::orderedUuid();
-
-                $dose1 = Vaccination::where([
-                    ['client_id', '=', $vaccination->client_id],
-                    ['dose_number', '=', '1'],
-                ])->whereNull('certificate_id')->first();
-
-                $dose2 = Vaccination::where([
-                    ['client_id', '=', $vaccination->client_id],
-                    ['dose_number', '=', '2'],
-                ])->whereNull('certificate_id')->first();
-
-                $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
-
-                //generate qrcode
-                //save qrcode image in our folder on this site
-                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
-
-                //generate qrcode
-                QRCode::url($certificate_url)
-                    ->setSize(6)
-                    ->setOutfile('public/'.$qr_code_path)
-                    ->png();
-
-                $qrcode = file_get_contents('public/'.$qr_code_path);
-
-                $certificate = new Certificate([
-                    'certificate_uuid' => $certificate_uuid,
-                    'client_id' => $vaccination->client_id,
-                    'vaccine_id' => $vaccination->vaccine_id,
-                    'innoculated_since_date' => $dose2->date,
-                    'dose_1_date' => $dose1->date,
-                    'dose_2_date' => $dose2->date,
-                    'target_disease' => 'COVID-19',
-                    'qr_code' => $qrcode,
-                    'qr_code_path' => $qr_code_path,
-                    'certificate_url' => $certificate_url,
-                ]);
-
-                $certificate->save();
-                $number_of_certificates++;
-
-                //Add reference to the certificate in the vaccination table
-                $dose1->certificate_id = $certificate->id;
-                $dose1->save();
-
-                $dose2->certificate_id = $certificate->id;
-                $dose2->save();
-
-                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                $this->getOutput()->writeln("<info>Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
-            }
-        }
-
-        //Update certificate with booster shots
-        $booster_doses = Vaccination::where([
-            ['dose_number', '=', 'Booster'],
-        ])->whereNull('certificate_id')->get();
-
-        foreach($booster_doses as $booster_dose){
-            $this->getOutput()->writeln("<comment>Updating BOOSTER dose for:</comment> {$booster_dose->client_id}");
+        foreach($vaccinations as $vaccination){
             $startTime = microtime(true);
 
             $certificate = Certificate::where([
-                ['client_id', '=', $booster_dose->client_id],
+                ['client_id', '=', $vaccination->client_id],
             ])->first();
 
-            if(!empty($certificate)){
-                $booster_dose->certificate_id = $certificate->id;
-                $booster_dose->save();
+            if(empty($certificate)){
+                $time = date('Y-m-d H:i:s');
+                $this->getOutput()->writeln("<comment>$time Saving certificate for client:</comment> {$vaccination->client_id}");
 
-                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                $this->getOutput()->writeln("<info>Booster dose added to Certificate: {{$certificate->certificate_url}}</info> ({$runTime}ms)");
+                $certificate_uuid = Str::orderedUuid();
+                $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
+
+                //generate qrcode and save qrcode image in our folder on this site
+                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
+                QRCode::url($certificate_url)
+                    ->setSize(6)
+                    ->setOutfile('public/'.$qr_code_path)
+                    ->png();
+
+                $qrcode = file_get_contents('public/'.$qr_code_path);
+
+                DB::beginTransaction();
+                try{
+                    //Create new certificate
+                    $certificate = new Certificate();
+
+                    $certificate->certificate_uuid = $certificate_uuid;
+                    $certificate->client_id = $vaccination->client_id;
+                    $certificate->target_disease = 'COVID-19';
+                    $certificate->qr_code = $qrcode;
+                    $certificate->qr_code_path = $qr_code_path;
+                    $certificate->certificate_url = $certificate_url;
+
+                    $certificate->save();
+
+                    //Add reference to the certificate in the vaccination table
+                    $vaccination->certificate_id = $certificate->id;
+                    $vaccination->save();
+
+                    DB::commit();
+
+                    $time = date('Y-m-d H:i:s');
+                    $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                    $this->getOutput()->writeln("<info>$time Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
+                } catch (\Exception $e) {
+                    DB::rollback(); //Rollback database transaction if any error occurs
+
+                    $message = $e->getMessage();
+                    $time = date('Y-m-d H:i:s');
+                    $this->getOutput()->writeln("<error>$time Exception: $message</error>");
+                }
             } else {
+                $time = date('Y-m-d H:i:s');
+                $this->getOutput()->writeln("<comment>$time Updating certificate for client:</comment> {$vaccination->client_id}");
+
+                $vaccination->certificate_id = $certificate->id;
+                $vaccination->save();
+
+                $time = date('Y-m-d H:i:s');
                 $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                $this->getOutput()->writeln("<info>Certificate for client: </info> {$booster_dose->client_id} NOT FOUND! ({$runTime}ms)");
+                $this->getOutput()->writeln("<info>$time Updated certificate: {{$certificate->certificate_url}}</info> ({$runTime}ms)");
             }
+
+            $number_of_certificates++;
         }
 
         $script_end_time = date('Y-m-d H:i:s');

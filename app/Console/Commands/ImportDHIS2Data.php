@@ -81,109 +81,73 @@ class ImportDHIS2Data extends Command
     {
         $httpClient = new GuzzleHttp\Client();
 
-        try {
-            $response = $httpClient->request('GET', env('DHIS2_BASE_URL'). "trackedEntityInstances.json?trackedEntityInstance={$tracked_entity_instance_uid}", [
-                'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
+        $response = $httpClient->request('GET', env('DHIS2_BASE_URL'). "trackedEntityInstances.json?trackedEntityInstance={$tracked_entity_instance_uid}", [
+            'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
+        ]);
+
+        if ($response->getStatusCode() == 200) {
+            $response_body = json_decode($response->getBody(), true);
+            $trackedEntityInstance = $response_body['trackedEntityInstances'][0];
+            $client_uid = $trackedEntityInstance['trackedEntityInstance'];
+
+            $time = date('Y-m-d H:i:s');
+            $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: </info>{$client_uid}");
+
+            //Store data in record table
+            $record = new Record([
+                'record_id' => $client_uid,
+                'data_source' => 'MOH_DHIS2_COVAX',
+                'data_type' => 'TRACKED_ENTITY_INSTANCE',
+                'hash' => sha1(json_encode($trackedEntityInstance)),
+                'data' => json_encode($trackedEntityInstance)
             ]);
 
-            if ($response->getStatusCode() == 200) {
-                $responce_body = json_decode($response->getBody(), true);
-                $trackedEntityInstance = $responce_body['trackedEntityInstances'][0];
+            $record->save();
 
-                $time = date('Y-m-d H:i:s');
-                $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: </info>{$trackedEntityInstance['trackedEntityInstance']}");
+            //Create and save new client
+            $client = new Client();
+            $client->client_uid = $client_uid;
 
-                //Store data in record table
-                $record = new Record([
-                    'data_source' => 'MOH_DHIS2_COVAX',
-                    'data_type' => 'TRACKED_ENTITY_INSTANCE',
-                    'data' => json_encode($trackedEntityInstance)
-                ]);
-
-                $record->save();
-
-                //Create and save new client
-                $client = new Client();
-                $client->client_uid = $trackedEntityInstance['trackedEntityInstance'];
-
-                foreach ($trackedEntityInstance['attributes'] as $attribute) {
-                    if ($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
-                        $client->card_number = $attribute['value'];
-                    else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
-                        $client->NRC = $attribute['value'];
-                    else if ($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
-                        $client->passport_number = $attribute['value'];
-                    else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
-                        $client->first_name = ucfirst(strtolower(trim($attribute['value'])));
-                    else if ($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
-                        $client->last_name = ucfirst(strtolower(trim($attribute['value'])));
-                    else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
-                        $client->sex = $attribute['value'][0];
-                    else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
-                        $client->date_of_birth = $attribute['value'];
-                    else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
-                        $client->contact_number = $attribute['value'];
-                    else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Attribute ID for Email Address
-                        $client->contact_email_address = $attribute['value'];
-                    else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
-                        $client->address_line1 = $attribute['value'];
-                    else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
-                        $client->occupation = $attribute['value'];
-                }
-
-                $client->facility_id = $facility_id;
-                $client->record_id = $record->id;
-
-                /*
-                 * Clients with NRC lenght greater than 11 will cause a QueryExceprion therefore they are not saved
-                 *We need to find a way that this is communicated back to the Data people so that data cleaning can take place
-                 */
-                $client->save(); //Save new client
-
-                // Create record in ImportLog table
-                ImportLog::create([
-                    'hash' => sha1(json_encode($trackedEntityInstance)),
-                ]);
-
-                $trackedEntityInstance = json_encode($trackedEntityInstance, JSON_UNESCAPED_SLASHES);
-
-                $time = date('Y-m-d H:i:s');
-                $this->getOutput()->writeln("<info>$time Client saved:</info> {$client->id} \n {$trackedEntityInstance}");
+            foreach ($trackedEntityInstance['attributes'] as $attribute) {
+                if ($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
+                    $client->card_number = $attribute['value'];
+                else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
+                    $client->NRC = $attribute['value'];
+                else if ($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
+                    $client->passport_number = $attribute['value'];
+                else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
+                    $client->first_name = ucfirst(strtolower(trim($attribute['value'])));
+                else if ($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
+                    $client->last_name = ucfirst(strtolower(trim($attribute['value'])));
+                else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
+                    $client->sex = $attribute['value'][0];
+                else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
+                    $client->date_of_birth = $attribute['value'];
+                else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
+                    $client->contact_number = $attribute['value'];
+                else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Attribute ID for Email Address
+                    $client->contact_email_address = $attribute['value'];
+                else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
+                    $client->address_line1 = $attribute['value'];
+                else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
+                    $client->occupation = $attribute['value'];
             }
-        } catch (ConnectException $e) {
-            // Connection exceptions are not caught by RequestException
-            $message = $e->getMessage();
-            $time = date('Y-m-d H:i:s');
 
-            Log::error( " $time: ConnectException - $message");
-            $this->getOutput()->writeln("<error>$time $message </error>");
-        } catch (RequestException $e) {
-            $message = $e->getMessage();
-            $time = date('Y-m-d H:i:s');
+            $client->facility_id = $facility_id;
+            $client->record_id = $record->id;
 
-            Log::error( "$time: RequestException - $message");
-            $this->getOutput()->writeln("<error>$time RequestException: $message</error>");
-        } catch (TransferException $e) {
-            $message = $e->getMessage();
-            $time = date('Y-m-d H:i:s');
+            /*
+             * Clients with NRC lenght greater than 11 will cause a QueryExceprion therefore they are not saved
+             *We need to find a way that this is communicated back to the Data people so that data cleaning can take place
+             */
+            $client->save(); //Save new client
 
-            Log::error( "$time: TransferException: $message");
-            $this->getOutput()->writeln("<error>$time TransferException: $message</error>");
-        }catch (QueryException $e) {
-            $message = $e->getMessage();
-            $time = date('Y-m-d H:i:s');
             $trackedEntityInstance = json_encode($trackedEntityInstance, JSON_UNESCAPED_SLASHES);
 
-            Log::error( "$time: QueryException: $message \n $trackedEntityInstance");
-            $this->getOutput()->writeln("<error>$time QueryException: $message \n $trackedEntityInstance</error>");
-        } catch (Exception $e) {
-            $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');
-            $trackedEntityInstance = json_encode($trackedEntityInstance, JSON_UNESCAPED_SLASHES);
-
-            Log::error( "$time: Exception: $message \n $trackedEntityInstance");
-            $this->getOutput()->writeln("<error>$time Exception: $message \n $trackedEntityInstance</error>");
+            $this->getOutput()->writeln("<info>$time Client saved:</info> {$client->id} \n {$trackedEntityInstance}");
         }
+
         return $client;
     }
 
@@ -222,34 +186,32 @@ class ImportDHIS2Data extends Command
 
                         foreach($response_body['events'] as $event){
                             DB::beginTransaction();
-
                             $startTime = microtime(true);
-
                             $event_uid = $event['event'];
-                            $tracked_entity_instance_uid = $event['trackedEntityInstance'];
-                            $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
-
-                            if(empty($client)){
-                                $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
-                            }
-
-                            // Check if hash of $event exist in import log
-                            $import_log = ImportLog::where('hash', sha1(json_encode($event)))->first();
 
                             try {
-                                if (empty($import_log)) {
+                                if (Record::where('hash', sha1(json_encode($event)))->exists()) {
                                     $time = date('Y-m-d H:i:s');
-                                    $this->getOutput()
-                                        ->writeln("<info>$time Saving event:</info> Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
+                                    $this->getOutput()->writeln("<comment>$time Skipping event:</comment> { $event_uid } because event already exist in the DATABASE!");
+                                } else {
 
                                     //Store data in record table
                                     $record = new Record([
+                                        'record_id' => $event_uid,
                                         'data_source' => 'MOH_DHIS2_COVAX',
                                         'data_type' => 'EVENT',
+                                        'hash' => sha1(json_encode($event)),
                                         'data' => json_encode($event),
                                     ]);
 
                                     $record->save();
+
+                                    $tracked_entity_instance_uid = $event['trackedEntityInstance'];
+                                    $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
+
+                                    if(empty($client)){
+                                        $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
+                                    }
 
                                     //Create and save new vaccination event
                                     $vaccination = new Vaccination();
@@ -298,29 +260,37 @@ class ImportDHIS2Data extends Command
                                     $vaccination->event_id = $event_uid;
                                     $vaccination->record_id = $record->id;
 
-                                    if (Vaccination::where('event_id', $event_uid)->exists())
+                                    if (Vaccination::where('event_id', $event_uid)->exists()){
+                                        $time = date('Y-m-d H:i:s');
+                                        $this->getOutput()
+                                            ->writeln("<info>$time Updating event:</info>Event UID: $event_uid, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
+
                                         $vaccination->update();
-                                    else
+
+                                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                                        $time = date('Y-m-d H:i:s');
+                                        $event = json_encode($event, JSON_UNESCAPED_SLASHES);
+
+                                        Log::info("$time Event {$vaccination->event_id} updated: ({$runTime}ms) \n $event");
+                                        $this->getOutput()->writeln("<info>$time Event {$vaccination->event_id} updated: ({$runTime}ms)</info> \n $event");
+                                    } else {
+                                        $time = date('Y-m-d H:i:s');
+                                        $this->getOutput()
+                                            ->writeln("<info>$time Saving event:</info>Event UID: $event_uid, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}");
+
                                         $vaccination->save();
 
-                                    // Create record in ImportLog table
-                                    ImportLog::create([
-                                        'hash' => sha1(json_encode($event)),
-                                    ]);
+                                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                                        $time = date('Y-m-d H:i:s');
+                                        $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
-                                    $number_of_events++;
-
-                                    $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                    $time = date('Y-m-d H:i:s');
-                                    $event = json_encode($event, JSON_UNESCAPED_SLASHES);
-
-                                    Log::warning("$time Event saved: ({$runTime}ms) \n $event");
-                                    $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
-                                } else {
-                                    $time = date('Y-m-d H:i:s');
-                                    $this->getOutput()->writeln("<comment>$time Skipping event:</comment> {$event['event']} because event already exist in the DATABASE!");
-//                                        Log::warning("$time Skipping event: {$event['event']} because event already exist in the DATABASE!");
+                                        Log::info("$time Event saved: ({$runTime}ms) \n $event");
+                                        $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
+                                    }
                                 }
+
+                                DB::commit(); //if no error on record, vaccination and importlog commit data to database
+                                $number_of_events++;
                             } catch (QueryException $e) {
                                 DB::rollback(); //Rollback database transaction if any error occurs
 
@@ -330,10 +300,16 @@ class ImportDHIS2Data extends Command
 
                                 Log::error( "$time QueryException: $message \n $event");
                                 $this->getOutput()->writeln("<error>$time QueryException: $message \n $event</error>");
+                            } catch (Exception $e) {
+                                DB::rollback(); //Rollback database transaction if any error occurs
+
+                                $message = $e->getMessage();
+                                $time = date('Y-m-d H:i:s');
+                                $event = json_encode($event, JSON_UNESCAPED_SLASHES);
+
+                                Log::error( "$time Exception: $message \n $event");
+                                $this->getOutput()->writeln("<error>$time Exception: $message \n $event</error>");
                             }
-
-                            DB::commit(); //if no error on record, vaccination and importlog commit data to database
-
                         } //End foreach
                     }//End if ($response->getStatusCode() == 200)
                 } catch (ConnectException $e) {

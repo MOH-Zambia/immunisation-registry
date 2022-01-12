@@ -37,8 +37,21 @@
                     <p>In order to use this service, you have to complete this registration process</p>
                 </div>
 
+                <!-- fieldsets -->
                 <fieldset>
                     <h6>Please enter your personnal information provided during vaccination</h6>
+                    <div class="form-group">
+                        <select id="id_type" class="product_select">
+                            <option value="nrc" data-display="National Registration Card">National Registration Card</option>
+                            <option value="passport">Passport</option>
+                            <option value="drivers_license">Drivers License</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <input id="nrc" type="text" class="form-control" placeholder="National Registration Card Number">
+                        <input id="passport" type="text" class="form-control" placeholder="Passport Number">
+                        <input id="drivers_license" type="text" class="form-control" placeholder="Drivers License Number">
+                    </div>
                     <div class="form-group">
                         <input id="email"
                                type="text"
@@ -83,7 +96,8 @@
                         @enderror
                     </div>
                     <div class="form-group">
-                        <input type="password"
+                        <input id="password"
+                               type="password"
                                name="password"
                                class="form-control @error('password') is-invalid @enderror"
                                placeholder="Password">
@@ -93,8 +107,9 @@
                     </div>
 
                     <div class="form-group">
-                        <input type="password"
-                               name="password_confirmation"
+                        <input id="password_confirm"
+                               type="password"
+                               name="password_confirm"
                                class="form-control"
                                placeholder="Retype password">
                     </div>
@@ -144,18 +159,52 @@
             }
         });
 
+        toggleInputIDType();
+
+        $('#id_type').change(function(){
+            toggleInputIDType();
+        });
+
         $('input[type=submit]').click(function(e) {
             e.preventDefault(); //prevent form submit when button is clicked
 
-            var data = {
-                "email": $("#email").val(),
-                "last_name": $("#last_name").val(),
-                "first_name": $("#first_name").val(),
-                "other_names": $("#other_names").val()
-            };
+            var data = {};
+
+            if ($("#id_type").val() === "nrc"){
+                data = {
+                    "nrc": $("#nrc").val(),
+                    "last_name": $("#last_name").val(),
+                    "first_name": $("#first_name").val(),
+                    "other_names": $("#other_names").val(),
+                    "password": $("#password").val(),
+                    "password_confirm": $("#password_confirm").val()
+                };
+            }
+
+            if ($("#id_type").val() === "passport"){
+                data = {
+                    "passport": $("#passport").val(),
+                    "last_name": $("#last_name").val(),
+                    "first_name": $("#first_name").val(),
+                    "other_names": $("#other_names").val(),
+                    "password": $("#password").val(),
+                    "password_confirm": $("#password_confirm").val()
+                };
+            }
+
+            if ($("#id_type").val() === "drivers_license"){
+                data = {
+                    "drivers_license": $("#drivers_license").val(),
+                    "last_name": $("#last_name").val(),
+                    "first_name": $("#first_name").val(),
+                    "other_names": $("#other_names").val(),
+                    "password": $("#password").val(),
+                    "password_confirm": $("#password_confirm").val()
+                };
+            }
 
             $.ajax({
-                url: "{{ route('clients.verify') }}",
+                url: "{{ route('api.users.register') }}",
                 type:"POST",
                 data: data,
                 success:function(response){
@@ -173,6 +222,24 @@
                 }
             });
         });
+
+        function toggleInputIDType() {
+            if ($("#id_type").val() === "nrc") {
+                $("#nrc").show();
+            } else {
+                $("#nrc").hide();
+            }
+            if ($("#id_type").val() === "passport") {
+                $("#passport").show();
+            } else {
+                $("#passport").hide();
+            }
+            if ($("#id_type").val() === "drivers_license") {
+                $("#drivers_license").show();
+            } else {
+                $("#drivers_license").hide();
+            }
+        }
     })(jQuery);
 </script>
 

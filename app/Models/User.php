@@ -115,6 +115,16 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * The attributes that should be hidden for arrays.
+     *
+     * @var array
+     */
+    protected $hidden = [
+        'password',
+        'remember_token',
+    ];
+
+    /**
      * The attributes that should be casted to native types.
      *
      * @var array
@@ -127,8 +137,9 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name' => 'string',
         'email' => 'string',
         'email_code' => 'string',
+        'email_verified_at' => 'datetime',
         'password' => 'string',
-        'last_login' => 'string',
+        'last_login' => 'datetime',
         'last_login_ip' => 'string',
         'salt' => 'string'
     ];
@@ -144,14 +155,27 @@ class User extends Authenticatable implements MustVerifyEmail
         'last_name' => 'required|string|max:255',
         'email' => 'required|string|email|max:255',
         'email_code' => 'nullable|string|max:255',
+        'email_verified_at' => 'nullable|datetime',
         'password' => 'required|string|max:255',
-        'last_login' => 'nullable|string|max:255',
+        'password_confirm' => 'required|string|max:255|same:password',
+        'last_login' => 'nullable|datetime',
         'last_login_ip' => 'nullable|string|max:255',
         'salt' => 'nullable|string|max:255',
-        'created_at' => 'nullable',
-        'updated_at' => 'nullable',
-        'deleted_at' => 'nullable'
+        'created_at' => 'nullable|datetime',
+        'updated_at' => 'nullable|datetime',
+        'deleted_at' => 'nullable|datetime'
     ];
+
+    /**
+     * Always encrypt password when it is updated.
+     *
+     * @param $value
+     * @return string
+     */
+//    public function setPasswordAttribute($value)
+//    {
+//        $this->attributes['password'] = bcrypt($value);
+//    }
 
     /**
      * @return \Illuminate\Database\Eloquent\Relations\BelongsTo

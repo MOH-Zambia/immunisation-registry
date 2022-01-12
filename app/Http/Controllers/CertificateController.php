@@ -54,21 +54,26 @@ class CertificateController extends AppBaseController
             $certificates = Certificate::join('clients', 'certificates.client_id', '=', 'clients.id')
                 ->select([
                     'certificates.id',
-                    'certificate_uuid',
+                    'certificates.certificate_uuid',
+                    'clients.NRC',
                     'clients.last_name',
                     'clients.first_name',
                     'clients.other_names',
-                    'dose_1_date',
-                    'dose_2_date',
-                    'booster_dose_date',
-                    'trusted_vaccine_code'
+                    'certificates.trusted_vaccine_code',
+                    'certificates.created_at',
+                    'certificates.updated_at'
                 ]);
 
             return Datatables::of($certificates)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="/certificates/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
-                    return $actionBtn;
+                    return '<a href="/certificates/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+                })
+                ->editColumn('created_at', function ($request) {
+                    return $request->created_at->format('Y-m-d'); // human readable format
+                })
+                ->editColumn('updated_at', function ($request) {
+                    return $request->updated_at->format('Y-m-d'); // human readable format
                 })
                 ->rawColumns(['action'])
                 ->make(true);

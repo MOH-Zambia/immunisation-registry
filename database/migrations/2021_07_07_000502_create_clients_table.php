@@ -27,11 +27,16 @@ class CreateClientsTable extends Migration
             $table->date('date_of_birth')->nullable();
             $table->string('place_of_birth')->nullable();
             $table->string('occupation')->nullable();
-            $table->string('status')->default('Active'); //Status (active/inactive, e.g., in case of migration or death)
+            $table->boolean('status')->default(1); //Status (1=Active, 0=Inactive, e.g., in case of migration or death)
             $table->string('contact_number')->nullable();
             $table->string('contact_email_address')->nullable();
             $table->string('address_line1')->nullable();
             $table->string('address_line2')->nullable();
+            $table->string('guardian_name')->nullable();
+            $table->string('guardian_NRC')->nullable();
+            $table->string('guardian_passport_number')->nullable();
+            $table->string('guardian_contact_number')->nullable();
+            $table->string('guardian_contact_email_address')->nullable();
             $table->string('next_of_kin_name')->nullable();
             $table->string('next_of_kin_contact_number')->nullable();
             $table->string('next_of_kin_contact_email_address')->nullable();

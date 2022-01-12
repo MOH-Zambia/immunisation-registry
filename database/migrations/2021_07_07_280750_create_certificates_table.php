@@ -18,14 +18,6 @@ class CreateCertificatesTable extends Migration
             $table->uuid('certificate_uuid')->unique(); //e.g 01/ZM/1532F4ED22C0BE2BF30540947C93D322#74D0CC9A
             $table->integer('client_id')->unsigned()->unique();
             $table->string('trusted_vaccine_code')->nullable(); //Africa CDC Trusted Vaccine Code
-            $table->integer('vaccine_id')->unsigned();
-            $table->date('innoculated_since_date');
-            $table->date('dose_1_date');
-            $table->date('dose_2_date')->nullable();
-            $table->date('dose_3_date')->nullable();
-            $table->date('dose_4_date')->nullable();
-            $table->date('dose_5_date')->nullable();
-            $table->date('booster_dose_date')->nullable();
             $table->string('target_disease');
             $table->date('certificate_expiration_date')->nullable(); //2030-09-19 - Complete date, without time, following ISO 8601
             $table->string('certificate_status')->default('Valid'); //e.g Valid, Invalid, Revoked
@@ -41,7 +33,6 @@ class CreateCertificatesTable extends Migration
 
         Schema::table('certificates', function (Blueprint $table) {
             $table->foreign('client_id')->references('id')->on('clients');
-            $table->foreign('vaccine_id')->references('id')->on('vaccines');
         });
     }
 

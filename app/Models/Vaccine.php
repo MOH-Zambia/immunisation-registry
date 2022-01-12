@@ -154,9 +154,4 @@ class Vaccine extends Model
     {
         return $this->hasMany(\App\Models\Vaccination::class, 'vaccine_id');
     }
-
-    public function certificates()
-    {
-        return $this->hasMany(\App\Models\Certificate::class, 'vaccine_id');
-    }
 }

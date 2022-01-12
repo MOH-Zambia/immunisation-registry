@@ -58,8 +58,10 @@ class VaccinationController extends AppBaseController
             return Datatables::of($vaccinations)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    $actionBtn = '<a href="/vaccinations/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
-                    return $actionBtn;
+                    return '<a href="/vaccinations/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+                })
+                ->editColumn('date', function ($request) {
+                    return $request->date->format('Y-m-d'); // human readable format
                 })
                 ->rawColumns(['action'])
                 ->make(true);

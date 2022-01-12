@@ -4,11 +4,13 @@ namespace App\Http\Controllers\API;
 
 use App\Http\Requests\API\CreateUserAPIRequest;
 use App\Http\Requests\API\UpdateUserAPIRequest;
+use App\Models\Client;
 use App\Models\User;
 use App\Repositories\UserRepository;
 use Illuminate\Http\Request;
 use App\Http\Controllers\AppBaseController;
-use Response;
+use Illuminate\Auth\Events\Registered;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Class UserController
@@ -109,10 +111,48 @@ class UserAPIController extends AppBaseController
     public function store(CreateUserAPIRequest $request)
     {
         $input = $request->all();
+        $client = null;
 
-        $user = $this->userRepository->create($input);
+        if (array_key_exists('nrc', $input)) {
+            $client = Client::where([
+                ['NRC', '=', $input['nrc']],
+                ['last_name', '=', $input['last_name']],
+                ['first_name', '=', $input['first_name']],
+                ['other_names', '=', $input['other_names']],
+                ['contact_email_address', '=', $input['email']],
+            ])->first();
+        }
 
-        return $this->sendResponse($user->toArray(), 'User saved successfully');
+        if (array_key_exists('passport', $input)) {
+            $client = Client::where([
+                ['passport_number', '=', $input['passport']],
+                ['last_name', '=', $input['last_name']],
+                ['first_name', '=', $input['first_name']],
+                ['other_names', '=', $input['other_names']],
+                ['contact_email_address', '=', $input['email']],
+            ])->first();
+        }
+
+        if (array_key_exists('drivers_license', $input)) {
+            $client = Client::where([
+                ['drivers_license', '=', $input['drivers_license']],
+                ['last_name', '=', $input['last_name']],
+                ['first_name', '=', $input['first_name']],
+                ['other_names', '=', $input['other_names']],
+                ['contact_email_address', '=', $input['email']],
+            ])->first();
+        }
+
+        if(empty($client)){
+            return $this->sendError('Client not found');
+        } else {
+            $user = $this->userRepository->create($input);
+            event(new Registered($user));
+            $user->client_id = $client->id;
+            $user->save();
+//            return $this->sendResponse($user->toArray(), 'User saved successfully');
+            return response($user, Response::HTTP_CREATED);
+        }
     }
 
     /**
