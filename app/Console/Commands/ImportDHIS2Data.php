@@ -230,6 +230,7 @@ class ImportDHIS2Data extends Command
                                     $vaccination->client_id = $client->id;
                                     $vaccination->date = $event['eventDate'];
                                     $vaccination->facility_id = $facility->id;
+                                    $vaccination->event_uid = $event_uid;
                                     $vaccination->record_id = $record->id;
 
                                     switch ($event['programStage']) {

@@ -32,8 +32,8 @@ class DatabaseSeeder extends Seeder
         ]);
 
         Role::create([
-            'name' => 'Moderator',
-            'description' => 'System manager'
+            'name' => 'Data Manager',
+            'description' => 'Data manager'
         ]);
 
         Role::create([
