@@ -191,7 +191,7 @@ class ImportDHIS2Data extends Command
                         $response_body = json_decode($response->getBody(), true);
 
                         foreach($response_body['events'] as $event){
-                            DB::beginTransaction();
+
                             $startTime = microtime(true);
                             $event_uid = $event['event'];
 
@@ -200,6 +200,7 @@ class ImportDHIS2Data extends Command
                                     $time = date('Y-m-d H:i:s');
                                     $this->getOutput()->writeln("<comment>$time Skipping event:</comment> { $event_uid } because event already exist in the DATABASE!");
                                 } else {
+//                                    DB::beginTransaction();
 
                                     //Store data in record table
                                     $record = new Record([
@@ -273,6 +274,9 @@ class ImportDHIS2Data extends Command
 
                                     $vaccination->save();
 
+//                                    DB::commit(); //if no error on record, vaccination and importlog commit data to database
+                                    $number_of_events++;
+
                                     $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                     $time = date('Y-m-d H:i:s');
                                     $event = json_encode($event, JSON_UNESCAPED_SLASHES);
@@ -280,11 +284,8 @@ class ImportDHIS2Data extends Command
                                     Log::info("$time Event saved: ({$runTime}ms) \n $event");
                                     $this->getOutput()->writeln("<info>$time Event saved: ({$runTime}ms)</info> \n $event");
                                 }
-
-                                DB::commit(); //if no error on record, vaccination and importlog commit data to database
-                                $number_of_events++;
                             } catch (QueryException $e) {
-                                DB::rollback(); //Rollback database transaction if any error occurs
+//                                DB::rollback(); //Rollback database transaction if any error occurs
 
                                 $message = $e->getMessage();
                                 $time = date('Y-m-d H:i:s');
@@ -293,7 +294,7 @@ class ImportDHIS2Data extends Command
                                 Log::error( "$time QueryException: $message \n $event");
                                 $this->getOutput()->writeln("<error>$time QueryException: $message \n $event</error>");
                             } catch (Exception $e) {
-                                DB::rollback(); //Rollback database transaction if any error occurs
+//                                DB::rollback(); //Rollback database transaction if any error occurs
 
                                 $message = $e->getMessage();
                                 $time = date('Y-m-d H:i:s');
