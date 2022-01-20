@@ -14,6 +14,8 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         // \Laravelista\LumenVendorPublish\VendorPublishCommand::class,
+        Commands\ImportDHIS2Data::class,
+        Commands\GenerateVaccinationCertificates::class
     ];
 
     /**
@@ -24,7 +26,11 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        // $schedule->command('inspire')->hourly();
+        $programStartDate = "2020-01-01";
+        $programEndDate = date('Y-m-d');
+
+        $schedule->command("command:ImportDHIS2Data $programStartDate $programEndDate")->daily();
+        $schedule->command("command:GenerateVaccinationCertificates")->daily()->at("06:00");
     }
 
     /**
