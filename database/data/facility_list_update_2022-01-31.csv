@@ -1,0 +1,497 @@
+province,district,name,HMIS_code,DHIS2_UID,smartcare_GUID,eLMIS_ID,iHRIS_ID,location,ownership,facility_type,longitude,latitude,catchment_population_head_count,catchment_population_cso,operation_status
+Central,Chibombo,Mayota Health Post,,b3X505hzU7k,,,,,GRZ,Health Post,,,,,Operational
+Central,Chitambo,Kasuko Health Post,,HjsFjJD6f2C,,,,,GRZ,Health Post,,,,,Operational
+Central,Chitambo,Katikulula Health Centre Urban,,VFvUpOfwLcf,,,,,GRZ,Urban Health Centre,,,,,Operational
+Central,Chitambo,Katongo Health Post,,aw56EhZHVrx,,,,,GRZ,Health Post,,,,,Operational
+Central,Chitambo,Mateyo Kakumbi Health Post,,VSJvxqyHd6d,,,,,GRZ,Health Post,,,,,Operational
+Central,Chitambo,Mukando Health Post,,YnGrfxRZJlQ,,,,,GRZ,Health Post,,,,,Operational
+Central,Chitambo,Mwimbula Health Centre Urban,,gKFtRmon7V1,,,,,GRZ,Urban Health Centre,,,,,Operational
+Central,Itezhi-tezhi,Kabanga Health Post,,M7cWNqs0WX2,,,,,GRZ,Health Post,,,,,Operational
+Central,Kapiri-Mposhi,Kabaka Health Post,,Qh0I0LwIULH,,,,,GRZ,Health Post,,,,,Operational
+Central,Kapiri-Mposhi,Kato Health Post,,mMDwgJ1WBIb,,,,,GRZ,Health Post,,,,,Operational
+Central,Kapiri-Mposhi,Kawale Health Post,,xrfzD4yHufp,,,,,GRZ,Health Post,,,,,Operational
+Central,Luano,Busa Rural Health Post,,xE4m8C1QFSB,,,,,GRZ,Rural Health Centre,,,,,Operational
+Central,Luano,Mapapa Rural Health Post,,hIlH0b5uTFM,,,,,GRZ,Rural Health Centre,,,,,Operational
+Central,Serenje,Chibuyesaili  Health Post,,phBbhbMt0oI,,,,,GRZ,Health Post,,,,,Operational
+Central,Serenje,Kamena  Health Post,,OyZd26geYSI,,,,,GRZ,Health Post,,,,,Operational
+Central,Serenje,Mukope Health Post,,ZGg2b3JthCM,,,,,GRZ,Health Post,,,,,Operational
+Central,Serenje,Mutaa Health Post,,t7HJCpi4Y8x,,,,,GRZ,Health Post,,,,,Operational
+Central,Serenje,Yoram Mwanje Health Post,,U0NoFt2id1a,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chililabombwe,Fikolongo Health Post,,wrZGh8qFq4d,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chililabombwe,Lubansa Health Post,,wMrquMDOajI,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chililabombwe,Malubeni   Health Post,,WbQ5tsRQJTg,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chililabombwe,Milyashi East Health Post,,jL33ALP7NtC,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chililabombwe,Miteta Health Post,,RyZgN88VMvk,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chililabombwe,PPZ Health Post,,Jq1cULZIiyR,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chingola,Chingola Dental Clinic,,feHDJxl5K5b,,,,,,,,,,,Operational
+Copperbelt,Chingola,Mbai Health Post,,ZKEu7X1jwo2,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Chingola,Ndungu  Health Post,,ByXbWgiTQ5i,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Kalulushi,Chisangwa Health Post,,LR3ztk5y6o9,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Kalulushi,Chiwembashi Health Post,,tco15oVukaq,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Kalulushi,Fitanda Health Post,,vXAKoadkQ2Q,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Kalulushi,Kameme Health Post,,grE8I0oUXpr,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Kalulushi,Lulamba Health Post,,tdkblug8nXZ,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Kitwe,Chande clinic,,ElLPgWdS278,,,,,,,,,,,Operational
+Copperbelt,Kitwe,Dr Diloba's Childrens Clinic,,ALopviYsgck,,,,,,,,,,,Operational
+Copperbelt,Kitwe,Kano Dental clinic,,i8FJoWNH713,,,,,,,,,,,Operational
+Copperbelt,Kitwe,Kitwe Teaching Eye Hospital,,rjZ0UswATDd,,,,,,,,,,,Operational
+Copperbelt,Kitwe,Lubambe Medical Clinic,,XJAjK1nSndD,,,,,,,,,,,Operational
+Copperbelt,Kitwe,Marshlands clinic,,SnzneTPtT4y,,,,,,,,,,,Operational
+Copperbelt,Kitwe,Morning Rise clinic,,gJEA0cyb6ay,,,,,,,,,,,Operational
+Copperbelt,Kitwe,Mugala  Health post,,vYJJFhxaOf1,,,,,,,,,,,Operational
+Copperbelt,Kitwe,SOS Urban Health Centre,,QSrovGhbPpO,,,,,GRZ,Urban Health Centre,,,,,Operational
+Copperbelt,Luanshya,Chawama Health Post,,K7bBuBcyRNs,,,,,GRZ,Health Post,27.841543,-12.558432,,,Operational
+Copperbelt,Luanshya,Kasimes Urban Health Centre,,a1qBWz4xzSk,,,,,,,,,,,Operational
+Copperbelt,Luanshya,Misaka Health Post,,p4kHUH3vfSY,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Lufwanyama,Kasanta (CHAI) Health Post,,g24ZAeCOQtX,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Lufwanyama,St Clara Health Post,,iwtxhcIoIbn,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Ishitwe  Health Post,,eVbToZGTwVk,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Kansamfu  Health Post,,QQ6fPpgowlZ,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Katuba Health Post,,wqyKVKlL96M,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Kaunga Health Post,,M4YlQfDn51x,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Masangano  Health Post,,Cv046jKXQ6W,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Mbotwa  Health Post,,KG7YKmc421K,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Mobe  Health Post,,pvYnuNC36H6,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Masaiti,Munkulungwe Health Post,,zP2QECHCYqQ,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mpongwe,Chipesa Health Post,,Opw3438hVHs,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mpongwe,Kangololo Health Post,,agExuTCjSy4,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mpongwe,Mumkumpu Health Post,,OjOiI8Mzvnc,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Chiwele Health  Post,,ZWDXddZITxx,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Kasaria Health  Post,,Q4wqYAemQAq,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Kasombo Health Post,,EiKjFRnb5jG,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Mukuba  B Health Post,,rYJgibGXiGd,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Mukuba  Chantentente Heatlh Post,,l29VqEQYM0I,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Muya  Haelth Post,,IRCdk1eeWI4,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Ngambi Health Post,,llIVsgfZrBI,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,Olasho  Health Post,,Gj1a0mvsksK,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Mufulira,RR Health post,,in7NdEmMDku,,,,,,,,,,,Operational
+Copperbelt,Mufulira,St leo Health Post,,XYDhYzaYDOe,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Ndola,21 Miles Heath Post,,IAWEwxGrcHM,,,,,GRZ,Health Post,28.468464,-12.752406,,,Operational
+Copperbelt,Ndola,Chimbala Health Post,,mJMWrLHNlek,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Ndola,Kanfinsa Health Post,,YRqeCMgMEFD,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Ndola,Kantolomba  Health Post,,OS976js8h8Y,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Ndola,Mackenzie Health Post,,EHJqhqyXpvR,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Ndola,Misundu Health Post,,kYvZKI6wcUa,,,,,GRZ,Health Post,,,,,Operational
+Copperbelt,Ndola,Mwange A Health Post,,qxp0qwK1oPY,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Chadiza,Mwangazi Health Post,,GMOhAtxcsV3,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Chasefu,Kamzoole Health Post,,q8eFF95xNRX,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Chipangali,Mphawa  Rural Health Centre,,TupU5tw6GDd,,,,,GRZ,Rural Health Centre,,,,,Operational
+Eastern,Chipata,Chankhonzi Rural Health Post,,XoNobMZkqP8,,,,,GRZ,Rural Health Centre,,,,,Operational
+Eastern,Chipata,Fortjameson Infirmary Private Hospital,,BSuDXeA7Vjq,,,,,,,,,,,Operational
+Eastern,Chipata,Seraphy Dental Clinic,,sNpCuPRg34V,,,,,,,,,,,Operational
+Eastern,Kasenengwa,Khoza Health Post,,k1hzLKDxvFc,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Kasenengwa,Mtenguleni Health Post,,qeDtENmSH2f,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Katete,Mwaziputa Health Post,30030039,Y0OWIJg8EA4,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Lumezi,Kataba Health Post,,hiXepFQtpdF,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Lumezi,Mpingozi Health Post,,kFWxVNzmLel,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Lusangazi,Chibale Health Post,,IanWssOOVn5,,,,,GRZ,Health Post,31.574369,-13.642333,,,Operational
+Eastern,Lusangazi,Chikowa Rural Health Centre,,jaPS9Ha22SH,,,,,GRZ,Rural Health Centre,31.3383,-13.7685,,,Operational
+Eastern,Lusangazi,Makale Health Post,,E4Rlk0ms1gy,,,,,GRZ,Health Post,31.536852,-14.016621,,,Operational
+Eastern,Lusangazi,Mawanda Rural Health Centre,,dHEtNDrdX9I,,,,,GRZ,Rural Health Centre,31.4678,-14.0167,,,Operational
+Eastern,Lusangazi,Mwanika Rural Health Centre,,wc55X7UmKC3,,,,,GRZ,Rural Health Centre,31.758,-13.9524,,,Operational
+Eastern,Lusangazi,Refugee Health Post,,bhyuYIJo9YY,,,,,GRZ,Health Post,31.663301,-13.824479,,,Operational
+Eastern,Lusangazi,Riverside Health Post,,tGy6DTLAeU0,,,,,GRZ,Health Post,31.732525,-13.813346,,,Operational
+Eastern,Lusangazi,Sandwe Rural Health Centre,,dYTRnNlm4hl,,,,,GRZ,Rural Health Centre,31.326,-14.2428,,,Operational
+Eastern,Lusangazi,Satelite 30 Rural Health Centre,,M9icqPGYM9f,,,,,GRZ,Rural Health Centre,31.7003,-13.9093,,,Operational
+Eastern,Lusangazi,Satellite 18 Rural Health Centre,,M01b6mDUXdu,,,,,GRZ,Rural Health Centre,31.6231,-13.9387,,,Operational
+Eastern,Lusangazi,Sichilima Health Post,,hY4osXzPP3y,,,,,GRZ,Health Post,31.43799,-13.964396,,,Operational
+Eastern,Lusangazi,Ukwimi A Rural Health Centre,,wwjljmZP8O0,,,,,GRZ,Rural Health Centre,31.6428,-13.8883,,,Operational
+Eastern,Lusangazi,Ukwimi B Rural Health Centre,,Dtkzotr5QS0,,,,,GRZ,Rural Health Centre,31.7901,-13.8566,,,Operational
+Eastern,Mambwe,Chamubobo HP,,BvpdEQ3qOKg,,,,,,,,,,,Operational
+Eastern,Nyimba,Chininkhu Health Post,,ZyxVwGiDVAY,,,,,GRZ,Health Post,30.986417,-14.584455,,,Operational
+Eastern,Nyimba,Luangazi Health Post,,kHBG6EumkV4,,,,,GRZ,Health Post,30.7488889,-14.4972222,,,Operational
+Eastern,Nyimba,Mchimazi Health Post,,PuGL288nX6i,,,,,GRZ,Health Post,30.761944,-14.721667,,,Operational
+Eastern,Nyimba,Misebe Health Post,,TzL58b346np,,,,,GRZ,Health Post,30.987012,-14.130579,,,Operational
+Eastern,Nyimba,Vizimumba Health Post,,dHQs4ushJnZ,,,,,GRZ,Health Post,30.998056,-14.474722,,,Operational
+Eastern,Petauke,Esther Lungu  Rural Health Centre,,Wbvm6KlYiRk,,,,,GRZ,Rural Health Centre,,,,,Operational
+Eastern,Petauke,Kalindawalo General Hospital,,yJWAtgFATf6,,,,,,,,,,,Operational
+Eastern,Sinda,Chikalawa Rural Health Centre,,V1f4K3JpxXg,,,,,GRZ,Rural Health Centre,,,,,Operational
+Eastern,Sinda,Mlera Rural Health Centre,,iKHtcnDDyHD,,,,,GRZ,Rural Health Centre,,,,,Operational
+Eastern,Vubwi,Chipanje Health Post,,R5WRl5UUPRy,,,,,GRZ,Health Post,,,,,Operational
+Eastern,Vubwi,Vubwi District Hospital,,IsCCU2L8qqZ,,,,,,,,,,,Operational
+Luapula,Chembe,Mwami Health Post,,GVstC5M6Ayj,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Chifunabuli,Chikuwe Health Post,,b4HKBgmJAKf,,,,,GRZ,Health Post,29.795389,-10.859723,,,Operational
+Luapula,Chifunabuli,Kandolo Health Post,40110042,c78lYgiz8ke,,,,,GRZ,Health Post,29.426515,-10.914082,,,Operational
+Luapula,Chifunabuli,Mwewa Health Post,,jVTW7aevTXX,,,,,GRZ,Health Post,29.64415,-10.941661,,,Operational
+Luapula,Chifunabuli,Nshungu Health Post,40110043,fj7pEXdcvcP,,,,,GRZ,Health Post,29.645475,-11.046817,,,Operational
+Luapula,Chifunabuli,Sashi Health Post,,iRLUVS3RkwH,,,,,GRZ,Health Post,29.588573,-10.792853,,,Operational
+Luapula,Kawambwa,Chimfuntu Health Post,,olweL6k1DK1,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Kawambwa,Chisembe First Level Hospital,,jKvcC0oYrqZ,,,,,,,29.346248,-9.95362,,,Operational
+Luapula,Kawambwa,Katungiulu First Level Hospital,,ajBb30ZJudS,,,,,,,29.276412,-9.744996,,,Operational
+Luapula,Kawambwa,Kota Health Post,,wOyy7zSNX5K,,,,,GRZ,Health Post,29.642937,-10.092697,,,Operational
+Luapula,Kawambwa,Ntembo Health Post,,CH8jBOVhqjF,,,,,GRZ,Health Post,29.367874,-9.877165,,,Operational
+Luapula,Kawambwa,Ntulo First Level Hospital,,ytyNDIuII3h,,,,,,,,,,,Operational
+Luapula,Kawambwa,Titus Mukupo First Level Hospital,,r26yTD7OQOg,,,,,,,,,,,Operational
+Luapula,Mansa,Changila Health Post,,xLetr8jtJW7,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Mansa,Kapanda Mini-Hospital,,nRHAqa4Yhkh,,,,,,,,,,,Operational
+Luapula,Mansa,Kasamba Health Post,,L0podEum5VB,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Mansa,Kasongo Mini-Hospital,,zvGYJwVDL5B,,,,,,,,,,,Operational
+Luapula,Mansa,Kosamu Mini Hospital,,oSEXKeUmCQr,,,,,,,,,,,Operational
+Luapula,Mansa,Lofoi Mini Hospital,,mJk9aeQbGHT,,,,,,,,,,,Operational
+Luapula,Mansa,Lukali Health Post,,CpxIn7f9C1s,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Mansa,Mansa Correctionlal Facility Clinic,,mCkJ1ygt1ww,,,,,,,,,,,Operational
+Luapula,Mansa,Mansa District Hospital,,exQIVTbdPaM,,,,,,,,,,,Operational
+Luapula,Mansa,Minsenga Health Post,,q7LrTOWYcOF,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Mansa,Mipolombo Health Post,,XicFVVZ1PlR,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Mansa,Mupita Health Post,,K3w63DCVgVM,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Mansa,Mupofwe Health Post,,B04lh3jPski,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Milenge,Kafwanka Health Post,,IJF7mBgSg7O,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Milenge,Kuyafya Health Post,,apajTHJigRk,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Milenge,Milambo Health Post,,RNQnwCfY5LZ,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Milenge,Milulu Health Post,,xD5AYy6JqRl,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Milenge,Moffat Health Post,,hrwaZ8s0soI,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Milenge,Mumanse Health Post,,wbyocUTY9MT,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Milenge,Shitambuli Health Post,,DF96QAswTmM,,,,,GRZ,Health Post,29.2957414,-12.3581865,,,Operational
+Luapula,Mwansabombwe,Chitipa Health Post,,fuXcgN5t0PI,,,,,GRZ,Health Post,-10.028571,28.686,,,Operational
+Luapula,Mwansabombwe,Kapale Health Post,,szYl9C1QTLp,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Mwansabombwe,Kapesa Health Post,,kSh34Mo04kA,,,,,GRZ,Health Post,10.047333,28.75903,,,Operational
+Luapula,Mwansabombwe,Katotoma Health Post,,wQDFi4RNUxa,,,,,GRZ,Health Post,-9.896415,28.737622,,,Operational
+Luapula,Mwansabombwe,Pembe Health Post,,BF5pTUBCZSZ,,,,,GRZ,Health Post,9.856113,28.765692,,,Operational
+Luapula,Nchelenge,Kasumpa Health Post,,XH1AqaBqn5B,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Nchelenge,Mantampala Rural Health Centre,,dQiaRSNTpwM,,,,,GRZ,Rural Health Centre,,,,,Operational
+Luapula,Nchelenge,Mantapala Health Post,40100024,vE8awwBilIO,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Nchelenge,Munkombwe Health Post,,eiV8A0mUZdp,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Nchelenge,Ntoto Health Post,40100022,hD5JPwzG4fv,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Samfya,Chinweshiba Health Post,,ZVIi4viR6lp,,,,,GRZ,Health Post,,,,,Operational
+Luapula,Samfya,Kaishe Mini Hospital,,KJCFpeFHUbY,,,,,,,,,,,Operational
+Luapula,Samfya,Nkungu Health Post,,tU003fthG2c,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Chilanga,Lilayi Family Clinic,,koNl3uJFGdM,,,,,,,,,,,Operational
+Lusaka,Chilanga,Mundengwa Mini Hospital,,b16L0sDHUIt,,,,,,,,,,,Operational
+Lusaka,Chilanga,Mwembeshi Maximum Correctional HP,,Rugx48o4muN,,,,,,,,,,,Operational
+Lusaka,Chilanga,Mwembeshi Secondary Health Post,,WQi0Ob4tPvA,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Chilanga,Nakachenje Mini Hospital,,XTdy12qek6G,,,,,,,,,,,Operational
+Lusaka,Chilanga,Neri Health Post,,JqxWC1XhMcL,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Chilanga,Tubalange Mini Hospital,,v5770nb2jHV,,,,,,,,,,,Operational
+Lusaka,Chirundu,Zalaunga Rural Health Post,,e7BeM710Edv,,,,,GRZ,Rural Health Centre,,,,,Operational
+Lusaka,Chongwe,Bimbe Health Post,,BdZlM4EaptW,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Chongwe,Ndapula Health Post,,uPVOR6pe9lL,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Chongwe,Palabana Childrens Health Post,,GXJRUOEuYJP,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Kafue,Juflona Clinic,,rGjVBQYhnGy,,,,,,,,,,,Operational
+Lusaka,Kafue,Nitrogen Chemicals of Zambia,,njGq6uO30Qy,,,,,,,,,,,Operational
+Lusaka,Kafue,Phil Opticians Limited,,a2h1Sb8hXWX,,,,,,,,,,,Operational
+Lusaka,Kafue,Zubeda Clinic,,tour3dWaWFA,,,,,,,,,,,Operational
+Lusaka,Lusaka,AR MEDICAL CENTRE LIMITED,,OSZbIZneuIR,,,,,,,,,,,Operational
+Lusaka,Lusaka,Advance Diagnostic Centre Limited,,vkYcmHsgChc,,,,,,,28,15,,,Operational
+Lusaka,Lusaka,Alwima Medical Centre,,XWCtXyzlOxe,,,,,,,28,-15,,,Operational
+Lusaka,Lusaka,BREAD OF LIFE HEALTH SERVICES CLINIC,,vLxaJU43ifQ,,,,,,,26.268583,-15.388086,,,Operational
+Lusaka,Lusaka,Beit Cure Hospital,,oQFmiWAvyr8,,,,,,,28,15,,,Operational
+Lusaka,Lusaka,Braceline Center for Orthodontics and Oral Implantology,,J6Z6EfVFNld,,,,,,,15.3,28.3,,,Operational
+Lusaka,Lusaka,Chitukuko Health post,,NydGuPppEvy,,,,,,,,,,,Operational
+Lusaka,Lusaka,Chiyembekezo Clinic,,q4TDK8VJMR5,,,,,,,,,,,Operational
+Lusaka,Lusaka,City Dental,,NQZHDqz6LoS,,,,,,,,,,,Operational
+Lusaka,Lusaka,Clear Vision Clinic,,yjxfRtlP5do,,,,,,,,,,,Operational
+Lusaka,Lusaka,Comfort Hospital,,xsI8Ce9SuAC,,,,,,,,,,,Operational
+Lusaka,Lusaka,Copper Clinic,,D39pMWAMjMo,,,,,,,28.291997,-15.400524,,,Operational
+Lusaka,Lusaka,Covand Clinic,,LbnOuB8z3gV,,,,,,,30,15,,,Operational
+Lusaka,Lusaka,Critic Care Clinic,,prb0YLcMXM9,,,,,,,,,,,Operational
+Lusaka,Lusaka,Crossroads Medical Centre,,WGpYeOTPEq2,,,,,,,28,15,,,Operational
+Lusaka,Lusaka,Crown Dental Clinic,,K5LyFWbiLJJ,,,,,,,,,,,Operational
+Lusaka,Lusaka,DIAMOND DENTAL SURGERY LIMITED,,aslR0FI0UFh,,,,,,,,,,,Operational
+Lusaka,Lusaka,Dazzling Dental and Medicare Clinic,,HoxOOyAyeOD,,,,,,,,,,,Operational
+Lusaka,Lusaka,Digital Optical LTD,,eOfuArNj9H8,,,,,,,28.2872,-18.4082,,,Operational
+Lusaka,Lusaka,Double Six Opticians,,CKIQ3c7MLf0,,,,,,,28.28,-15.42,,,Operational
+Lusaka,Lusaka,Dr Yan Surgery,,C4qNRuccnRK,,,,,,,,,,,Operational
+Lusaka,Lusaka,Dr wu surgery,,BE9ToHfB8Ap,,,,,,,,,,,Operational
+Lusaka,Lusaka,Elite Dental Care,,xsrlojKSQlU,,,,,,,,,,,Operational
+Lusaka,Lusaka,Eye-co opticians,,g3lrjai27bH,,,,,,,28,-15,,,Operational
+Lusaka,Lusaka,Family Medical Clinic,,vbNgpmnhtGY,,,,,,,28.16,15.25,,,Operational
+Lusaka,Lusaka,Forest Park Specialised Hospital,,SrFWyia9RvR,,,,,,,,,,,Operational
+Lusaka,Lusaka,GOLDEN TOOTH DENTAL SOLUTIONS,,TW9kFQEyA64,,,,,,,,,,,Operational
+Lusaka,Lusaka,GUARDIAN MEDICAL CENTRE,,CtHkNXfZLTy,,,,,,,,,,,Operational
+Lusaka,Lusaka,Good Esthetics Dental,,CyuZs2YrLGB,,,,,,,28,15,,,Operational
+Lusaka,Lusaka,HILLVIEW HEALTH CARE,,nNNocCLEb5l,,,,,,,,,,,Operational
+Lusaka,Lusaka,Healfast Medical Centre,,Zey5pEzFpNU,,,,,,,,,,,Operational
+Lusaka,Lusaka,Healing Touch Clinic limited,,eoPW6RT0xF8,,,,,,,,,,,Operational
+Lusaka,Lusaka,Health shield medical services,,ZogqnByDdqX,,,,,,,28.306294,15.39585,,,Operational
+Lusaka,Lusaka,Hope in Christ Clinic,,Mh5hj4kGDKz,,,,,,,,,,,Operational
+Lusaka,Lusaka,IOM Clinic,,ys0CXyUnayE,,,,,,,,,,,Operational
+Lusaka,Lusaka,JSI Salvation Army,,lMS7KoTpUXU,,,,,,,,,,,Operational
+Lusaka,Lusaka,John howard Discover,,uNRd7b58ZsQ,,,,,,,,,,,Operational
+Lusaka,Lusaka,KG Dental Surgery,,rh0bTgFE6EB,,,,,,,,,,,Operational
+Lusaka,Lusaka,Kabanana Health Post,,v1JkcyXw2eV,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Lusaka,Kabelenga Family Hospital,,ZBx48Kmvip5,,,,,,,,,,,Operational
+Lusaka,Lusaka,L.J.EYE CLINIC,,fktUQX0XqpI,,,,,,,28,15,,,Operational
+Lusaka,Lusaka,LUSAKA IVF AND FERTILITY CLINIC,,NVXfcyBuvAB,,,,,,,,,,,Operational
+Lusaka,Lusaka,Leza wa lukundo medical Centre,,scfBXJrKUsc,,,,,,,,,,,Operational
+Lusaka,Lusaka,Linda Health Post,,bJdmtZCCUQd,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Lusaka,Link Mediclinic,,LJwUWd46QAx,,,,,,,28.34143,-15.42788,,,Operational
+Lusaka,Lusaka,Lusaka Eye Hospital,,MdVZOKJdCaj,,,,,,,,,,,Operational
+Lusaka,Lusaka,M M I Steel Mill Clinic,,jEODSLKKB7Z,,,,,,,,,,,Operational
+Lusaka,Lusaka,MAMA ELLEN MEDICAL CENTER,,n4VZJmWkkZd,,,,,,,,,,,Operational
+Lusaka,Lusaka,MEDICARE OPTICIANS LTD,,p0EK0GRFlDA,,,,,,,,,,,Operational
+Lusaka,Lusaka,Makeni UNHCR Health Post,,rt7j82Btut9,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Lusaka,Makeni Villa Health Post,,sIBcs8X31M5,,,,,GRZ,Health Post,28.226631,-15.44068,,,Operational
+Lusaka,Lusaka,Marie Stopes Family Health Centre,,zp1lqDfPmAP,,,,,,,28.352424,-15.412045,,,Operational
+Lusaka,Lusaka,Medaid HealthCare Limited,,QkyTGdaSVll,,,,,,,,,,,Operational
+Lusaka,Lusaka,Medland Hospital,,KETKchsMRUS,,,,,,,,,,,Operational
+Lusaka,Lusaka,Micheal Chilufya Sata Health Post,,pq1S496fDLX,,,,,GRZ,Health Post,,,,,Operational
+Lusaka,Lusaka,Misisi Mini  Women and Newborn Hospital,,rQmeEm2DLek,,,,,,,,,,,Operational
+Lusaka,Lusaka,Mobile medical services Zambia LTD,,lnonobyjzoQ,,,,,,,,,,,Operational
+Lusaka,Lusaka,Multi Care Hospital,,hoSxAo5iWzK,,,,,,,,,,,Operational
+Lusaka,Lusaka,Mutti-Kabelenga Health Services Ltd,,LOn1tLqa2jv,,,,,,,,,,,Operational
+Lusaka,Lusaka,National Heart Hospital,,QiXMvM6BLfz,,,,,,,28.38408,15.39785,,,Operational
+Lusaka,Lusaka,New Soweto Health Post,,F2Q2Q0FI5Wd,,,,,GRZ,Health Post,28.2722,-15.4213,,,Operational
+Lusaka,Lusaka,ORBIT HEALTH CARE SERVICES (Z) LTD,,pHjgdSCbboR,,,,,,,28.29246,-15.414877,,,Operational
+Lusaka,Lusaka,Optimal Medical and wellness Centre,,EsWjDN7CDtJ,,,,,,,28.1842,15.23027,,,Operational
+Lusaka,Lusaka,Optique Clinic,,mq6QePnnNNc,,,,,,,28.3433,-15.42018,,,Operational
+Lusaka,Lusaka,PHIL OPTICIANS LTD,,qxkFizThUJc,,,,,,,,,,,Operational
+Lusaka,Lusaka,PJ’S PRIMARY MEDICAL CENTRE,,KgMQJkLtz8i,,,,,,,,,,,Operational
+Lusaka,Lusaka,PearliWhyte Dental Solutions,,vWSvGKE0JAk,,,,,,,,,,,Operational
+Lusaka,Lusaka,Phil Labs,,wtTEpgpUgSb,,,,,,,28.30701,-15.409461,,,Operational
+Lusaka,Lusaka,Rapha Medical Centre,,rkNZukO2Plz,,,,,,,,,,,Operational
+Lusaka,Lusaka,Reliance Dental Services,,BaYOXxRWHl7,,,,,,,,,,,Operational
+Lusaka,Lusaka,Risch medical center,,HeXucRoSTcx,,,,,,,,,,,Operational
+Lusaka,Lusaka,Rong Zeng Surgery,,AVmbFzKj1bY,,,,,,,28,-15,,,Operational
+Lusaka,Lusaka,Ruth Kaluluma Memorial Medical Centre,,cF5aPPMTBGh,,,,,,,,,,,Operational
+Lusaka,Lusaka,SMILE DENTAL CLINIC,,SGkcZRohVYM,,,,,,,28.304986,-15.41247,,,Operational
+Lusaka,Lusaka,SOUTH POINT CLINIC -Woodlands,,iESrNalAHGQ,,,,,,,,,,,Operational
+Lusaka,Lusaka,SOUTHPOINT CLINIC - Avondale,,dw4dAjw7HZ2,,,,,,,,,,,Operational
+Lusaka,Lusaka,ST.JOHN PAUL II ORTHOPEADIC MISSION HOSPITAL,,hrlV45JkdDa,,,,,,,,,,,Operational
+Lusaka,Lusaka,Shalom Health Clinic,,Sa6BN2kuW9F,,,,,,,,,,,Operational
+Lusaka,Lusaka,Specialty Emergency Services,,hkyY5Zzb6us,,,,,,,,,,,Operational
+Lusaka,Lusaka,St Lukes (UCZ) HP,,gDFz2VCknTo,,,,,,,,,,,Operational
+Lusaka,Lusaka,Supreme Clinic,,CcKPXpG0fus,,,,,,,,,,,Operational
+Lusaka,Lusaka,Teba Care Hospital,,azsQpQ3vhPe,,,,,,,,,,,Operational
+Lusaka,Lusaka,Tender Care Clinic,,LydeiDj7fLX,,,,,,,,,,,Operational
+Lusaka,Lusaka,The Hill Wellness Centre – Family Legacy Missions Zambia,,JX2eWaWjJJZ,,,,,,,,,,,Operational
+Lusaka,Lusaka,UNICOHS UNIVERSITY HOSPITAL,,kxZLWLzCg6Q,,,,,,,28.226449,15.365409,,,Operational
+Lusaka,Lusaka,UTH - Women,,RtL7ccsLzIy,,,,,,,,,,,Operational
+Lusaka,Lusaka,WHB MEDICAL CENTRE,,VtBghcd7h94,,,,,,,28,15,,,Operational
+Lusaka,Lusaka,Wellspring Speciality Hospital,,P336NNJJnwP,,,,,,,,,,,Operational
+Lusaka,Lusaka,Wellspring Speciality clinic,,eEhcsUOax6M,,,,,,,,,,,Operational
+Lusaka,Lusaka,ZESCO CLINIC,,TjvJMVBukOt,,,,,,,,,,,Operational
+Lusaka,Lusaka,ZNS Chamba Valley Clinic,,VKAnEjaSjDv,,,,,,,,,,,Operational
+Lusaka,Lusaka,Zhanga Ying Surgery,,Xv0kDPM80S3,,,,,,,30,15,,,Operational
+Muchinga,Chama,Bilabila Health Post,,OrDJWXxIx67,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Chikonta Health Post,,pMgE8lV2lF2,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Chimpamba Health Post,,btKifF0RMmp,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Chinji Health Post,,K8n79nzZjAm,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Dungulungu Health Post,,uZAu5ZyBH5X,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Kabanjila Health Post,,iEooMhxJdJw,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Kalasa Health Post,,L8xTgCFohQu,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Kambowe Health Post,,wGSrOwiqA0k,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Kapalakonje Health Post,,q8dzc964eop,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Manthepa Health Post,,EspwVxmSuZj,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Mndalanga Health Post,,dmJ6Xpm3mK7,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Ng’ anjo Bazimu Health Post,,uexc6TvFGfZ,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,Zebe Health Post,,XuxKl4IwYGH,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chama,itwe Health Post,,E8k3WFN1jQF,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chinsali,Cheswa Health Post,,yEN5KfxipRt,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Chinsali,Chilunda Health Post,,oduyXrPXIk7,,,,,GRZ,Health Post,32.51202348,-9.82919818,,,Operational
+Muchinga,Chinsali,Chinsali General Hospital,,ZZdyKEKGiMk,,,,,,,32.0716795,-10.5609544,,,Operational
+Muchinga,Chinsali,Kalisha Health Post,,XJg4abZOJf3,,,,,GRZ,Health Post,32.31808,-10.10429,,,Operational
+Muchinga,Chinsali,Mwalule Health Post,,ycKs8pzt8QW,,,,,GRZ,Health Post,32.20921,10.15518,,,Operational
+Muchinga,Isoka,Figolo Health Post,,hMHszqhrnRk,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Isoka,Mpandwa Health Post,,B1l30wcF4rv,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Isoka,Muyeleka Health Post,,mpSpiOBIDEl,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Isoka,Nachisungu Health Post,,RJFQ1CFpQyS,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Kanchibiya,MULONGA HEALTH POST,,eZohN9dXSKF,,,,,,,,,,,Operational
+Muchinga,Lavushimanda,Mwelushi Health Post,,WY3v5q9H830,,,,,GRZ,Health Post,-12.0935,30.488,,,Operational
+Muchinga,Mafinga,Chitapo Health Post,,MElEJEWC68I,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Mafinga,Choma HP,,fXiDdvZsOYw,,,,,,,,,,,Operational
+Muchinga,Mafinga,Itontela  Health Post,,TqSTGX1xwPx,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Mafinga,Katanga Health  Post,,Mj0e3N9rOJR,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Mafinga,Temwani Health Post,,EVmNHGzV6Zz,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Mafinga,Wenella Health Post,,Bkdh1kNXRYg,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Mpika,Kazembe Health Post,,HZlJ0bpoqr8,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Mpika,Mufubushi Health Post,,aEQrw06hpv7,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Mpika,St Odilia Rural Health Center,,mRm20S2RLpz,,,,,GRZ,Rural Health Centre,,,,,Operational
+Muchinga,Nakonde,Nakonde District HAHC,,IW8lL6Y8SMw,,,,,,,-9.35125,32.704282,,,Operational
+Muchinga,Nakonde,IWULA  Health Post,,CoIombFM4gF,,,,,GRZ,Health Post,-9.482923,32.66074,,,Operational
+Muchinga,Nakonde,Ilola Health Post,,oHpK0JVBj0c,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,Ituntu Health Post,,qQjA2N06NUj,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,Kantongo Health Post,,Ys8puDZVCvh,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,Mipulya Health Post,,vRHzFWR5TId,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,Movu Health Post,,zC87pADxmHE,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,Mukumbe Health Post,,OAyMFquXMy4,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,Mwanga Health Post,,Gggc0P836Uq,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,NDINGINDI Health Post,,YayIzJa8mEO,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Nakonde,Nyela Health Post,,Q2egFKhMMJl,,,,,GRZ,Health Post,-9.43097,32.838003,,,Operational
+Muchinga,Shiwang'andu,Malekani Health Post,,pyvu65SrWVd,,,,,GRZ,Health Post,,,,,Operational
+Muchinga,Shiwang'andu,Yosamu Health Post,,M6ZRLHZblwg,,,,,GRZ,Health Post,,,,,Operational
+Northern,Chilubi,Bukotelo Health post,,A5nbNu2MrQc,,,,,,,,,,,Operational
+Northern,Chilubi,Chichile Health post,,NB0ZrOjg11a,,,,,,,,,,,Operational
+Northern,Chilubi,Chilubi Island District Hospital,,hcQyTr8v2Ci,,,,,,,,,,,Operational
+Northern,Chilubi,Kapampa Health Post,,YyBASZIWncU,,,,,GRZ,Health Post,,,,,Operational
+Northern,Chilubi,Kasansa health Post,,M0Em3XjQvsp,,,,,GRZ,Health Post,,,,,Operational
+Northern,Chilubi,Kateshi Health Post,,qb3oElctO5y,,,,,GRZ,Health Post,,,,,Operational
+Northern,Chilubi,Mpupo Health Post,,F696hvJXIMv,,,,,GRZ,Health Post,,,,,Operational
+Northern,Kaputa,Chipili Health Post,,IrXJrK7ctSP,,,,,GRZ,Health Post,,,,,Operational
+Northern,Kaputa,Kambole Chansa health Post,,uBdVFvsjHUX,,,,,GRZ,Health Post,,,,,Operational
+Northern,Kaputa,Kasepa Health Post,,gwnibevKqFb,,,,,GRZ,Health Post,,,,,Operational
+Northern,Kaputa,Kasungwe Health Post,,JHR1QlNzJIY,,,,,GRZ,Health Post,,,,,Operational
+Northern,Kaputa,Muchenja Health Post,,OXcsX0TwRj1,,,,,GRZ,Health Post,,,,,Operational
+Northern,Kasama,Kashinka Rural Health Post,,qcYKFvfvnMC,,,,,GRZ,Rural Health Centre,,,,,Operational
+Northern,Kasama,Masuba Rural Health Post,,PCn1YxtH50z,,,,,GRZ,Rural Health Centre,,,,,Operational
+Northern,Kasama,Ngoma Health Post,,pXHIIKZSX3P,,,,,GRZ,Health Post,,,,,Operational
+Northern,Kasama,Ntumpa Rural Health Post,,rPkmYXxjcxf,,,,,GRZ,Rural Health Centre,,,,,Operational
+Northern,Lunte,Chibelushi Health Post,,dZt8DMqC2wO,,,,,GRZ,Health Post,,,,,Operational
+Northern,Lunte,Mananya Health Post,,hLvGlMcyxzL,,,,,GRZ,Health Post,,,,,Operational
+Northern,Lunte,Mulila Health Post,,CjOogYGADtw,,,,,GRZ,Health Post,,,,,Operational
+Northern,Lunte,Mushika Health Post,,vXXdSBZnCo6,,,,,GRZ,Health Post,,,,,Operational
+Northern,Lunte,Pecha Health Post,,yOy1oTpHuYY,,,,,GRZ,Health Post,,,,,Operational
+Northern,Lunte,Sambala Health Post,,AR5B87AVmsS,,,,,GRZ,Health Post,,,,,Operational
+Northern,Lupososhi,Nshindaila Health Post,,qEmi486vJPu,,,,,GRZ,Health Post,,,,,Operational
+Northern,Luwingu,Bulambo  Health Post,,qpTClaXqjok,,,,,GRZ,Health Post,,,,,Operational
+Northern,Luwingu,Kasunga  Health Post,,siuBxfKphec,,,,,GRZ,Health Post,,,,,Operational
+Northern,Luwingu,Malekani Health Post,,PUrj7QrvNGh,,,,,GRZ,Health Post,,,,,Operational
+Northern,Luwingu,Mfungwe  Health Post,,eXIf6Qgfiyf,,,,,GRZ,Health Post,,,,,Operational
+Northern,Luwingu,Misambula Health Post,,XlQk6XCOPbQ,,,,,GRZ,Health Post,,,,,Operational
+Northern,Luwingu,Mwingilila  Health Post,,cWoIFS5GqNd,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mbala,Chalele Health Post,,dJCU1h1IRvm,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mbala,Chipoka Health Post,,hUhh5WzavBP,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mbala,Kamyanga Health Post,,Ro7OE8JIpz4,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mbala,Kasunga Health Post,,Pw7G29LIyZ2,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mbala,Katito Health Post,,lDJYsbS3uQb,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mbala,Pumpa Health Post,,W5ORiIJwNhs,,,,,GRZ,Health Post,34.194,8.664,,,Operational
+Northern,Mbala,Zombe Health Post,,KZB1p0pikCQ,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mporokoso,Chongo Chinondo Health Post,,iNkSJTyLKSw,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mporokoso,Katutwa Health Post,,Jge5N3fOgZU,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mporokoso,Levi Health Post,,MC0Acz8NdjS,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mporokoso,Mole Health Post,,k5Rxe9mg6nd,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Chezi Health Post,,C3fo5UCzg3H,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Chipwa Health Post,,H1GhNzYjcF9,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Chisanza Rural Health Centre,,QVn5tLhyP9Z,,,,,GRZ,Rural Health Centre,31.1904,-8.6731,,,Operational
+Northern,Mpulungu,Chitli Health Post,,plXVfq3fHFk,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Chituta Health Post,,ejuLwdxCNTc,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Kalonda Health Post,,xyylehERu7p,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Kasansala Health Post,,q0cV0DsILqo,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Kawe Health Post,,TUilzDIpCF6,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Makola Health Post,,AbjqCULhpKm,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mpulungu,Muswilo Health Post,,riRtMeO9KY2,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mungwi,Chanundu Health Post,,fWQuVRCyXCT,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mungwi,Chilombwa Health Post,,GiL5gEu5MQn,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mungwi,Chisanga Ponde Health Post,,gi7QC0cB0j1,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mungwi,Kalikeka Health Post,,cvJ2OR3MxwL,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mungwi,Mukuka Mfumu  HAHC,,EbyuFvkOhLz,,,,,,,,,,,Operational
+Northern,Mungwi,Mulilo Kafyama Health Post,,pvN7NWGkic7,,,,,GRZ,Health Post,,,,,Operational
+Northern,Mungwi,Mungwi District Hospital,,xfNEUTcIFI4,,,,,,,,,,,Operational
+Northern,Mungwi,Ndakala Health Post,,K8aHlxIArHv,,,,,GRZ,Health Post,,,,,Operational
+Northern,Nsama,Chibanga Health Post,,P2d1krhUSiF,,,,,GRZ,Health Post,30.4826818,-8.5187318,,,Operational
+Northern,Nsama,Katele Health Post,,GwdpdlGMdQo,,,,,GRZ,Health Post,30.1721293,-9.175756,,,Operational
+Northern,Nsama,Katwatwa Health Post,,XbYNkvpwJRI,,,,,GRZ,Health Post,30.19385,-8.46091,,,Operational
+Northern,Nsama,Mikose Health Post,,c3EpYjfN5Yi,,,,,GRZ,Health Post,29.85595333,-8.697181667,,,Operational
+Northern,Nsama,Mukotwe Health Post,,maZ2XlBdy0r,,,,,GRZ,Health Post,30.109593,-9.0978375,,,Operational
+Northern,Nsama,Munyele Health Post,,Gq4KeEK5XBj,,,,,GRZ,Health Post,30.1721293,-9.175756,,,Operational
+Northern,Nsama,Mupandi Health Post,,XET8i2TFKry,,,,,GRZ,Health Post,29.4709073,-8.9025375,,,Operational
+Northern,Senga,Chikwanda  Health Post,,TfiuTdEq3Qq,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,Chisanzu Health Post,,Jiru3FEe8RW,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,John Chikomangome Health Post,,e3HIESgCFLk,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,John Chivuta Health Post,,VzfcwXjOMaq,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,Matanga Health Post,,xfmJEMKO9mb,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,Mukunta Health Post,,W0rkeRYerZE,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,Mwenyi Health Post,,vlUT4oIjWKH,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,Ntembo  Health Post,,bQCiUuAzuQ6,,,,,GRZ,Health Post,,,,,Operational
+Northern,Senga,Sementi Health Post,,kxR3RlQfkao,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Chavuma Mission Hospital HAHC,,OpmpPj7cMgy,,,,,,,,,,,Operational
+Northwestern,Chavuma,Chikanji Health Post,,UvRd71dBXSt,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Chikongolo Health Post,,xvMkUIkGwu2,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Kakoma Health Post,,IT6oR5g9t4v,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Kamisamba Healht Post,,VYjazhO6LSS,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Lingundu Health Post,,NP4QfLCdurg,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Lipinda Health Post,,ZyL2UolMvPt,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Mbalango Health Post,,mEX0NKp5AXB,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Sangongo Health Post,,yYcnWP9ki7F,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Chavuma,Sewe Health Post,,wgawrvdEMEC,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Ikelenge,Kasanga Health Post,,ppCi7MUy5Et,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Ikelenge,Keumba  Health Post,,VaQ9Ch7OUrc,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Ikelenge,Muweji Health Post,,hxwHyJHMLZT,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Ikelenge,Sahandu Health Post,,v7Q8TjTeDvx,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Ikelenge,Yambeji Health Post,,Rs91fO0ZqFU,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kabompo,Kalwilo North  Health Post,,RCDz5POhARF,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kabompo,Kamashila Health Post,,AaHjJI4XyW2,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kabompo,Kamisamba Health Post,,RaqVQEmDtQ9,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kabompo,Katendwa School Health Post,,juME2NVuMNv,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kabompo,Maveve Health Post,,QMslVJa8ZgT,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kalumbila,Bumi clinic Health Post,,vTR5QLw3EN1,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kalumbila,Kamiba Health Post,,V9vQBHXRJnt,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kalumbila,Kyansununu Health Post,,bzPF77ZCn5g,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kalumbila,Mery Begg Health Services,,y7RQ92vsc6e,,,,,,,,,,,Operational
+Northwestern,Kalumbila,Morris Rowe Health Post,,NdgDW3Wo9h0,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kalumbila,Mukilawantambo Health Post,,efx5yTUbKMy,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kalumbila,Musangezhi  Health Post,,QUJtFVjutiF,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kasempa,Janyauki Health Post,,JRwcasFRUPP,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kasempa,Kabele Health Post,,ylu3c2n1EiL,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kasempa,Kabutwitwi Health Post,,TLKZ43qy5ne,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kasempa,Kaimbwe Health Post,,dQR0wdf52ns,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kasempa,Kalusha Health Post,,jtdJsGPOsLu,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kasempa,Kantenda Health Post,,WHiZY3KgJmg,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Kasempa,Kizhiba Health Post,,KOUgHtNqOI7,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Manyinga,Chipanda Health Post,,fJRfWnK08hO,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Manyinga,Kachikenge Health Post,,fsQ9IVB1Gda,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Manyinga,Mundanya Health Post,,BTVumB1B4CX,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Kabanga Health Post,,wgig0JdUk1Q,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Kalende Health Post,,YvTlPu4cRUJ,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Kalongelo Health Post,,tGpvapaEllt,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Kamazovu Health Post,,eOadEpkXS4w,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Kashima West Health Post,,mwKCpjsXNxH,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Kawama Health Post,,HGXJ0S1JIA6,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Lumwe Health Post,,UcCSQ0M1az7,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Shukwe Health Post,,yGylw4BYbV3,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Shungulu Health Post,,JPj1mu7E19M,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mufumbwe,Wishimanga Health Post,,yXUpMwrj03B,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mushindamo,Shafilundu Health Post,,zHTrg9Dl6Ll,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Mwinilunga,Kanyikezhi Health Post,,zS4uwupyw0r,,,,,GRZ,Health Post,25.91,12.029,,,Operational
+Northwestern,Mwinilunga,Nsweta Health Post,70090027,qsyNNRAUTxJ,,,,,GRZ,Health Post,24.831595,-11.52401,,,Operational
+Northwestern,Solwezi,Kandundu Urban Health Centre,,ITHtwcEW7Qb,,,,,GRZ,Urban Health Centre,,,,,Operational
+Northwestern,Solwezi,Kivuku Health Post,,jtlSZ2MNat9,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Solwezi,Mapopo Health Post,,cbGtqz6YfXN,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Solwezi,Saint Johns Medical Center,,Kn481LCXePr,,,,,,,,,,,Operational
+Northwestern,Solwezi,Solwezi Airport Clinic UHC,,jEqxdjlRwJo,,,,,,,,,,,Operational
+Northwestern,Solwezi,Wisdom Health Post,,T1rbgmiV3Zu,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Kalwilo Health Post,,DkuGsBzXAJX,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Kayilamba Health Post,,OhxeVLZPsYM,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Kayimba Health Post,,hNaSadYJaf8,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Lwatembo Health Post,,bUU2CElW2xk,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Lwatembo West Health Post,,EQAPJPoHXmE,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Lwitadi Health Post,,dES8x9MxepS,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Mukongu Health Post,,jYNqX2q3IRz,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Nyachikayi Health Post,,OUtihNK8kKw,,,,,GRZ,Health Post,,,,,Operational
+Northwestern,Zambezi,Nyilamba Health Post,,DZmCQ2fmh5h,,,,,GRZ,Health Post,,,,,Operational
+Southern,Chikankata,Chilileka East Health Post,,GLvDFPJKCQJ,,,,,GRZ,Health Post,,,,,Operational
+Southern,Chikankata,Hapiku Health Post,,CpjunN2mmui,,,,,GRZ,Health Post,,,,,Operational
+Southern,Chikankata,Kaabo Health Post,,KlHmR1WcW0Z,,,,,GRZ,Health Post,,,,,Operational
+Southern,Gwembe,Nazikweye Health Post,,UBKZYEE9Gz2,,,,,GRZ,Health Post,,,,,Operational
+Southern,Kazungula,Kazungula District Hospital,,lPgEA6emAUX,,,,,GRZ,Hospital Level I,,,,,Operational
+Southern,Kazungula,Maunga Health Post,,X1maYvniWos,,,,,GRZ,Health Post,,,,,Operational
+Southern,Livingstone,Chileleko Health Post,,SG47Ra2BCQ6,,,,,GRZ,Health Post,,,,,Operational
+Southern,Livingstone,Mbita Health Post,,ESmTGCjd8pv,,,,,GRZ,Health Post,,,,,Operational
+Southern,Livingstone,Mulala Health Post,,R9A6nUIBUB4,,,,,GRZ,Health Post,,,,,Operational
+Southern,Livingstone,Natebe Health Post,,mFEhmdXBoKd,,,,,GRZ,Health Post,,,,,Operational
+Southern,Livingstone,Sakubita Health Post,,FkpIQ6vxIBj,,,,,GRZ,Health Post,,,,,Operational
+Southern,Mazabuka,Chitongo Health Post,,FqO4dLxKNmA,,,,,GRZ,Health Post,,,,,Operational
+Southern,Mazabuka,Dimba Health Post,,ntwZU9IBCri,,,,,GRZ,Health Post,,,,,Operational
+Southern,Mazabuka,Hillside Health Center Urban,,wkKM5lwl49a,,,,,GRZ,Urban Health Centre,,,,,Operational
+Southern,Namwala,Namankubaula Health Post,,bGX8etC0E8b,,,,,GRZ,Health Post,,,,,Operational
+Southern,Pemba,Mayasanino Health Post,,Rw3Vl2ZYqM7,,,,,GRZ,Health Post,,,,,Operational
+Southern,Pemba,Michelo Rural Health Post,,Po2SILSShT9,,,,,GRZ,Rural Health Centre,,,,,Operational
+Southern,Pemba,Moyo Mini Hospital,,bBnY5idPQo9,,,,,,,,,,,Operational
+Southern,Pemba,Munyama Health Post,,yF5TJqmZ1o1,,,,,GRZ,Health Post,,,,,Operational
+Southern,Siavonga,Dibbwi Health Post,,sCS5roVV1Zg,,,,,GRZ,Health Post,,,,,Operational
+Southern,Siavonga,Fishing Camps Health Post,,R1sICBGplhG,,,,,GRZ,Health Post,,,,,Operational
+Southern,Siavonga,Namumu Health Post,,kzJXEkUCQS1,,,,,GRZ,Health Post,,,,,Operational
+Southern,Siavonga,Siamwiinga Health Post,,MmXH1alz0q6,,,,,GRZ,Health Post,,,,,Operational
+Southern,Siavonga,Siavonga Secondy School Health Post,,TwtXjanr6gr,,,,,GRZ,Health Post,,,,,Operational
+Southern,Sinazongwe,Kariba Health Post,,VrYYVf1Tif2,,,,,GRZ,Health Post,,,,,Operational
+Southern,Sinazongwe,Zuka Health Post,,l70VYAI9V0k,,,,,GRZ,Health Post,,,,,Operational
+Western,Kalabo,Luoke East Health Post,,KmfgOcoSI8V,,,,,GRZ,Health Post,22.5114012,-14.77890782,,,Operational
+Western,Kalabo,Namweti Health Post,,OSWffo0qFRk,,,,,GRZ,Health Post,22.81407513,-14.95324712,,,Operational
+Western,Kaoma,Kashamu Health Post,,HhTwZ7sziKZ,,,,,GRZ,Health Post,,,,,Operational
+Western,Kaoma,Nyango Urban Health Centre,,fz8rCLy55CZ,,,,,,,,,,,Operational
+Western,Limulunga,Ilundu Health Post,,cj2OmhpBM3V,,,,,GRZ,Health Post,,,,,Operational
+Western,Limulunga,Kaongete health Post,,LfSwkmE9nqC,,,,,GRZ,Health Post,,,,,Operational
+Western,Limulunga,Malala Health Post,,Zggz6FyLdgQ,,,,,GRZ,Health Post,,,,,Operational
+Western,Mitete,Lubelele Health Post,,ZwTsJmqVRE8,,,,,GRZ,Health Post,,,,,Operational
+Western,Mitete,Lutembwe Health Post,,nCW43oL8LIy,,,,,GRZ,Health Post,,,,,Operational
+Western,Mongu,Lealui Mini Hospital,,yG8Ojvo1UKh,,,,,,,,,,,Operational
+Western,Mongu,Siwa Health Post,,RnG45sWZQUp,,,,,GRZ,Health Post,,,,,Operational
+Western,Mwandi,Chisu Health Post,,IegtibyJG2A,,,,,GRZ,Health Post,,,,,Operational
+Western,Mwandi,Lutaba Health Post,,iP3EhP6ENt8,,,,,GRZ,Health Post,,,,,Operational
+Western,Mwandi,Lutaba Mini Hospital,,qojAP1haJWx,,,,,,,,,,,Operational
+Western,Nalolo,Arthur Wina Memorial Hospital,,ggomCCCDuEG,,,,,,,,,,,Operational
+Western,Nkeyema,Nkeyema Zonal Rural Health Centre,,S4UxNw6bAJX,,,,,GRZ,Rural Health Centre,25.1258069,-14.8509187,,,Operational
+Western,Sesheke,Katima Mulilo Mini Hospital,,GuzNia9SGEi,,,,,,,,,,,Operational
+Western,Sesheke,Walawala Rural Health Post,,S7hTuimadqP,,,,,GRZ,Rural Health Centre,,,,,Operational
+Western,Sikongo,Sikongo Rural Health Centre,,ASnusR9MFtb,,,,,GRZ,Rural Health Centre,22.1525,-15.0342,,,Operational
+Western,Sioma,Kalenge,,Pnhix2KnWuM,,,,,,,,,,,Operational
+Western,Sioma,Nangweshi Mini Hospital,,wAN3mRqt6az,,,,,,,,,,,Operational
