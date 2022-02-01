@@ -16,7 +16,7 @@ class CreateFacilitiesTable extends Migration
     {
         Schema::create('facilities', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('MFL_facility_id')->unique()->nullable();
+            $table->integer('MFL_facility_id')->nullable();
             $table->string('HMIS_code')->nullable();
             $table->string('DHIS2_UID')->nullable();
             $table->string('smartcare_GUID')->nullable();
