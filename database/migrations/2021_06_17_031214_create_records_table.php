@@ -22,6 +22,8 @@ class CreateRecordsTable extends Migration
             $table->json('data');
             $table->timestamps();
             $table->softDeletes();
+
+            $table->index(['hash']);
         });
     }
 

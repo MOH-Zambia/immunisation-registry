@@ -29,47 +29,90 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $clients = Client::all()->count();
-        $vaccinations = Vaccination::all()->count();
-        $certificates = Certificate::all()->count();
+//        $clients = Client::all()->count();
+        $clients = DB::table('clients')->count();
+//        $vaccinations = Vaccination::all()->count();
+        $vaccinations = DB::table('vaccinations')->count();
+//        $certificates = Certificate::all()->count();
+        $certificates = DB::table('certificates')->count();
 
-        $astrazeneca_doses = Vaccination::where([
+//        $astrazeneca_doses = Vaccination::where([
+//            ['vaccine_id', '=', 1],
+//        ])->count();
+
+        $astrazeneca_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 1],
         ])->count();
 
-        $astrazeneca_first_dose = Vaccination::where([
+//        $astrazeneca_first_dose = Vaccination::where([
+//            ['vaccine_id', '=', 1],
+//            ['dose_number', '=', '1'],
+//        ])->count();
+
+        $astrazeneca_first_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 1],
             ['dose_number', '=', '1'],
         ])->count();
 
-        $astrazeneca_second_dose = Vaccination::where([
+//        $astrazeneca_second_dose = Vaccination::where([
+//            ['vaccine_id', '=', 1],
+//            ['dose_number', '=', '2'],
+//        ])->count();
+
+        $astrazeneca_second_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 1],
             ['dose_number', '=', '2'],
         ])->count();
 
-        $janssen_doses = Vaccination::where([
+//        $janssen_doses = Vaccination::where([
+//            ['vaccine_id', '=', 3],
+//        ])->count();
+
+        $janssen_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 3],
         ])->count();
 
-        $sinopharm_doses = Vaccination::where([
+//        $sinopharm_doses = Vaccination::where([
+//            ['vaccine_id', '=', 7],
+//        ])->count();
+
+        $sinopharm_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 7],
         ])->count();
 
-        $pfizer_doses = Vaccination::where([
+//        $pfizer_doses = Vaccination::where([
+//            ['vaccine_id', '=', 6],
+//        ])->count();
+
+        $pfizer_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 6],
         ])->count();
 
-        $moderna_first_dose = Vaccination::where([
+//        $moderna_first_dose = Vaccination::where([
+//            ['vaccine_id', '=', 4],
+//            ['dose_number', '=', '1'],
+//        ])->count();
+
+        $moderna_first_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 4],
             ['dose_number', '=', '1'],
         ])->count();
 
-        $moderna_second_dose = Vaccination::where([
+//        $moderna_second_dose = Vaccination::where([
+//            ['vaccine_id', '=', 4],
+//            ['dose_number', '=', '2'],
+//        ])->count();
+
+        $moderna_second_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 4],
             ['dose_number', '=', '2'],
         ])->count();
 
-        $moderna_doses = Vaccination::where([
+//        $moderna_doses = Vaccination::where([
+//            ['vaccine_id', '=', 4],
+//        ])->count();
+
+        $moderna_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 4],
         ])->count();
 

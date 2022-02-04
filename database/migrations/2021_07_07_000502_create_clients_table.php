@@ -46,7 +46,7 @@ class CreateClientsTable extends Migration
             $table->timestamps();
             $table->softDeletes();
 
-            $table->index(['client_uid']);
+            $table->index(['client_uid', 'NRC', 'passport_number']);
         });
 
         Schema::table('clients', function (Blueprint $table) {
