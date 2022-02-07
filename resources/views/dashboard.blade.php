@@ -323,7 +323,7 @@
 
 @push('page_scripts')
     <script>
-        var data = {{ json_encode($user_data) }}
+        {{--var data = {{ json_encode($user_data) }}--}}
         Highcharts.chart('user-chart', {
             title: {
                 text: 'User growth'
@@ -368,39 +368,39 @@
 
         });
 
-        Highcharts.chart('vaccinations-bar-chart', {
-            chart: {
-                type: 'column'
-            },
-            title: {
-                text: 'Vaccinations Last 12 Months'
-            },
-            xAxis: {
-                categories: ["AstraZeneca", "Jassen", "Sinoparm"],
-                crosshair: true
-            },
-            yAxis: {
-                min: 0,
-                title: {
-                    text: 'Number of Doses'
-                }
-            },
-            tooltip: {
-                headerFormat: '<span style="font-size:10px">{point.key} Marks</span><table>',
-                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
-                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
-                footerFormat: '</table>',
-                shared: true,
-                useHTML: true
-            },
-            plotOptions: {
-                column: {
-                    pointPadding: 0.2,
-                    borderWidth: 0
-                }
-            },
-            series: {!! json_encode($dataPoints) !!}
-        });
+        {{--Highcharts.chart('vaccinations-bar-chart', {--}}
+        {{--    chart: {--}}
+        {{--        type: 'column'--}}
+        {{--    },--}}
+        {{--    title: {--}}
+        {{--        text: 'Vaccinations Last 12 Months'--}}
+        {{--    },--}}
+        {{--    xAxis: {--}}
+        {{--        categories: ["AstraZeneca", "Jassen", "Sinoparm"],--}}
+        {{--        crosshair: true--}}
+        {{--    },--}}
+        {{--    yAxis: {--}}
+        {{--        min: 0,--}}
+        {{--        title: {--}}
+        {{--            text: 'Number of Doses'--}}
+        {{--        }--}}
+        {{--    },--}}
+        {{--    tooltip: {--}}
+        {{--        headerFormat: '<span style="font-size:10px">{point.key} Marks</span><table>',--}}
+        {{--        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +--}}
+        {{--            '<td style="padding:0"><b>{point.y}</b></td></tr>',--}}
+        {{--        footerFormat: '</table>',--}}
+        {{--        shared: true,--}}
+        {{--        useHTML: true--}}
+        {{--    },--}}
+        {{--    plotOptions: {--}}
+        {{--        column: {--}}
+        {{--            pointPadding: 0.2,--}}
+        {{--            borderWidth: 0--}}
+        {{--        }--}}
+        {{--    },--}}
+        {{--    series: {!! json_encode($dataPoints) !!}--}}
+        {{--});--}}
 
         $(function () {
             bsCustomFileInput.init();

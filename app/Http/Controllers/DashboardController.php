@@ -135,49 +135,49 @@ class DashboardController extends Controller
 
 //        $data = array_combine($users->toArray(), $months->toArray());
 
-        $vaccinations_last_12_month_by_vaccine = DB::select('SELECT * FROM view_vaccinations_last_12_month_by_vaccine');
-
-        $tempDataPoints = [];
-        $dataPoints = [];
-
-        foreach ($vaccinations_last_12_month_by_vaccine as $month) {
-            $vaccine_doses = array(0,0,0);
-
-            if(isset($tempDataPoints[$month->month])){
-                $key = array_search($month->month, array_keys($tempDataPoints));
-
-                if($month->vaccine_id == 1){
-                    $tempDataPoints[$month->month][0] = $month->number_of_doses;
-                    $dataPoints[$key]['data'][0] = $month->number_of_doses;
-                }
-                if($month->vaccine_id == 3){
-                    $tempDataPoints[$month->month][1] = $month->number_of_doses;
-                    $dataPoints[$key]['data'][1] = $month->number_of_doses;
-                }
-
-                if($month->vaccine_id == 7){
-                    $tempDataPoints[$month->month][2] = $month->number_of_doses;
-                    $dataPoints[$key]['data'][2] = $month->number_of_doses;
-                }
-
-            } else {
-                if($month->vaccine_id == 1)
-                    $vaccine_doses[0] = $month->number_of_doses;
-                if($month->vaccine_id == 3)
-                    $vaccine_doses[1] = $month->number_of_doses;
-                if($month->vaccine_id == 7)
-                    $vaccine_doses[2] = $month->number_of_doses;
-
-                $tempDataPoints[$month->month] = $vaccine_doses;
-
-                $dataPoints[] = array(
-                    'month' => $month->month,
-                    'data' => $vaccine_doses,
-                );
-            }
-        }
-
-        $vaccines = array('AstraZeneca', 'Jassen', 'Sinoparm');
+//        $vaccinations_last_12_month_by_vaccine = DB::select('SELECT * FROM view_vaccinations_last_12_month_by_vaccine');
+//
+//        $tempDataPoints = [];
+//        $dataPoints = [];
+//
+//        foreach ($vaccinations_last_12_month_by_vaccine as $month) {
+//            $vaccine_doses = array(0,0,0);
+//
+//            if(isset($tempDataPoints[$month->month])){
+//                $key = array_search($month->month, array_keys($tempDataPoints));
+//
+//                if($month->vaccine_id == 1){
+//                    $tempDataPoints[$month->month][0] = $month->number_of_doses;
+//                    $dataPoints[$key]['data'][0] = $month->number_of_doses;
+//                }
+//                if($month->vaccine_id == 3){
+//                    $tempDataPoints[$month->month][1] = $month->number_of_doses;
+//                    $dataPoints[$key]['data'][1] = $month->number_of_doses;
+//                }
+//
+//                if($month->vaccine_id == 7){
+//                    $tempDataPoints[$month->month][2] = $month->number_of_doses;
+//                    $dataPoints[$key]['data'][2] = $month->number_of_doses;
+//                }
+//
+//            } else {
+//                if($month->vaccine_id == 1)
+//                    $vaccine_doses[0] = $month->number_of_doses;
+//                if($month->vaccine_id == 3)
+//                    $vaccine_doses[1] = $month->number_of_doses;
+//                if($month->vaccine_id == 7)
+//                    $vaccine_doses[2] = $month->number_of_doses;
+//
+//                $tempDataPoints[$month->month] = $vaccine_doses;
+//
+//                $dataPoints[] = array(
+//                    'month' => $month->month,
+//                    'data' => $vaccine_doses,
+//                );
+//            }
+//        }
+//
+//        $vaccines = array('AstraZeneca', 'Jassen', 'Sinoparm');
 
         return view('dashboard')
             ->with('clients', $clients)
@@ -192,6 +192,6 @@ class DashboardController extends Controller
             ->with('moderna_first_dose',  $moderna_first_dose)
             ->with('moderna_second_dose',  $moderna_second_dose)
             ->with('moderna_doses',  $moderna_doses)
-            ->with(compact('user_data', 'dataPoints', 'vaccines'));
+            ->with(compact('user_data'));
     }
 }
