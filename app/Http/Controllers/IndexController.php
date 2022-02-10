@@ -17,38 +17,6 @@ class IndexController extends Controller
      */
     public function index()
     {
-        $clients = Client::all()->count();
-        $vaccinations = Vaccination::all()->count();
-        $certificates = Certificate::all()->count();
-
-        $astrazeneca_doses = Vaccination::where([
-            ['vaccine_id', '=', 1],
-        ])->count();
-
-        $astrazeneca_first_dose = Vaccination::where([
-            ['vaccine_id', '=', 1],
-            ['dose_number', '=', 'First'],
-        ])->count();
-
-        $astrazeneca_second_dose = Vaccination::where([
-            ['vaccine_id', '=', 1],
-            ['dose_number', '=', 'Second'],
-        ])->count();
-
-        $janssen_doses = Vaccination::where([
-            ['vaccine_id', '=', 3],
-        ])->count();
-
-        $sinopharm_doses = Vaccination::where([
-            ['vaccine_id', '=', 7],
-        ])->count();
-
-        return view('index')
-            ->with('clients', $clients)
-            ->with('vaccinations',  $vaccinations)
-            ->with('certificates',  $certificates)
-            ->with('astrazeneca_doses',  $astrazeneca_doses)
-            ->with('janssen_doses',  $janssen_doses)
-            ->with('sinopharm_doses',  $sinopharm_doses);
+        return view('index');
     }
 }

@@ -29,88 +29,50 @@ class DashboardController extends Controller
      */
     public function index()
     {
-//        $clients = Client::all()->count();
         $clients = DB::table('clients')->count();
-//        $vaccinations = Vaccination::all()->count();
-        $vaccinations = DB::table('vaccinations')->count();
-//        $certificates = Certificate::all()->count();
-        $certificates = DB::table('certificates')->count();
 
-//        $astrazeneca_doses = Vaccination::where([
-//            ['vaccine_id', '=', 1],
-//        ])->count();
+        $vaccinations = DB::table('vaccinations')->count();
+
+        $certificates = DB::table('certificates')->count();
 
         $astrazeneca_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 1],
         ])->count();
-
-//        $astrazeneca_first_dose = Vaccination::where([
-//            ['vaccine_id', '=', 1],
-//            ['dose_number', '=', '1'],
-//        ])->count();
 
         $astrazeneca_first_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 1],
             ['dose_number', '=', '1'],
         ])->count();
 
-//        $astrazeneca_second_dose = Vaccination::where([
-//            ['vaccine_id', '=', 1],
-//            ['dose_number', '=', '2'],
-//        ])->count();
-
         $astrazeneca_second_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 1],
             ['dose_number', '=', '2'],
         ])->count();
 
-//        $janssen_doses = Vaccination::where([
-//            ['vaccine_id', '=', 3],
-//        ])->count();
-
         $janssen_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 3],
         ])->count();
-
-//        $sinopharm_doses = Vaccination::where([
-//            ['vaccine_id', '=', 7],
-//        ])->count();
 
         $sinopharm_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 7],
         ])->count();
 
-//        $pfizer_doses = Vaccination::where([
-//            ['vaccine_id', '=', 6],
-//        ])->count();
 
         $pfizer_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 6],
         ])->count();
 
-//        $moderna_first_dose = Vaccination::where([
-//            ['vaccine_id', '=', 4],
-//            ['dose_number', '=', '1'],
-//        ])->count();
 
         $moderna_first_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 4],
             ['dose_number', '=', '1'],
         ])->count();
 
-//        $moderna_second_dose = Vaccination::where([
-//            ['vaccine_id', '=', 4],
-//            ['dose_number', '=', '2'],
-//        ])->count();
-
         $moderna_second_dose = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 4],
             ['dose_number', '=', '2'],
         ])->count();
 
-//        $moderna_doses = Vaccination::where([
-//            ['vaccine_id', '=', 4],
-//        ])->count();
 
         $moderna_doses = DB::table('vaccinations')->where([
             ['vaccine_id', '=', 4],
@@ -133,51 +95,8 @@ class DashboardController extends Controller
             $user_data[$month] = $users[$index];
         }
 
-//        $data = array_combine($users->toArray(), $months->toArray());
+        $data = array_combine($users->toArray(), $months->toArray());
 
-//        $vaccinations_last_12_month_by_vaccine = DB::select('SELECT * FROM view_vaccinations_last_12_month_by_vaccine');
-//
-//        $tempDataPoints = [];
-//        $dataPoints = [];
-//
-//        foreach ($vaccinations_last_12_month_by_vaccine as $month) {
-//            $vaccine_doses = array(0,0,0);
-//
-//            if(isset($tempDataPoints[$month->month])){
-//                $key = array_search($month->month, array_keys($tempDataPoints));
-//
-//                if($month->vaccine_id == 1){
-//                    $tempDataPoints[$month->month][0] = $month->number_of_doses;
-//                    $dataPoints[$key]['data'][0] = $month->number_of_doses;
-//                }
-//                if($month->vaccine_id == 3){
-//                    $tempDataPoints[$month->month][1] = $month->number_of_doses;
-//                    $dataPoints[$key]['data'][1] = $month->number_of_doses;
-//                }
-//
-//                if($month->vaccine_id == 7){
-//                    $tempDataPoints[$month->month][2] = $month->number_of_doses;
-//                    $dataPoints[$key]['data'][2] = $month->number_of_doses;
-//                }
-//
-//            } else {
-//                if($month->vaccine_id == 1)
-//                    $vaccine_doses[0] = $month->number_of_doses;
-//                if($month->vaccine_id == 3)
-//                    $vaccine_doses[1] = $month->number_of_doses;
-//                if($month->vaccine_id == 7)
-//                    $vaccine_doses[2] = $month->number_of_doses;
-//
-//                $tempDataPoints[$month->month] = $vaccine_doses;
-//
-//                $dataPoints[] = array(
-//                    'month' => $month->month,
-//                    'data' => $vaccine_doses,
-//                );
-//            }
-//        }
-//
-//        $vaccines = array('AstraZeneca', 'Jassen', 'Sinoparm');
 
         return view('dashboard')
             ->with('clients', $clients)
