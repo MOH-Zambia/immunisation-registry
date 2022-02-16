@@ -35,9 +35,9 @@ class OTPVerificationController extends AppBaseController
         $sender = env('KANNEL_SENDER');
 
         //Your message to send, Adding URL encoding.
-        $message = urlencode("COVID-19 Immunisation Registry,\n Your OPT is : $OTP");
+        $message = urlencode("COVID-19 Immunisation Registry, Your OPT is : $OTP");
 
-        $url = "http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$recipient&from=$sender&text=$message";
+        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$sender}&to={$recipient}&text={$message}";
 
         Log::info( "Sending OTP via SMS using URL: $url");
 
