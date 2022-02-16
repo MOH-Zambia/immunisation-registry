@@ -35,7 +35,7 @@ class OTPVerificationController extends AppBaseController
         $sender = env('KANNEL_SENDER');
 
         //Your message to send, Adding URL encoding.
-        $message = urlencode("COVID-19 Immunisation Registry, Your OPT is : $OTP");
+        $message = urlencode("Ministry of Health, COVID-19 Immunisation Registry, Your One Time Password to access your COVID-19 Certificate is $OTP");
 
         $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$sender}&to={$recipient}&text={$message}";
 
@@ -71,7 +71,7 @@ class OTPVerificationController extends AppBaseController
         }else{
             Session::put('OTP', $OTP);
             Log::info("OPT sent via SMS: $OTP");
-            return $this->sendSuccess("OTP Sent!");
+            return $this->sendSuccess("OTP Sent:  $output");
         }
     }
 
