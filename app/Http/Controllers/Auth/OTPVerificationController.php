@@ -35,9 +35,9 @@ class OTPVerificationController extends AppBaseController
         $sender = env('KANNEL_SENDER');
 
         //Your message to send, Adding URL encoding.
-        $message = urlencode("Ministry of Health, COVID-19 Immunisation Registry, Your One Time Password to access your COVID-19 Certificate is $OTP");
+        $message = urlencode(iconv('utf-8', 'ucs-2', 'Ministry of Health, COVID-19 Immunisation Registry, Your One Time Password to access your COVID-19 Certificate is $OTP'));
 
-        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$sender}&to={$recipient}&text={$message}";
+        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$sender}&to={$recipient}&text={$message}&charset=UCS-2&coding=2";
 
         Log::info( "Sending OTP via SMS using URL: $url");
 
@@ -54,11 +54,11 @@ class OTPVerificationController extends AppBaseController
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
-        $headers = array(
-            "Content-Type: text/html"
-        );
+//        $headers = array(
+//            "Content-Type: text/html"
+//        );
 
-        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
+//        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         //Get response
         $output = curl_exec($ch);
