@@ -70,8 +70,8 @@ class OTPVerificationController extends AppBaseController
             return $this->sendError($errorMessage);
         }else{
             Session::put('OTP', $OTP);
-            Log::info("OPT sent via SMS: $OTP");
-            return $this->sendSuccess("OTP Sent:  $output");
+            Log::info("OPT sent via SMS: $output, OTP: $OTP");
+            return $this->sendSuccess("OTP Sent!");
         }
     }
 
