@@ -39,6 +39,8 @@ class OTPVerificationController extends AppBaseController
 
         $url = "http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$recipient&from=$sender&text=$message";
 
+        Log::info( "Sending OTP via SMS using URL: $url");
+
         /** @var TYPE_NAME $ch */
         $ch = curl_init();
 
@@ -64,9 +66,11 @@ class OTPVerificationController extends AppBaseController
         curl_close($ch);
 
         if($isError){
+            Log::error("Error sending OTP via SMS: $errorMessage");
             return $this->sendError($errorMessage);
         }else{
             Session::put('OTP', $OTP);
+            Log::info("OPT sent via SMS: $OTP");
             return $this->sendSuccess("OTP Sent!");
         }
     }
@@ -83,6 +87,8 @@ class OTPVerificationController extends AppBaseController
         $contact_email_address = $input['contact_email_address'];
 
         try{
+            Log::info( "Sending OTP via Email");
+
             Mail::send('auth.otp_email', ['OTP' => $OTP], function(Message $message) use ($contact_email_address){
                 $message->subject("COVID-19 Immunisation Registry Verification Code");
                 $message->to($contact_email_address);
@@ -90,8 +96,10 @@ class OTPVerificationController extends AppBaseController
 
             Session::put('OTP', $OTP);
 
+            Log::info( "OTP sent via email: $OTP");
             return $this->sendSuccess("OTP Sent!");
         } catch (\Exception $e){
+            Log::error("Error sending OTP via Email: $e->getMessage()");
             return $this->sendError($e->getMessage());
         }
     }

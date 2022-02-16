@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Vaccination",
- *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "event_uid", "record_id"},
+ *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "record_id", "source_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -85,15 +85,27 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *     @SWG\Property(
- *          property="event_uid",
- *          description="event_uid",
- *          type="string",
- *      ),
- *      @SWG\Property(
  *          property="record_id",
  *          description="record_id",
  *          type="integer",
  *          format="int32"
+ *      ),
+ *     @SWG\Property(
+ *          property="source_id",
+ *          description="source_id",
+ *          type="string",
+ *      ),
+ *     @SWG\Property(
+ *          property="source_created_at",
+ *          description="source_created_at",
+ *          type="string",
+ *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="source_updated_at",
+ *          description="source_updated_at",
+ *          type="string",
+ *          format="date-time"
  *      ),
  *      @SWG\Property(
  *          property="created_at",
@@ -142,8 +154,10 @@ class Vaccination extends Model
         'vaccinating_country_id',
         'vaccination_certificate_id',
         'facility_id',
-        'event_uid',
-        'record_id'
+        'record_id',
+        'source_id',
+        'source_created_at',
+        'source_updated_at'
     ];
 
     /**
@@ -166,8 +180,8 @@ class Vaccination extends Model
         'vaccinating_country_id' => 'integer',
         'vaccination_certificate_id' => 'integer',
         'facility_id' => 'integer',
-        'event_uid' => 'string',
-        'record_id' => 'integer'
+        'record_id' => 'integer',
+        'source_id' => 'string',
     ];
 
     /**
@@ -189,8 +203,10 @@ class Vaccination extends Model
         'vaccinating_country_id' => 'required|integer',
         'vaccination_certificate_id' => 'nullable|integer',
         'facility_id' => 'required|integer',
-        'event_uid' => 'nullable|string|max:255',
         'record_id' => 'required|integer',
+        'source_id' => 'nullable|string|max:255',
+        'source_created_at' => 'nullable',
+        'source_updated_at' => 'nullable',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'

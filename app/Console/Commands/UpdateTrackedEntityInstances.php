@@ -85,11 +85,11 @@ class UpdateTrackedEntityInstances extends Command
     {
         $httpClient = new GuzzleHttp\Client();
 
-        $clients = Client::all();
+        $clients = Client::all(['source_id', 'source_updated_at']);
 
         foreach ($clients as $client){
             try {
-                $response = $httpClient->request('GET', self::TRACKED_ENTITY_INSTANCES_URL . "?trackedEntityInstance={$client->client_uid}", [
+                $response = $httpClient->request('GET', env('DHIS2_BASE_URL'). "trackedEntityInstances.json?trackedEntityInstance={$client->source_id}", [
                     'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
                 ]);
 
@@ -97,55 +97,58 @@ class UpdateTrackedEntityInstances extends Command
                     $responce_body = json_decode($response->getBody(), true);
                     $trackedEntityInstance = $responce_body['trackedEntityInstances'][0];
 
-                    $time = date('Y-m-d H:i:s');
-                    $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: </info>{$trackedEntityInstance['trackedEntityInstance']}");
+                    $lastUpdated = new DateTime($trackedEntityInstance['lastUpdated']);
+                    $lastUpdated = $lastUpdated->format('Y-m-d H:i:s');
 
-                    $client->client_uid = $trackedEntityInstance['trackedEntityInstance'];
+                    if(empty($lastUpdated))
+                        continue;
 
-                    foreach ($trackedEntityInstance['attributes'] as $attribute) {
-                        if ($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
-                            $client->card_number = $attribute['value'];
-                        else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
-                            $client->NRC = $attribute['value'];
-                        else if ($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
-                            $client->passport_number = $attribute['value'];
-                        else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
-                            $client->first_name = ucfirst(strtolower(trim($attribute['value'])));
-                        else if ($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
-                            $client->last_name = ucfirst(strtolower(trim($attribute['value'])));
-                        else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
-                            $client->sex = $attribute['value'][0];
-                        else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
-                            $client->date_of_birth = $attribute['value'];
-                        else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
-                            $client->contact_number = $attribute['value'];
-                        else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Attribute ID for Email Address
-                            $client->contact_email_address = $attribute['value'];
-                        else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
-                            $client->address_line1 = $attribute['value'];
-                        else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
-                            $client->occupation = $attribute['value'];
+                    if($lastUpdated > $client->source_updated_at){
+                        $time = date('Y-m-d H:i:s');
+                        $this->getOutput()->writeln("<info>$time Updating TRACKED_ENTITY_INSTANCE: </info>{$trackedEntityInstance['trackedEntityInstance']}");
+
+                        //Store data in record table
+                        $record = new Record([
+                            'record_id' => $client->source_id,
+                            'data_source' => 'MOH_DHIS2_COVAX',
+                            'data_type' => 'TRACKED_ENTITY_INSTANCE',
+                            'hash' => sha1(json_encode($trackedEntityInstance)),
+                            'data' => json_encode($trackedEntityInstance)
+                        ]);
+
+                        $record->save();
+
+                        foreach ($trackedEntityInstance['attributes'] as $attribute) {
+                            if ($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
+                                $client->card_number = $attribute['value'];
+                            else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Attribute ID for NRC
+                                $client->NRC = $attribute['value'];
+                            else if ($attribute['attribute'] == 'pd02AeZHXWi') //Attribute ID for Passport Number
+                                $client->passport_number = $attribute['value'];
+                            else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Attribute ID for First Name
+                                $client->first_name = ucfirst(strtolower(trim($attribute['value'])));
+                            else if ($attribute['attribute'] == 'aW66s2QSosT') //Attribute ID for Surname
+                                $client->last_name = ucfirst(strtolower(trim($attribute['value'])));
+                            else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Attribute ID for Sex
+                                $client->sex = $attribute['value'][0];
+                            else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Attribute ID for Age
+                                $client->date_of_birth = $attribute['value'];
+                            else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Attribute ID for Mobile phone number
+                                $client->contact_number = $attribute['value'];
+                            else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Attribute ID for Email Address
+                                $client->contact_email_address = $attribute['value'];
+                            else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Attribute ID for Address (current)
+                                $client->address_line1 = $attribute['value'];
+                            else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Attribute ID for Occupation
+                                $client->occupation = $attribute['value'];
+                        }
+
+                        //Update client record
+                        $client->update();
+
+                        $time = date('Y-m-d H:i:s');
+                        $this->getOutput()->writeln("<info>$time Client saved:</info> {$client->id}");
                     }
-
-                    //Save client record
-                    $client->update();
-
-                    //Store data in record table
-                    $record = new Record([
-                        'data_source' => 'MOH_DHIS2_COVAX',
-                        'data_type' => 'TRACKED_ENTITY_INSTANCE_UPDATE',
-                        'data' => json_encode($trackedEntityInstance)
-                    ]);
-
-                    $record->save();
-
-                    // Create record in ImportLog table
-                    ImportLog::create([
-                        'hash' => sha1(json_encode($trackedEntityInstance)),
-                    ]);
-
-                    $time = date('Y-m-d H:i:s');
-                    $this->getOutput()->writeln("<info>$time Client saved:</info> {$client->id}");
                 }
             } catch (ConnectException $e) {
                 // Connection exceptions are not caught by RequestException

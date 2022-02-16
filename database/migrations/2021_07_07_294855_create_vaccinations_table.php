@@ -28,7 +28,7 @@ class CreateVaccinationsTable extends Migration
             $table->integer('vaccinating_country_id')->unsigned()->default(248); //ZMB - ISO 3166 Country
             $table->integer('certificate_id')->unsigned()->nullable();
             $table->integer('facility_id')->unsigned();
-            $table->string('event_uid')->unique()->nullable(); //DHIS2 event uid
+            $table->string('event_uid')->unique();
             $table->integer('record_id')->unsigned();
             $table->timestamps();
             $table->softDeletes();
@@ -57,6 +57,7 @@ class CreateVaccinationsTable extends Migration
     {
         Schema::table('vaccinations', function(Blueprint $table)
         {
+            $table->dropIndex(['client_id']);
             $table->dropForeign(['record_id']);
             $table->dropForeign(['vaccinating_country_id']);
             $table->dropForeign(['facility_id']);

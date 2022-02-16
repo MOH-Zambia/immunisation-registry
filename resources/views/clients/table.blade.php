@@ -2,7 +2,7 @@
     <table id="clients-table" class="table">
         <thead>
             <tr>
-                <th>Client UID</th>
+                <th>Source ID</th>
                 <th>Card Number</th>
                 <th>NRC</th>
                 <th>Passport Number</th>
@@ -17,7 +17,7 @@
         <tbody>
         @foreach($clients as $client)
             <tr>
-                <td><a href="{{ route('clients.show', [$client->id]) }}">{{ $client->client_uid }}</a></td>
+                <td><a href="{{ route('clients.show', [$client->id]) }}">{{ $client->source_id }}</a></td>
                 <td>{{ $client->card_number }}</td>
                 <td>{{ $client->NRC }}</td>
                 <td>{{ $client->passport_number }}</td>

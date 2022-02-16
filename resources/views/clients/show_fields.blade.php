@@ -1,7 +1,7 @@
 <div class="col-md-6">
     <!-- Client UID Field -->
     <div class="col-sm-12">
-        <p>{!! Form::label('client_uid', 'Client UID:') !!} {{ $client->client_uid }}</p>
+        <p>{!! Form::label('source_id', 'Source ID:') !!} {{ $client->source_id }}</p>
     </div>
 
     <!-- Card Number Field -->

@@ -40,7 +40,7 @@
                 <table class="table" id="clients-table">
                     <thead>
                         <tr>
-                            <th>Client UID</th>
+                            <th>Source ID</th>
                             <th>Card Number</th>
                             <th>NRC</th>
                             <th>Passport Number</th>
@@ -75,8 +75,8 @@
                 ajax: "{{ route('clients.datatable') }}",
                 columns: [
                     {
-                        data: 'client_uid',
-                        name: 'client_uid'
+                        data: 'source_id',
+                        name: 'source_id'
                     },
                     {
                         data: 'card_number',

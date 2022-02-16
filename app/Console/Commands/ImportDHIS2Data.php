@@ -79,6 +79,9 @@ class ImportDHIS2Data extends Command
 
     public function getTrackedEntityInstance($tracked_entity_instance_uid, $facility_id): ? Client
     {
+        $time = date('Y-m-d H:i:s');
+        $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: {$tracked_entity_instance_uid}</info>");
+
         $httpClient = new GuzzleHttp\Client();
 
         $response = $httpClient->request('GET', env('DHIS2_BASE_URL'). "trackedEntityInstances.json?trackedEntityInstance={$tracked_entity_instance_uid}", [
@@ -88,14 +91,11 @@ class ImportDHIS2Data extends Command
         if ($response->getStatusCode() == 200) {
             $response_body = json_decode($response->getBody(), true);
             $trackedEntityInstance = $response_body['trackedEntityInstances'][0];
-            $client_uid = $trackedEntityInstance['trackedEntityInstance'];
-
-            $time = date('Y-m-d H:i:s');
-            $this->getOutput()->writeln("<info>$time Getting TRACKED_ENTITY_INSTANCE: {$client_uid}</info>");
+            $source_id = $trackedEntityInstance['trackedEntityInstance'];
 
             //Store data in record table
             $record = new Record([
-                'record_id' => $client_uid,
+                'record_id' => $source_id,
                 'data_source' => 'MOH_DHIS2_COVAX',
                 'data_type' => 'TRACKED_ENTITY_INSTANCE',
                 'hash' => sha1(json_encode($trackedEntityInstance)),
@@ -106,7 +106,7 @@ class ImportDHIS2Data extends Command
 
             //Create and save new client
             $client = new Client();
-            $client->client_uid = $client_uid;
+            $client->source_id = $source_id;
 
             foreach ($trackedEntityInstance['attributes'] as $attribute) {
                 if ($attribute['attribute'] == 'zUQCBnWbBer') //Tracked Entity Attribute UID for Card Number
@@ -139,6 +139,8 @@ class ImportDHIS2Data extends Command
 
             $client->facility_id = $facility_id;
             $client->record_id = $record->id;
+            $client->source_created_at = $trackedEntityInstance['created'];
+            $client->source_updated_at = $trackedEntityInstance['lastUpdated'];
 
             /*
              * Clients with NRC lenght greater than 11 will cause a QueryExceprion therefore they are not saved
@@ -154,6 +156,7 @@ class ImportDHIS2Data extends Command
 
         return $client;
     }
+
 
     public function loadEvents($programStartDate, $programEndDate): array
     {
@@ -209,7 +212,7 @@ class ImportDHIS2Data extends Command
                                     $event_uid = $event['event'];
 
                                     try {
-                                        if (Record::where('hash', sha1(json_encode($event)))->exists()) {
+                                        if (Vaccination::where('source_id', $event_uid)->exists()) {
                                             $time = date('Y-m-d H:i:s');
                                             $this->getOutput()->writeln("<comment>$time Skipping event:</comment> | $event_uid | because event already exist in the DATABASE!");
                                         } else {
@@ -227,7 +230,7 @@ class ImportDHIS2Data extends Command
                                             $record->save();
 
                                             $tracked_entity_instance_uid = $event['trackedEntityInstance'];
-                                            $client = Client::where('client_uid', $tracked_entity_instance_uid)->first();
+                                            $client = Client::where('source_id', $tracked_entity_instance_uid)->first();
 
                                             if (empty($client)) {
                                                 $client = self::getTrackedEntityInstance($tracked_entity_instance_uid, $facility->id);
@@ -237,17 +240,12 @@ class ImportDHIS2Data extends Command
                                             $time = date('Y-m-d H:i:s');
 
                                             $this->getOutput()
-                                                ->writeln("<info>$time Saving event $total_number_of_events: Event UID: $event_uid, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$tracked_entity_instance_uid}</info>");
+                                                ->writeln("<info>$time Saving event $total_number_of_events: Event UID: $event_uid, Facility: {$facility->name}, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$tracked_entity_instance_uid}</info>");
 
-                                            // Retrieve the user by the attributes, or create it if it doesn't exist...
-                                            //                                    $vaccination = Vaccination::firstOrNew(array('event_uid' => '$event_uid'));
                                             $vaccination = new Vaccination();
 
                                             $vaccination->client_id = $client->id;
                                             $vaccination->date = $event['eventDate'];
-                                            $vaccination->facility_id = $facility->id;
-                                            $vaccination->event_uid = $event_uid;
-                                            $vaccination->record_id = $record->id;
 
                                             switch ($event['programStage']) {
                                                 case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
@@ -286,6 +284,12 @@ class ImportDHIS2Data extends Command
                                                     $vaccination->date_of_next_dose = $dataValue['value'];
                                                 }
                                             }
+
+                                            $vaccination->facility_id = $facility->id;
+                                            $vaccination->record_id = $record->id;
+                                            $vaccination->source_id = $event_uid;
+                                            $vaccination->source_created_at = $event['created'];
+                                            $vaccination->source_updated_at = $event['lastUpdated'];
 
                                             $vaccination->save();
 

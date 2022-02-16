@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Client",
- *      required={"client_uid", "first_name", "last_name", "sex", "status", "facility_id", "record_id"},
+ *      required={"source_id", "first_name", "last_name", "sex", "status", "facility_id", "record_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -17,7 +17,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *      @SWG\Property(
- *          property="client_uid",
+ *          property="source_id",
  *          description="client_uid",
  *          type="string"
  *      ),
@@ -160,6 +160,18 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="integer",
  *          format="int32"
  *      ),
+ *     @SWG\Property(
+ *          property="source_created_at",
+ *          description="source_created_at",
+ *          type="string",
+ *          format="date-time"
+ *      ),
+ *      @SWG\Property(
+ *          property="source_updated_at",
+ *          description="source_updated_at",
+ *          type="string",
+ *          format="date-time"
+ *      ),
  *      @SWG\Property(
  *          property="created_at",
  *          description="created_at",
@@ -219,7 +231,9 @@ class Client extends Model
         'next_of_kin_contact_email_address',
         'nationality',
         'facility_id',
-        'record_id'
+        'record_id',
+        'source_created_at',
+        'source_updated_at'
     ];
 
     /**
@@ -292,6 +306,8 @@ class Client extends Model
         'nationality' => 'required|integer',
         'facility_id' => 'required|integer',
         'record_id' => 'required|integer',
+        'source_created_at' => 'nullable',
+        'source_updated_at' => 'nullable',
         'created_at' => 'nullable',
         'updated_at' => 'nullable',
         'deleted_at' => 'nullable'

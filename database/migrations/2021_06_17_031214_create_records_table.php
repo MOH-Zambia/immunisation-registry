@@ -34,6 +34,11 @@ class CreateRecordsTable extends Migration
      */
     public function down()
     {
+        Schema::table('records', function(Blueprint $table)
+        {
+            $table->dropIndex(['hash']);
+        });
+
         Schema::dropIfExists('records');
     }
 }

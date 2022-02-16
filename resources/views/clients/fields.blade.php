@@ -1,7 +1,7 @@
 <!-- Client Id Field -->
 <div class="form-group col-sm-6">
-    {!! Form::label('client_uid', 'Client UID:') !!}
-    {!! Form::text('client_uid', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
+    {!! Form::label('source_id', 'Source ID:') !!}
+    {!! Form::text('source_id', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
 
 <!-- Card Number Field -->

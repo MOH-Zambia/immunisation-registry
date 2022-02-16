@@ -35,7 +35,7 @@ class VaccinationsFactory extends Factory
             'vaccinating_country_id' => $this->faker->randomDigitNotNull,
             'certificate_id' => $this->faker->randomDigitNotNull,
             'facility_id' => $this->faker->randomDigitNotNull,
-            'event_uid' => $this->faker->word,
+            'source_id' => $this->faker->word,
             'record_id' => $this->faker->randomDigitNotNull,
             'created_at' => $this->faker->date('Y-m-d H:i:s'),
             'updated_at' => $this->faker->date('Y-m-d H:i:s'),

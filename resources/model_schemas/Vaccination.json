@@ -168,7 +168,19 @@
         "inView": true
     },
     {
-        "name": "event_uid",
+        "name": "record_id",
+        "dbType": "integer,false,true",
+        "htmlType": null,
+        "validations": "required|integer",
+        "searchable": true,
+        "fillable": true,
+        "primary": false,
+        "inForm": true,
+        "inIndex": true,
+        "inView": true
+    },
+    {
+        "name": "source_id",
         "dbType": "string,255:nullable",
         "htmlType": "text",
         "validations": "nullable|string|max:255",
@@ -180,16 +192,28 @@
         "inView": true
     },
     {
-        "name": "record_id",
-        "dbType": "integer,false,true",
-        "htmlType": null,
-        "validations": "required|integer",
-        "searchable": true,
-        "fillable": true,
+        "name": "source_created_at",
+        "dbType": "datetime:nullable",
+        "htmlType": "date",
+        "validations": "nullable",
+        "searchable": false,
+        "fillable": false,
         "primary": false,
-        "inForm": true,
-        "inIndex": true,
-        "inView": true
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
+    },
+    {
+        "name": "source_updated_at",
+        "dbType": "datetime:nullable",
+        "htmlType": "date",
+        "validations": "nullable",
+        "searchable": false,
+        "fillable": false,
+        "primary": false,
+        "inForm": false,
+        "inIndex": false,
+        "inView": false
     },
     {
         "name": "created_at",

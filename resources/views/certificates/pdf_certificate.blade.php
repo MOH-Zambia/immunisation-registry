@@ -73,7 +73,7 @@
                                                 <b>Other Names:</b> {{ $certificate->client['other_names'] }}<br>
                                                 <b>NRC:</b> {{ $certificate->client['NRC'] }}<br>
                                                 <b>Passport Number:</b> {{ $certificate->client['passport_number'] }}<br>
-                                                <b>Nationality:</b> {{-- $certificate->client['nationality'] --}}<br>
+                                                <b>Nationality:</b> {{ $certificate->client->country['name'] }}<br>
                                                 <b>Sex:</b> {{ $certificate->client['sex'] }}<br>
                                                 <b>Date of Birth:</b> {{ $certificate->client['date_of_birth']->format('d-M-Y') }}<br>
                                             </div>
