@@ -48,19 +48,12 @@ class OTPVerificationController extends AppBaseController
             CURLOPT_URL => $url,
             CURLOPT_HEADER => TRUE,
             CURLOPT_RETURNTRANSFER => true,
-            CURLINFO_HEADER_OUT => TRUE,
-//            CURLOPT_POST => true
+            CURLINFO_HEADER_OUT => TRUE
         ));
 
         //Ignore SSL certificate verification
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-
-//        $headers = array(
-//            "Content-Type: text/html"
-//        );
-//
-//        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
 
         //Get response
         $output = curl_exec($ch);
