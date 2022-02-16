@@ -35,7 +35,7 @@ class OTPVerificationController extends AppBaseController
         $sender = env('KANNEL_SENDER');
 
         //Your message to send, Adding URL encoding.
-        $message = urlencode("Ministry of Health, \nCOVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is $OTP");
+        $message = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is $OTP");
 
         $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$sender}&to={$recipient}&text={$message}";
 
