@@ -47,7 +47,7 @@ class ClientController extends AppBaseController
         if ($request->ajax()) {
 
             $clients = Client::select([
-                'client_uid',
+                'source_id',
                 'card_number',
                 'NRC',
                 'passport_number',

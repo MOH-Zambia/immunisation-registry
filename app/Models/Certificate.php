@@ -186,6 +186,6 @@ class Certificate extends Model
      **/
     public function vaccinations()
     {
-        return $this->hasMany(\App\Models\Vaccination::class, 'certificate_id');
+        return $this->hasMany(\App\Models\Vaccination::class, 'certificate_id')->orderBy('date');;
     }
 }
