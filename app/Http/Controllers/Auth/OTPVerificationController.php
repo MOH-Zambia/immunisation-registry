@@ -48,7 +48,7 @@ class OTPVerificationController extends AppBaseController
             CURLOPT_URL => $url,
             CURLOPT_HEADER => TRUE,
             CURLINFO_HEADER_OUT => TRUE,
-            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_RETURNTRANSFER => true
         ));
 
         //Ignore SSL certificate verification
@@ -67,7 +67,7 @@ class OTPVerificationController extends AppBaseController
         curl_close($ch);
 
         if($isError){
-            Log::error("Error sending OTP via SMS: $errorMessage");
+            Log::error("Error sending OTP via SMS: $output, $errorMessage");
             return $this->sendError($errorMessage);
         }else{
             Session::put('OTP', $OTP);
