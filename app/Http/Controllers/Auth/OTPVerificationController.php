@@ -56,12 +56,6 @@ class OTPVerificationController extends AppBaseController
         curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
 
-//        $headers = array(
-//            "Content-Type: text/html"
-//        );
-//
-//        curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);
-
         //Get response
         $output = curl_exec($ch);
 
