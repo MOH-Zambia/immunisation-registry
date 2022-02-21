@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\AppBaseController;
+use App\Http\Controllers\Controller;
 use App\Models\Certificate;
+use App\Models\Client;
+use App\Models\User;
 use Illuminate\Mail\Message;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
+use Laracasts\Flash\Flash;
 
 
 class OTPVerificationController extends AppBaseController
@@ -22,16 +28,16 @@ class OTPVerificationController extends AppBaseController
 
         $host = env('KANNEL_HOST');
         $port = env('KANNEL_PORT');
+        $smsc = env('KANNEL_SMSC');
         $username = env('KANNEL_USERNAME');
         $password = env('KANNEL_PASSWORD');
-        $smsc = env('KANNEL_SMSC');
-        $from = env('KANNEL_SENDER');
-        $to = $input['contact_number'];
+        $recipient = $input['contact_number'];
+        $sender = env('KANNEL_SENDER');
 
         //Your message to send, Adding URL encoding.
-        $text = urlencode("COVID-19 Immunisation Registry, Your One Time Password to access your COVID-19 Certificate is $OTP");
+        $message = urlencode("Ministry of Health, \nCOVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is $OTP");
 
-        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$from}&to={$to}&text={$text}";
+        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$sender}&to={$recipient}&text={$message}";
 
         Log::info( "Sending OTP via SMS using URL: $url");
 
@@ -42,7 +48,8 @@ class OTPVerificationController extends AppBaseController
             CURLOPT_URL => $url,
             CURLOPT_HEADER => TRUE,
             CURLOPT_RETURNTRANSFER => true,
-            CURLINFO_HEADER_OUT => TRUE
+            CURLINFO_HEADER_OUT => TRUE,
+//            CURLOPT_POST => true
         ));
 
         //Ignore SSL certificate verification
@@ -61,7 +68,7 @@ class OTPVerificationController extends AppBaseController
         curl_close($ch);
 
         if($isError){
-            Log::error("Error sending OTP via SMS: $output, $errorMessage");
+            Log::error("Error sending OTP via SMS: $errorMessage");
             return $this->sendError($errorMessage);
         }else{
             Session::put('OTP', $OTP);
