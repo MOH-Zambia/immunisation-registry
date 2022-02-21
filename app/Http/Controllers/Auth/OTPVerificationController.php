@@ -3,18 +3,12 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\AppBaseController;
-use App\Http\Controllers\Controller;
 use App\Models\Certificate;
-use App\Models\Client;
-use App\Models\User;
 use Illuminate\Mail\Message;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
-use Laracasts\Flash\Flash;
 
 
 class OTPVerificationController extends AppBaseController
@@ -31,15 +25,15 @@ class OTPVerificationController extends AppBaseController
         $smsc = env('KANNEL_SMSC');
         $username = env('KANNEL_USERNAME');
         $password = env('KANNEL_PASSWORD');
-        $recipient = $input['contact_number'];
-        $sender = env('KANNEL_SENDER');
+        $to = $input['contact_number'];
+        $from = env('KANNEL_SENDER');
 
         //Your message to send, Adding URL encoding.
-        $message = urlencode("Ministry of Health, \nCOVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is $OTP");
+        $text = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
 
-        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$sender}&to={$recipient}&text={$message}";
+        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$from}&to={$to}&text={$text}";
 
-        Log::info( "Sending OTP via SMS using URL: $url");
+        Log::channel('sms')->info( "Sending OTP via SMS using URL: {$url}");
 
         /** @var TYPE_NAME $ch */
         $ch = curl_init();
@@ -67,11 +61,11 @@ class OTPVerificationController extends AppBaseController
         curl_close($ch);
 
         if($isError){
-            Log::error("Error sending OTP via SMS: $errorMessage");
+            Log::channel('sms')->error("Error sending OTP via SMS: $errorMessage");
             return $this->sendError($errorMessage);
         }else{
             Session::put('OTP', $OTP);
-            Log::info("OPT sent via SMS: $output, OTP: $OTP");
+            Log::channel('sms')->info("OPT sent via SMS: $output, OTP: $OTP");
             return $this->sendSuccess("OTP Sent!");
         }
     }
