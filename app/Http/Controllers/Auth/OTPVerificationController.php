@@ -3,14 +3,9 @@
 namespace App\Http\Controllers\Auth;
 
 use App\Http\Controllers\AppBaseController;
-use App\Http\Controllers\Controller;
 use App\Models\Certificate;
-use App\Models\Client;
-use App\Models\User;
 use Illuminate\Mail\Message;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Session;
