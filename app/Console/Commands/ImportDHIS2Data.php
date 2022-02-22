@@ -99,7 +99,7 @@ class ImportDHIS2Data extends Command
     
     public function saveRecord($_source_id, $_data_type, $_data): ? Record 
     {
-        //_source_id is passed seperately as it is retrieved differently | event vs entity
+        //_source_id is passed seperately as it is retrieved differently | event vs tracked_entity_instance
         $_record =  new Record([
             'record_id' => $_source_id,
             'data_source' => 'MOH_DHIS2_COVAX',
@@ -107,7 +107,7 @@ class ImportDHIS2Data extends Command
             'hash' => sha1(json_encode($_data)),
             'data' => json_encode($_data)
         ]);
-
+        
         $_record -> save();
         
         return $_record;
@@ -119,7 +119,7 @@ class ImportDHIS2Data extends Command
         $_old_record->hash = sha1(json_encode($_updated_data));
         $_old_record->data = json_encode($_updated_data);
 
-        $_old_record->update(); //Not sure which function is supposed to though
+        $_old_record->update();
 
         return $_old_record;
     }
@@ -277,11 +277,7 @@ class ImportDHIS2Data extends Command
 
     public function updateVaccination($_vaccination, $_event, $_facility_id): ? Vaccination
     {
-        
-        $this->getOutput()->writeln("<comment> Which Client Is This : { $_event } </comment>");
-
         $_vaccination->date = $_event['eventDate'];
-        $date_formater = 'Y-m-d H:i:s';
 
         switch ($_event['programStage']) {
             case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
@@ -328,7 +324,7 @@ class ImportDHIS2Data extends Command
 
         $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("<info>$_time Vaccination updated :</info> {$_vaccination->id} \n {$event_json}");
+        $this->getOutput()->writeln("<info>$_time Vaccination updated :</info> {$_vaccination->id} \n {$_event_json}");
         
         return $_vaccination;
     }
@@ -393,7 +389,6 @@ class ImportDHIS2Data extends Command
 
                                         //Preliminary assignments
                                         $tracked_entity_instance_uid = $event['trackedEntityInstance'];
-
                                         $client = Client::where('source_id', $tracked_entity_instance_uid)->first();
                                         //Get latest tracked entity instance
                                         $tracked_entity_instance = self::getTrackedEntityInstance($httpClient, $tracked_entity_instance_uid);
@@ -410,19 +405,15 @@ class ImportDHIS2Data extends Command
                                             $source_client_created = self::getTimestampFromString($tracked_entity_instance['created']);
 
                                             if (($client->source_updated_at < $source_client_last_updated) && ($client->source_created_at == $source_client_created)) {
-                                                
                                                 //get the existing record
                                                 $old_client_side_record = Record::where('record_id', $client->source_id)->first();
-                                                
-                                                // $this->getOutput()->writeln("<comment> Which Client Is This : { $client } </comment>");
-                                                // $this->getOutput()->writeln("<comment> Which Record Is This : { $old_client_side_record } </comment>");
 
-                                                $old_client_side_record = self::updateRecord($old_client_side_record,  $tracked_entity_instance);
+                                                $updated_client_side_record = self::updateRecord($old_client_side_record,  $tracked_entity_instance);
 
                                                 //probably an if statement here
                                                 $client = self::updateClient($client, $tracked_entity_instance, $facility->id);
                                             } else {
-                                                $this->getOutput()->writeln("<comment>SKIPPING exisiting Client UID : {$client->source_id}, as record is still upto date");
+                                                $this->getOutput()->writeln("<comment>SKIPPING existing Client UID : {$client->source_id}, as record is still upto date");
                                             }
                                         }
                                         
@@ -431,12 +422,6 @@ class ImportDHIS2Data extends Command
                                         if (!empty($vaccination)) {
                                             $source_event_last_updated = self::getTimestampFromString($event['lastUpdated']);
                                             $source_event_created = self::getTimestampFromString($event['created']);
-
-                                            if (($vaccination->source_updated_at <= $source_event_last_updated)) {
-                                                $this->getOutput()->writeln("<comment> COMPARED TWO DATES $vaccination->source_updated_at VS $source_event_last_updated && The First is Larger </comment>");
-                                            } else {
-                                                $this->getOutput()->writeln("<comment> FAILED COMPARISON $vaccination->source_updated_at VS $source_event_last_updated");
-                                            }
 
                                             //Check for last updated ? Vaccination Update logic kicks in
                                             if (($vaccination->source_updated_at < $source_event_last_updated) && ($vaccination->client_id == $client->id) && ($vaccination->source_created_at == $source_event_created)) {
@@ -451,15 +436,16 @@ class ImportDHIS2Data extends Command
                                                 $event = json_encode($event, JSON_UNESCAPED_SLASHES);
                                                 $time = date('Y-m-d H:i:s');
                                                 $this->getOutput()->writeln("<info>$time Updating number {$total_number_of_events} saved: ({$runTime}ms)</info> \n $event");
+                                            } else {
+                                                $time = date('Y-m-d H:i:s');
+                                                $this->getOutput()->writeln("<comment>$time Skipping event:</comment> | $event_uid | because event already exist in the DATABASE!");
                                             }
-
-                                            $time = date('Y-m-d H:i:s');
-                                            $this->getOutput()->writeln("<comment>$time Skipping event:</comment> | $event_uid | because event already exist in the DATABASE!");
                                         } else {
-                                            //Store new data in record table
-                                            $vaccination_side_record = self::saveRecord($event_uid, 'EVENT', $event);
-                                            $vaccination = self::saveVaccination($event, $client->id, $facility->id, $vaccination_side_record->id);
-                                            
+                                            //Store new even data in record table
+                                            $new_event_side_record = self::saveRecord($event_uid, 'EVENT', $event);
+                                            //Store new client, record and event data in the vaccination table
+                                            $vaccination = self::saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
+
                                             $total_number_of_saved_events++;
                                             $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                             $event = json_encode($event, JSON_UNESCAPED_SLASHES);
@@ -468,7 +454,7 @@ class ImportDHIS2Data extends Command
                                         }
 
                                         DB::commit(); //if no error on record, vaccination and importlog commit data to database
-                                        $this->getOutput()->writeln("<info>$time Persisted event : | $event_uid | to the DATABASE</info>");
+                                        $this->getOutput()->writeln("<info>$time Persisted event : | $event_uid | to the DATABASE!</info>");
                                     
                                     } catch (QueryException $e) {
                                         DB::rollback(); //Rollback database transaction if any error occurs
