@@ -124,11 +124,8 @@ class ImportDHIS2Data extends Command
         return $_old_record;
     }
 
-    public function saveClient($_tracked_entity_instance, $_facility_id, $_record_id): ? Client 
+    public function assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id): ? Client
     {
-        $_client = new Client();
-        $_client->source_id = $_tracked_entity_instance['trackedEntityInstance'];
-
         foreach ($_tracked_entity_instance['attributes'] as $attribute) {
             if ($attribute['attribute'] == 'zUQCBnWbBer') //Tracked Entity Attribute UID for Card Number
                 $_client->card_number = $attribute['value'];
@@ -157,62 +154,90 @@ class ImportDHIS2Data extends Command
             else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Tracked Entity Attribute UID for Occupation
                 $_client->occupation = $attribute['value'];
         }
-
         $_client->facility_id = $_facility_id;
-        $_client->record_id = $_record_id;
         $_client->source_created_at = $_tracked_entity_instance['created'];
         $_client->source_updated_at = $_tracked_entity_instance['lastUpdated'];
+
+        return $_client;
+    }
+
+    public function saveClient($_tracked_entity_instance, $_facility_id, $_record_id): ? Client 
+    {
+        $_client = new Client();
+        $_client->source_id = $_tracked_entity_instance['trackedEntityInstance'];
+        $_client->record_id = $_record_id;
+
+        $_client = self::assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id);
 
         $_client->save(); //Save new client
         
         $_tracked_entity_instance_json = json_encode($_tracked_entity_instance, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("<info>$_time Client saved:</info> {$_client->id} \n {$_tracked_entity_instance_json}");
+        $this->getOutput()->writeln("{$_time} <info>SAVED Client ID Number :</info> {$_client->id} \n {$_tracked_entity_instance_json}");
 
         return $_client;
     }
 
     public function updateClient($_client, $_tracked_entity_instance, $_facility_id): ? Client 
     {
-        foreach ($_tracked_entity_instance['attributes'] as $attribute) {
-            if ($attribute['attribute'] == 'zUQCBnWbBer') //Tracked Entity Attribute UID for Card Number
-                $_client->card_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Tracked Entity Attribute UID for NRC
-                $_client->NRC = $attribute['value'];
-            else if ($attribute['attribute'] == 'pd02AeZHXWi') //Tracked Entity Attribute UID for Passport Number
-                $_client->passport_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Tracked Entity Attribute UID for First Name
-                $_client->first_name = ucfirst(strtolower(trim($attribute['value'])));
-            else if ($attribute['attribute'] == 'aW66s2QSosT') //Tracked Entity Attribute UID for Surname
-                $_client->last_name = ucfirst(strtolower(trim($attribute['value'])));
-            else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Tracked Entity Attribute UID for Sex
-                $_client->sex = $attribute['value'][0];
-            else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Tracked Entity Attribute UID for Age
-                $_client->date_of_birth = $attribute['value'];
-            else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Tracked Entity Attribute UID for Mobile phone number
-                $_client->contact_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Tracked Entity Attribute UID for Email Address
-                $_client->contact_email_address = $attribute['value'];
-            else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Tracked Entity Attribute UID for Address (current)
-                $_client->address_line1 = $attribute['value'];
-            else if ($attribute['attribute'] == 'gB3BrfkEmkC') //Tracked Entity Attribute UID for Guardian's NRC
-                $_client->guardian_NRC = $attribute['value'];
-            else if ($attribute['attribute'] == 'TodvbRCs4La') //Tracked Entity Attribute UID for Guardian's Passport Number
-                $_client->guardian_passport_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Tracked Entity Attribute UID for Occupation
-                $_client->occupation = $attribute['value'];
-        }
-        $_client->facility_id = $_facility_id;
-        $_client->source_created_at = $_tracked_entity_instance['created'];
-        $_client->source_updated_at = $_tracked_entity_instance['lastUpdated'];
+
+        $_client = self::assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id);
 
         $_client->update(); //Update client info
         
         $_tracked_entity_instance_json = json_encode($_tracked_entity_instance, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("<info>$_time Client updated:</info> {$_client->id} \n {$_tracked_entity_instance_json}");
+        $this->getOutput()->writeln("{$_time} <info>UPDATED Client ID Number :</info> {$_client->id} \n {$_tracked_entity_instance_json}");
 
         return $_client;
+    }
+
+    public function assignCommonVaccinationFields($_vaccination, $_event, $_facility_id): Vaccination
+    {
+        $_vaccination->date = $_event['eventDate'];
+
+        switch ($_event['programStage']) {
+            case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
+                $_vaccination->dose_number = '1';
+                break;
+            case 'RiV7VDxXQLN': //programStage: Vaccination Dose 2
+                $_vaccination->dose_number = '2';
+                break;
+            case 'jatC7jRwVKO': //programStage: Vaccination Booster Dose
+                $_vaccination->dose_number = 'Booster';
+                break;
+        }
+
+        foreach ($_event['dataValues'] as $dataValue) {
+            if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
+                switch ($dataValue['value']) {
+                    case 'AstraZeneca_zm':
+                        $_vaccination->vaccine_id = 1;
+                        break;
+                    case 'Johnson_Johnsons_zm':
+                        $_vaccination->vaccine_id = 3;
+                        break;
+                    case 'Sinopharm':
+                        $_vaccination->vaccine_id = 7;
+                        break;
+                    case 'Pfizer':
+                        $_vaccination->vaccine_id = 6;
+                        break;
+                    case 'Moderna':
+                        $_vaccination->vaccine_id = 4;
+                        break;
+                }
+            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm') { // Batch Number
+                $_vaccination->vaccine_batch_number = $dataValue['value'];
+            } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
+                $_vaccination->date_of_next_dose = $dataValue['value'];
+            }
+        }
+
+        $_vaccination->facility_id = $_facility_id;
+        $_vaccination->source_updated_at = $_event['lastUpdated'];
+
+        return $_vaccination;
     }
 
     public function saveVaccination($_event, $_client_id, $_facility_id, $_record_id): ? Vaccination
@@ -220,111 +245,30 @@ class ImportDHIS2Data extends Command
         $_vaccination = new Vaccination();
 
         $_vaccination->client_id = $_client_id;
-        $_vaccination->date = $_event['eventDate'];
-
-        switch ($_event['programStage']) {
-            case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
-                $_vaccination->dose_number = '1';
-                break;
-            case 'RiV7VDxXQLN': //programStage: Vaccination Dose 2
-                $_vaccination->dose_number = '2';
-                break;
-            case 'jatC7jRwVKO': //programStage: Vaccination Booster Dose
-                $_vaccination->dose_number = 'Booster';
-                break;
-        }
-
-        foreach ($_event['dataValues'] as $dataValue) {
-            if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
-                switch ($dataValue['value']) {
-                    case 'AstraZeneca_zm':
-                        $_vaccination->vaccine_id = 1;
-                        break;
-                    case 'Johnson_Johnsons_zm':
-                        $_vaccination->vaccine_id = 3;
-                        break;
-                    case 'Sinopharm':
-                        $_vaccination->vaccine_id = 7;
-                        break;
-                    case 'Pfizer':
-                        $_vaccination->vaccine_id = 6;
-                        break;
-                    case 'Moderna':
-                        $_vaccination->vaccine_id = 4;
-                        break;
-                }
-            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm') { // Batch Number
-                $_vaccination->vaccine_batch_number = $dataValue['value'];
-            } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
-                $_vaccination->date_of_next_dose = $dataValue['value'];
-            }
-        }
-
-        $_vaccination->facility_id = $_facility_id;
         $_vaccination->record_id = $_record_id;
         $_vaccination->source_id = $_event['event'];
         $_vaccination->source_created_at = $_event['created'];
-        $_vaccination->source_updated_at = $_event['lastUpdated'];
 
+        $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);
+        
         $_vaccination->save();
         
         $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("<info>$_time Vaccination saved :</info> {$_vaccination->id} \n {$_event_json}");
+        $this->getOutput()->writeln("{$_time} <info>SAVED Vaccination ID Number :</info> {$_vaccination->id} \n {$_event_json}");
 
         return $_vaccination;
     }
 
     public function updateVaccination($_vaccination, $_event, $_facility_id): ? Vaccination
     {
-        $_vaccination->date = $_event['eventDate'];
-
-        switch ($_event['programStage']) {
-            case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
-                $_vaccination->dose_number = '1';
-                break;
-            case 'RiV7VDxXQLN': //programStage: Vaccination Dose 2
-                $_vaccination->dose_number = '2';
-                break;
-            case 'jatC7jRwVKO': //programStage: Vaccination Booster Dose
-                $_vaccination->dose_number = 'Booster';
-                break;
-        }
-
-        foreach ($_event['dataValues'] as $dataValue) {
-            if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
-                switch ($dataValue['value']) {
-                    case 'AstraZeneca_zm':
-                        $_vaccination->vaccine_id = 1;
-                        break;
-                    case 'Johnson_Johnsons_zm':
-                        $_vaccination->vaccine_id = 3;
-                        break;
-                    case 'Sinopharm':
-                        $_vaccination->vaccine_id = 7;
-                        break;
-                    case 'Pfizer':
-                        $_vaccination->vaccine_id = 6;
-                        break;
-                    case 'Moderna':
-                        $_vaccination->vaccine_id = 4;
-                        break;
-                }
-            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm') { // Batch Number
-                $_vaccination->vaccine_batch_number = $dataValue['value'];
-            } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
-                $_vaccination->date_of_next_dose = $dataValue['value'];
-            }
-        }
-
-        $_vaccination->facility_id = $_facility_id;
-        $_vaccination->source_updated_at = $_event['lastUpdated'];
+        $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_vaccination);
 
         $_vaccination->save();
 
         $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("<info>$_time Vaccination updated :</info> {$_vaccination->id} \n {$_event_json}");
+        $this->getOutput()->writeln("{$_time} <info>UPDATED Vaccination ID Number :</info> {$_vaccination->id} \n {$_event_json}");
         
         return $_vaccination;
     }
@@ -342,6 +286,10 @@ class ImportDHIS2Data extends Command
         $total_number_of_updated_events = 0; //Saved events counter
 
         foreach($facilities as $facility) {
+            
+            $_time = date('Y-m-d H:i:s');
+            $this->getOutput()->writeln("{$_time} <info>Loading data from Facility Name:</info> {$facility->name}, <info>Facility DHIS2 UID:</info> {$facility->DHIS2_UID}, <info>Facility ID:</info> {$facility->id}");
+            
             if(!empty($facility->DHIS2_UID)) {
                 try {
                     $response = $httpClient->request('GET', env('DHIS2_BASE_URL')."events.json", [
@@ -349,8 +297,8 @@ class ImportDHIS2Data extends Command
                         'query' => [
                             'orgUnit' => $facility->DHIS2_UID,
                             'program' => 'yDuAzyqYABS',
-                            'programStartDate' => $programStartDate,
-                            'programEndDate' => $programEndDate,
+                            'startDate' => $programStartDate,
+                            'endDate' => $programEndDate,
                             'totalPages' => true
                         ]
                     ]);
@@ -365,8 +313,8 @@ class ImportDHIS2Data extends Command
                                 'query' => [
                                     'orgUnit' => $facility->DHIS2_UID,
                                     'program' => 'yDuAzyqYABS',
-                                    'programStartDate' => $programStartDate,
-                                    'programEndDate' => $programEndDate,
+                                    'startDate' => $programStartDate,
+                                    'endDate' => $programEndDate,
                                     'page' => $i,
                                     'order' => 'created:ASC'
                                 ]
@@ -413,7 +361,8 @@ class ImportDHIS2Data extends Command
                                                 //probably an if statement here
                                                 $client = self::updateClient($client, $tracked_entity_instance, $facility->id);
                                             } else {
-                                                $this->getOutput()->writeln("<comment>SKIPPING existing Client UID : {$client->source_id}, as record is still upto date");
+                                                $time = date('Y-m-d H:i:s');
+                                                $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$client->source_id}, <comment>as record is still upto date</comment>");
                                             }
                                         }
                                         
@@ -435,10 +384,10 @@ class ImportDHIS2Data extends Command
                                                 $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                                 $event = json_encode($event, JSON_UNESCAPED_SLASHES);
                                                 $time = date('Y-m-d H:i:s');
-                                                $this->getOutput()->writeln("<info>$time Updating number {$total_number_of_events} saved: ({$runTime}ms)</info> \n $event");
+                                                $this->getOutput()->writeln("{$time} <info>UPDATING Event total :</info> {$total_number_of_events} ({$runTime}ms) \n {$event}");
                                             } else {
                                                 $time = date('Y-m-d H:i:s');
-                                                $this->getOutput()->writeln("<comment>$time Skipping event:</comment> | $event_uid | because event already exist in the DATABASE!");
+                                                $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event already exists in the DATABASE!</comment>");
                                             }
                                         } else {
                                             //Store new even data in record table
@@ -450,11 +399,11 @@ class ImportDHIS2Data extends Command
                                             $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                             $event = json_encode($event, JSON_UNESCAPED_SLASHES);
                                             $time = date('Y-m-d H:i:s');
-                                            $this->getOutput()->writeln("<info>$time Saving event $total_number_of_events: Event UID: $event_uid, Facility: {$facility->name}, Facility UID: {$facility->DHIS2_UID}, TRACKED_ENTITY_INSTANCE: {$tracked_entity_instance_uid}</info>");
+                                            $this->getOutput()->writeln("{$time} <info>SAVING Event:</info> {$total_number_of_events}, <info>Event UID:</info> {$event_uid}, <info>Facility:</info> {$facility->name}, <info>Facility UID:</info> {$facility->DHIS2_UID}, <info>TRACKED_ENTITY_INSTANCE:</info> {$tracked_entity_instance_uid}");
                                         }
 
                                         DB::commit(); //if no error on record, vaccination and importlog commit data to database
-                                        $this->getOutput()->writeln("<info>$time Persisted event : | $event_uid | to the DATABASE!</info>");
+                                        $this->getOutput()->writeln("{$time} <info>PERSISTED Event:</info> {$event_uid} <info>to the DATABASE!</info>");
                                     
                                     } catch (QueryException $e) {
                                         DB::rollback(); //Rollback database transaction if any error occurs
@@ -464,7 +413,7 @@ class ImportDHIS2Data extends Command
                                         $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
                                         Log::error("$time QueryException: $message \n $event");
-                                        $this->getOutput()->writeln("<error>$time QueryException on event number $total_number_of_events: $message \n $event</error>");
+                                        $this->getOutput()->writeln("<error>{$time} QueryException on Event Number {$total_number_of_events}: $message \n $event</error>");
                                     } catch (Exception $e) {
                                         DB::rollback(); //Rollback database transaction if any error occurs
 
@@ -473,7 +422,7 @@ class ImportDHIS2Data extends Command
                                         $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
                                         Log::error("$time Exception: $message \n $event");
-                                        $this->getOutput()->writeln("<error>$time Exception on event number $total_number_of_events: $message \n $event</error>");
+                                        $this->getOutput()->writeln("<error>{$time} Exception on event number {$total_number_of_events}: $message \n $event</error>");
                                     }
                                 } //End foreach
                             }//End if ($response->getStatusCode() == 200)
@@ -484,18 +433,18 @@ class ImportDHIS2Data extends Command
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
                     Log::error( " $time ConnectException: $message");
-                    $this->getOutput()->writeln("<error>$time ConnectException on event number $total_number_of_events: $message </error>");
+                    $this->getOutput()->writeln("<error>{$time} ConnectException on event number $total_number_of_events: $message</error>");
                 } catch (RequestException $e) {
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
                     Log::error( "$time RequestException - $message");
-                    $this->getOutput()->writeln("<error>$time RequestException on event number $total_number_of_events: $message</error>");
+                    $this->getOutput()->writeln("<error>{$time} RequestException on event number $total_number_of_events: $message</error>");
                 } catch (TransferException $e) {
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
 
                     Log::error( "$time TransferException: $message");
-                    $this->getOutput()->writeln("<error>$time TransferException on event number $total_number_of_events: $message</error>");
+                    $this->getOutput()->writeln("<error>{$time} TransferException on event number $total_number_of_events: $message</error>");
                 } catch (GuzzleException $e) {
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
@@ -503,20 +452,20 @@ class ImportDHIS2Data extends Command
 
                     Log::error( "$time Exception: $message \n $event");
                     Log::error($event);
-                    $this->getOutput()->writeln("<error>$time GuzzleException on event number $total_number_of_events: $message \n $event</error>");
+                    $this->getOutput()->writeln("<error>{$time} GuzzleException on event number $total_number_of_events: $message \n $event</error>");
                 } catch (Exception $e) {
                     $message = $e->getMessage();
                     $time = date('Y-m-d H:i:s');
                     $event = json_encode($event, JSON_UNESCAPED_SLASHES);
 
                     Log::error( "$time Exception: $message \n $event");
-                    $this->getOutput()->writeln("<error>$time Exception on event number $total_number_of_events: $message \n $event</error>");
+                    $this->getOutput()->writeln("<error>{$time} Exception on event number $total_number_of_events: $message \n $event</error>");
                 }
             } else {//if(!empty($facility->DHIS2_UID))
                 $time = date('Y-m-d H:i:s');
 
                 Log::error("$time Skipping Facility ID: $facility->id,  Facility Name: $facility->name has no DHIS2_UID");
-                $this->getOutput()->writeln("<error>$time Skipping facility:</error> Facility ID: $facility->id, Facility name: $facility->name has no DHIS2_UID");
+                $this->getOutput()->writeln("<error>$time Skipping facility:Facility ID: {$facility->id}, Facility name: {$facility->name} has no DHIS2_UID</error>");
             }
         } //End foreach($facilities as $facility)
 
