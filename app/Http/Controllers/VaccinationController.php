@@ -49,23 +49,21 @@ class VaccinationController extends AppBaseController
 
     public function datatable(Request $request)
     {
-        if ($request->ajax()) {
-            $vaccinations = Vaccination::join('clients', 'vaccinations.client_id', '=', 'clients.id')
-                ->join('vaccines', 'vaccinations.vaccine_id', '=', 'vaccines.id')
-                ->join('facilities', 'vaccinations.facility_id', '=', 'facilities.id')
-                ->select(['vaccinations.id', 'last_name', 'first_name', 'other_names', 'date', 'product_name', 'dose_number', 'vaccine_batch_number', 'facilities.name', 'certificate_id']);
+        $vaccinations = Vaccination::join('clients', 'vaccinations.client_id', '=', 'clients.id')
+            ->join('vaccines', 'vaccinations.vaccine_id', '=', 'vaccines.id')
+            ->join('facilities', 'vaccinations.facility_id', '=', 'facilities.id')
+            ->select(['vaccinations.id', 'last_name', 'first_name', 'other_names', 'date', 'vaccines.id', 'product_name', 'dose_number', 'vaccine_batch_number', 'facilities.name', 'certificate_id']);
 
-            return Datatables::of($vaccinations)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    return '<a href="/vaccinations/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
-                })
-                ->editColumn('date', function ($request) {
-                    return $request->date->format('Y-m-d'); // human readable format
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
+        return Datatables::of($vaccinations)
+            ->addIndexColumn()
+            ->editColumn('date', function ($request) {
+                return $request->date->format('Y-m-d');
+            })
+            ->addColumn('action', function($row){
+                return '<a href="/vaccinations/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 
     /**

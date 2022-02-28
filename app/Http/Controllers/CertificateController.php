@@ -70,10 +70,10 @@ class CertificateController extends AppBaseController
                     return '<a href="/certificates/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
                 })
                 ->editColumn('created_at', function ($request) {
-                    return $request->created_at->format('Y-m-d'); // human readable format
+                    return $request->created_at->format('Y-m-d');
                 })
                 ->editColumn('updated_at', function ($request) {
-                    return $request->updated_at->format('Y-m-d'); // human readable format
+                    return $request->updated_at->format('Y-m-d');
                 })
                 ->rawColumns(['action'])
                 ->make(true);

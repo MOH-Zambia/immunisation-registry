@@ -44,29 +44,26 @@ class ClientController extends AppBaseController
 
     public function datatable(Request $request)
     {
-        if ($request->ajax()) {
+        $clients = Client::select([
+            'source_id',
+            'card_number',
+            'NRC',
+            'passport_number',
+            'last_name',
+            'first_name',
+            'other_names',
+            'sex',
+            'contact_number',
+            'contact_email_address'
+        ]);
 
-            $clients = Client::select([
-                'source_id',
-                'card_number',
-                'NRC',
-                'passport_number',
-                'last_name',
-                'first_name',
-                'other_names',
-                'sex',
-                'contact_number',
-                'contact_email_address'
-            ]);
-
-            return Datatables::of($clients)
-                ->addIndexColumn()
-                ->addColumn('action', function($row){
-                    return '<a href="/clients/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
-                })
-                ->rawColumns(['action'])
-                ->make(true);
-        }
+        return Datatables::of($clients)
+            ->addIndexColumn()
+            ->addColumn('action', function($row){
+                return '<a href="/clients/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+            })
+            ->rawColumns(['action'])
+            ->toJson();
     }
 
     /**

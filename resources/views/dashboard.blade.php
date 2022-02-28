@@ -33,14 +33,14 @@
             <!-- small box -->
             <div class="small-box">
               <div class="inner">
-                <h3>{{ $clients }}</h3>
+                <h3>{{ number_format($clients) }}</h3>
 
                 <p>Clients</p>
               </div>
               <div class="icon">
                 <i class="ion ion-bag"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('clients.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -48,14 +48,14 @@
             <!-- small box -->
             <div class="small-box">
               <div class="inner">
-                <h3>{{ $vaccinations }}</h3>
+                <h3>{{ number_format($vaccinations) }}</h3>
 
                 <p>Total Number of Doses</p>
               </div>
               <div class="icon">
                 <i class="ion ion-stats-bars"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('vaccinations.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -63,14 +63,14 @@
             <!-- small box -->
             <div class="small-box">
               <div class="inner">
-                <h3>{{ $certificates }}</h3>
+                <h3>{{ number_format($certificates) }}</h3>
 
                 <p>Certificates</p>
               </div>
               <div class="icon">
                 <i class="ion ion-person-add"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('certificates.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
             <!-- ./col -->
@@ -78,14 +78,14 @@
                 <!-- small box -->
                 <div class="small-box">
                     <div class="inner">
-                        <h3>{{ $astrazeneca_first_dose }}</h3>
+                        <h3>{{ number_format($astrazeneca_first_dose) }}</h3>
 
                         <p>AstraZeneca Dose 1</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('vaccinations.index', ['vaccine_id'=>1, 'dose_number'=>1]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -93,14 +93,14 @@
                 <!-- small box -->
                 <div class="small-box">
                     <div class="inner">
-                        <h3>{{ $astrazeneca_second_dose }}</h3>
+                        <h3>{{ number_format($astrazeneca_second_dose) }}</h3>
 
                         <p>AstraZeneca Dose 2</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('vaccinations.index', ['vaccine_id'=>1, 'dose_number'=>2]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
               <!-- ./col -->
@@ -108,14 +108,14 @@
                 <!-- small box -->
                 <div class="small-box">
                   <div class="inner">
-                    <h3>{{ $astrazeneca_doses }}</h3>
+                    <h3>{{ number_format($astrazeneca_doses) }}</h3>
 
                     <p>AstraZeneca</p>
                   </div>
                   <div class="icon">
                     <i class="ion ion-pie-graph"></i>
                   </div>
-                  <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                  <a href="{{ route('vaccinations.index', ['vaccine_id'=>1]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
               </div>
           <!-- ./col -->
@@ -123,14 +123,14 @@
             <!-- small box -->
             <div class="small-box">
               <div class="inner">
-                <h3>{{ $janssen_doses }}</h3>
+                <h3>{{ number_format($janssen_doses) }}</h3>
 
                 <p>Janssen (J&J)</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('vaccinations.index', ['vaccine_id'=>3]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
@@ -138,14 +138,14 @@
             <!-- small box -->
             <div class="small-box">
               <div class="inner">
-                <h3>{{ $sinopharm_doses }}</h3>
+                <h3>{{ number_format($sinopharm_doses) }}</h3>
 
                 <p>Sinopharm (BIBP)</p>
               </div>
               <div class="icon">
                 <i class="ion ion-pie-graph"></i>
               </div>
-              <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+              <a href="{{ route('vaccinations.index', ['vaccine_id'=>7]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
             <!-- ./col -->
@@ -153,14 +153,14 @@
                 <!-- small box -->
                 <div class="small-box">
                     <div class="inner">
-                        <h3>{{ $pfizer_doses }}</h3>
+                        <h3>{{ number_format($pfizer_doses) }}</h3>
 
                         <p>Pfizer</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('vaccinations.index', ['vaccine_id'=>6]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -168,14 +168,14 @@
                 <!-- small box -->
                 <div class="small-box">
                     <div class="inner">
-                        <h3>{{ $moderna_first_dose }}</h3>
+                        <h3>{{ number_format($moderna_first_dose) }}</h3>
 
                         <p>Moderna Dose 1</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('vaccinations.index', ['vaccine_id'=>4, 'dose_number'=>1]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -183,14 +183,14 @@
                 <!-- small box -->
                 <div class="small-box">
                     <div class="inner">
-                        <h3>{{ $moderna_second_dose }}</h3>
+                        <h3>{{ number_format($moderna_second_dose) }}</h3>
 
                         <p>Moderna Dose 2</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('vaccinations.index', ['vaccine_id'=>4, 'dose_number'=>2]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
             <!-- ./col -->
@@ -198,14 +198,14 @@
                 <!-- small box -->
                 <div class="small-box">
                     <div class="inner">
-                        <h3>{{ $moderna_doses }}</h3>
+                        <h3>{{ number_format($moderna_doses) }}</h3>
 
                         <p>Moderna</p>
                     </div>
                     <div class="icon">
                         <i class="ion ion-pie-graph"></i>
                     </div>
-                    <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+                    <a href="{{ route('vaccinations.index', ['vaccine_id'=>4]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
                 </div>
             </div>
         </div>

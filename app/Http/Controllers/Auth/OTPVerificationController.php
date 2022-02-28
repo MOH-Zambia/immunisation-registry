@@ -33,7 +33,7 @@ class OTPVerificationController extends AppBaseController
 
         $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$from}&to={$to}&text={$text}";
 
-        Log::channel('sms')->info( "Sending OTP via SMS using URL: {$url}");
+        Log::channel('sms')->info( "Sending OTP via SMS...");
 
         /** @var TYPE_NAME $ch */
         $ch = curl_init();
@@ -82,7 +82,7 @@ class OTPVerificationController extends AppBaseController
         $contact_email_address = $input['contact_email_address'];
 
         try{
-            Log::info( "Sending OTP via Email");
+            Log::info( "Sending OTP via Email...");
 
             Mail::send('auth.otp_email', ['OTP' => $OTP], function(Message $message) use ($contact_email_address){
                 $message->subject("COVID-19 Immunisation Registry Verification Code");
