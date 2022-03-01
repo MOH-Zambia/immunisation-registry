@@ -25,7 +25,7 @@ namespace App\Console\Commands;
 /**
  * The script ImportDHIS2DataPerFacility.php
  *
- * This script seeds provinces into the database.
+ * This script fetches DHIS2 Data per Facility, via a passed DHIS2 UID and a speficied period, start and end dates respectively.
  * @package IR
  * @subpackage Commands
  * @access public
@@ -276,10 +276,7 @@ class ImportDHIS2Data extends Command
     {
         $httpClient = new GuzzleHttp\Client();
 
-        // disable cert verification
-        // $client->setDefaultOption(['verify'=>false]);
-
-        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid); //Get all facilities from database
+        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid); //Get facility via the supplied DHIS2 UID
         $total_number_of_events = 0; //Total events counter
         $total_number_of_saved_events = 0; //Saved events counter
         $total_number_of_updated_events = 0; //Saved events counter
