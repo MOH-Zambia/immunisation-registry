@@ -156,6 +156,8 @@ class GenerateVaccinationCertificates extends Command
                 $vaccination->certificate_id = $certificate->id;
                 $vaccination->save();
 
+                DB::commit();
+
                 $time = date('Y-m-d H:i:s');
                 $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                 $this->getOutput()->writeln("<info>$time Updated certificate: {{$certificate->certificate_url}}</info> ({$runTime}ms)");
