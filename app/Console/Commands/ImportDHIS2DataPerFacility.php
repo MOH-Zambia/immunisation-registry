@@ -51,7 +51,7 @@ use App\Models\Record;
 use App\Models\Client;
 use App\Models\Vaccination;
 
-class ImportDHIS2Data extends Command
+class ImportDHIS2DataPerFacility extends Command
 {
     /**
      * The name and signature of the console command.
