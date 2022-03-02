@@ -191,7 +191,7 @@ class ImportDHIS2DataPerFacility extends Command
         return $_client;
     }
 
-    public function assignCommonVaccinationFields($_vaccination, $_event, $_facility_id): Vaccination
+    public function assignCommonVaccinationFields($_vaccination, $_event, $_facility_id): ? Vaccination
     {
         $_vaccination->date = $_event['eventDate'];
 
@@ -234,6 +234,7 @@ class ImportDHIS2DataPerFacility extends Command
         }
 
         $_vaccination->facility_id = $_facility_id;
+        $_vaccination->source_created_at = $_event['created'];
         $_vaccination->source_updated_at = $_event['lastUpdated'];
 
         return $_vaccination;
@@ -246,7 +247,6 @@ class ImportDHIS2DataPerFacility extends Command
         $_vaccination->client_id = $_client_id;
         $_vaccination->record_id = $_record_id;
         $_vaccination->source_id = $_event['event'];
-        $_vaccination->source_created_at = $_event['created'];
 
         $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);
         
@@ -261,9 +261,9 @@ class ImportDHIS2DataPerFacility extends Command
 
     public function updateVaccination($_vaccination, $_event, $_facility_id): ? Vaccination
     {
-        $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_vaccination);
+        $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);
 
-        $_vaccination->save();
+        $_vaccination->update();
 
         $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
@@ -276,7 +276,7 @@ class ImportDHIS2DataPerFacility extends Command
     {
         $httpClient = new GuzzleHttp\Client();
 
-        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid)->first();; //Get facility via the supplied DHIS2 UID
+        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid)->first();; //Get Facility via the supplied DHIS2 UID
         $total_number_of_events = 0; //Total events counter
         $total_number_of_saved_events = 0; //Saved events counter
         $total_number_of_updated_events = 0; //Saved events counter
@@ -346,7 +346,8 @@ class ImportDHIS2DataPerFacility extends Command
                                             $source_client_last_updated = self::getTimestampFromString($tracked_entity_instance['lastUpdated']);
                                             $source_client_created = self::getTimestampFromString($tracked_entity_instance['created']);
 
-                                            if (($client->source_updated_at < $source_client_last_updated) && ($client->source_created_at == $source_client_created)) {
+                                            if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
+                                                (($client->source_updated_at < $source_client_last_updated) && ($client->source_created_at == $source_client_created))) {
                                                 //get the existing record
                                                 $old_client_side_record = Record::where('record_id', $client->source_id)->first();
 
@@ -367,12 +368,13 @@ class ImportDHIS2DataPerFacility extends Command
                                             $source_event_created = self::getTimestampFromString($event['created']);
 
                                             //Check for last updated ? Vaccination Update logic kicks in
-                                            if (($vaccination->source_updated_at < $source_event_last_updated) && ($vaccination->client_id == $client->id) && ($vaccination->source_created_at == $source_event_created)) {
+                                            if ((empty($vaccination->source_created_at) || empty($vaccination->source_updated_at)) ||
+                                                (($vaccination->source_updated_at < $source_event_last_updated) && ($vaccination->client_id == $client->id) && ($vaccination->source_created_at == $source_event_created))) {
                                                 $old_event_side_record = Record::where('record_id', $event_uid)->first();
                                                 //Perhaps an if statement
                                                 $updated_event_side_record = self::updateRecord($old_event_side_record, $event);
                                                 
-                                                $updated_vaccination = self::updateVaccination($vaccination, $event, $facility->id);
+                                                $vaccination = self::updateVaccination($vaccination, $event, $facility->id);
 
                                                 $total_number_of_updated_events++;
                                                 $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
