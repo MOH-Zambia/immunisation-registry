@@ -276,14 +276,14 @@ class ImportDHIS2DataPerFacility extends Command
     {
         $httpClient = new GuzzleHttp\Client();
 
-        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid); //Get facility via the supplied DHIS2 UID
+        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid)->first();; //Get facility via the supplied DHIS2 UID
         $total_number_of_events = 0; //Total events counter
         $total_number_of_saved_events = 0; //Saved events counter
         $total_number_of_updated_events = 0; //Saved events counter
-            
-        $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>Loading data from Facility Name:</info> {$facility->name}, <info>Facility DHIS2 UID:</info> {$facility->DHIS2_UID}, <info>Facility ID:</info> {$facility->id}");
+
         if (!empty($facility)) {
+            $_time = date('Y-m-d H:i:s');
+            $this->getOutput()->writeln("{$_time} <info>Loading data from Facility Name:</info> {$facility->name}, <info>Facility DHIS2 UID:</info> {$facility->DHIS2_UID}, <info>Facility ID:</info> {$facility->id}");
             if(!empty($facility->DHIS2_UID)) {
                 try {
                     $response = $httpClient->request('GET', env('DHIS2_BASE_URL')."events.json", [
