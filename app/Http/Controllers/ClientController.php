@@ -45,7 +45,6 @@ class ClientController extends AppBaseController
     public function datatable(Request $request)
     {
         $clients = Client::select([
-            'id',
             'source_id',
             'card_number',
             'NRC',
