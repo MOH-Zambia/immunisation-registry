@@ -76,7 +76,7 @@ class ImportDHIS2DataPerFacility extends Command
     {
         parent::__construct();
     }
-    
+
 
     public function getTimestampFromString($_date_time)
     {
@@ -96,8 +96,8 @@ class ImportDHIS2DataPerFacility extends Command
         };
         return json_encode(json_decode ("{}"));
     }
-    
-    public function saveRecord($_source_id, $_data_type, $_data): ? Record 
+
+    public function saveRecord($_source_id, $_data_type, $_data): ? Record
     {
         //_source_id is passed seperately as it is retrieved differently | event vs tracked_entity_instance
         $_record =  new Record([
@@ -107,9 +107,9 @@ class ImportDHIS2DataPerFacility extends Command
             'hash' => sha1(json_encode($_data)),
             'data' => json_encode($_data)
         ]);
-        
+
         $_record -> save();
-        
+
         return $_record;
     }
 
@@ -137,6 +137,8 @@ class ImportDHIS2DataPerFacility extends Command
                 $_client->first_name = ucfirst(strtolower(trim($attribute['value'])));
             else if ($attribute['attribute'] == 'aW66s2QSosT') //Tracked Entity Attribute UID for Surname
                 $_client->last_name = ucfirst(strtolower(trim($attribute['value'])));
+            else if ($attribute['attribute'] == 'Bag3HrPOKRm') //Tracked Entity Attribute UID for Other Names
+                $_client->other_names = ucfirst(strtolower(trim($attribute['value'])));
             else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Tracked Entity Attribute UID for Sex
                 $_client->sex = $attribute['value'][0];
             else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Tracked Entity Attribute UID for Age
@@ -161,7 +163,7 @@ class ImportDHIS2DataPerFacility extends Command
         return $_client;
     }
 
-    public function saveClient($_tracked_entity_instance, $_facility_id, $_record_id): ? Client 
+    public function saveClient($_tracked_entity_instance, $_facility_id, $_record_id): ? Client
     {
         $_client = new Client();
         $_client->source_id = $_tracked_entity_instance['trackedEntityInstance'];
@@ -170,7 +172,7 @@ class ImportDHIS2DataPerFacility extends Command
         $_client = self::assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id);
 
         $_client->save(); //Save new client
-        
+
         $_tracked_entity_instance_json = json_encode($_tracked_entity_instance, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
         $this->getOutput()->writeln("{$_time} <info>SAVED Client ID Number :</info> {$_client->id} \n {$_tracked_entity_instance_json}");
@@ -178,12 +180,12 @@ class ImportDHIS2DataPerFacility extends Command
         return $_client;
     }
 
-    public function updateClient($_client, $_tracked_entity_instance, $_facility_id): ? Client 
+    public function updateClient($_client, $_tracked_entity_instance, $_facility_id): ? Client
     {
         $_client = self::assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id);
 
         $_client->update(); //Update client info
-        
+
         $_tracked_entity_instance_json = json_encode($_tracked_entity_instance, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
         $this->getOutput()->writeln("{$_time} <info>UPDATED Client ID Number :</info> {$_client->id} \n {$_tracked_entity_instance_json}");
@@ -249,9 +251,9 @@ class ImportDHIS2DataPerFacility extends Command
         $_vaccination->source_id = $_event['event'];
 
         $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);
-        
+
         $_vaccination->save();
-        
+
         $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
         $this->getOutput()->writeln("{$_time} <info>SAVED Vaccination ID Number :</info> {$_vaccination->id} \n {$_event_json}");
@@ -268,7 +270,7 @@ class ImportDHIS2DataPerFacility extends Command
         $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
         $this->getOutput()->writeln("{$_time} <info>UPDATED Vaccination ID Number :</info> {$_vaccination->id} \n {$_event_json}");
-        
+
         return $_vaccination;
     }
 
@@ -338,7 +340,7 @@ class ImportDHIS2DataPerFacility extends Command
                                         if (empty($client)) {
                                             //An if statement here perhaps to check if the tracked_entity
                                             $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
-                                            
+
                                             $new_client_side_record = self::saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
 
                                             $client = self::saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
@@ -360,7 +362,7 @@ class ImportDHIS2DataPerFacility extends Command
                                                 $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$client->source_id}, <comment>as record is still upto date</comment>");
                                             }
                                         }
-                                        
+
                                         $vaccination = Vaccination::where('source_id', $event_uid)->first();
 
                                         if (!empty($vaccination)) {
@@ -373,7 +375,7 @@ class ImportDHIS2DataPerFacility extends Command
                                                 $old_event_side_record = Record::where('record_id', $event_uid)->first();
                                                 //Perhaps an if statement
                                                 $updated_event_side_record = self::updateRecord($old_event_side_record, $event);
-                                                
+
                                                 $vaccination = self::updateVaccination($vaccination, $event, $facility->id);
 
                                                 $total_number_of_updated_events++;
@@ -400,7 +402,7 @@ class ImportDHIS2DataPerFacility extends Command
 
                                         DB::commit(); //if no error on record, vaccination and importlog commit data to database
                                         $this->getOutput()->writeln("{$time} <info>PERSISTED Event:</info> {$event_uid} <info>to the DATABASE!</info>");
-                                    
+
                                     } catch (QueryException $e) {
                                         DB::rollback(); //Rollback database transaction if any error occurs
 
