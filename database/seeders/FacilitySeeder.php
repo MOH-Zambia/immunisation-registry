@@ -4,33 +4,33 @@ namespace Database\Seeders;
 
 /*
  * © Copyright 2021 Ministry of Health, GRZ.
- * 
+ *
  * This File is part of Immunisation Registry (IR)
- * 
+ *
  * IR is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
  * the Free Software Foundation; either version 3 of the License, or
  * (at your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
  * GNU General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
- 
+
 /**
  * The script FacilitySeeder
- * 
+ *
  * This script seeds facilities into the database.
  * @package IR
  * @subpackage DatabaseSeeder
  * @access public
  * @author Chisanga Louis Siwale <Chisanga.Siwaled@moh.gov.zm>
- * @copyright Copyright &copy; 2021 Ministry of Health, GRZ. 
+ * @copyright Copyright &copy; 2021 Ministry of Health, GRZ.
  * @since v1.0
  * @version v1.0
  */
@@ -42,6 +42,7 @@ use App\Models\Facility;
 use App\Models\District;
 
 use Exception;
+use Illuminate\Support\Facades\Log;
 
 class FacilitySeeder extends Seeder
 {
@@ -107,8 +108,8 @@ class FacilitySeeder extends Seeder
 
                 if(!empty($district)){
                     // Make the new facility model
-                    $facility = new Facility([                   
-                        'district_id' => $district->id,                    
+                    $facility = new Facility([
+                        'district_id' => $district->id,
                         'name' => $row[2],
                         'HMIS_code' => $row[3],
                         'DHIS2_UID' => $row[4],
@@ -121,18 +122,22 @@ class FacilitySeeder extends Seeder
                         'catchment_population_cso' => empty($row[14]) ? null : $row[14],
                         'operation_status' => $row[15],
                         'location_type' => $row[8],
-                        'location' => new Point($row[12], $row[11]),	// (lat, lng) 
+                        'location' => new Point($row[12], $row[11]),	// (lat, lng)
                     ]);
 
-                    // throw an exception unless the facility could be saved
-                    throw_unless($facility->save(), new Exception("Failed to save facility '$row[2]'"));
+                    $facility->save();
                 }
             }
-        } finally {
-            // if the file has been opened, close it
-            if (! empty($file)) {
-                fclose($file);
-            }
+        } catch (Exception $e)  {
+            $message = $e->getMessage();
+            $time = date('Y-m-d H:i:s');
+
+            $this->getOutput()->writeln("<error>{$time} $message Exception on row number $row[2]: </error> Failed to save facility");
+        }
+
+        // if the file has been opened, close it
+        if (! empty($file)) {
+            fclose($file);
         }
     }
 }

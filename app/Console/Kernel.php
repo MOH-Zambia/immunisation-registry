@@ -27,13 +27,13 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $programStartDate = "2020-01-01";
-        $programEndDate = date('Y-m-d');
-        $facilityDhis2Uid = "HvCdWhbVEvI"; //Chilenje First Level Hospital - Default Facility Picked 
+        $startDate = "2020-01-01";
+        $endDate = date('Y-m-d');
+        $facilityDhis2Uid = "HvCdWhbVEvI"; //Chilenje First Level Hospital - Default Facility Picked
 
-        $schedule->command("command:ImportDHIS2Data $programStartDate $programEndDate")->daily();
+        $schedule->command("command:ImportDHIS2Data $startDate $endDate")->daily();
         $schedule->command("command:GenerateVaccinationCertificates")->daily()->at("06:00");
-        $schedule->command("command:ImportDHIS2DataPerFacility $programStartDate $programEndDate $facilityDhis2Uid")->daily()->at("12:00");
+        $schedule->command("command:ImportDHIS2DataPerFacility $startDate $endDate $facilityDhis2Uid")->daily()->at("12:00");
     }
 
     /**

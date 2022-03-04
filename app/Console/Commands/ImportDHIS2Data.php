@@ -58,7 +58,7 @@ class ImportDHIS2Data extends Command
      *
      * @var string
      */
-    protected $signature = 'command:ImportDHIS2Data {programStartDate} {programEndDate}';
+    protected $signature = 'command:ImportDHIS2Data {startDate} {endDate}';
 
     /**
      * The console command description.
@@ -275,7 +275,7 @@ class ImportDHIS2Data extends Command
         return $_vaccination;
     }
 
-    public function loadEvents($programStartDate, $programEndDate): array
+    public function loadEvents($startDate, $endDate): array
     {
         $httpClient = new GuzzleHttp\Client();
 
@@ -299,8 +299,8 @@ class ImportDHIS2Data extends Command
                         'query' => [
                             'orgUnit' => $facility->DHIS2_UID,
                             'program' => 'yDuAzyqYABS',
-                            'startDate' => $programStartDate,
-                            'endDate' => $programEndDate,
+                            'startDate' => $startDate,
+                            'endDate' => $endDate,
                             'totalPages' => true
                         ]
                     ]);
@@ -315,8 +315,8 @@ class ImportDHIS2Data extends Command
                                 'query' => [
                                     'orgUnit' => $facility->DHIS2_UID,
                                     'program' => 'yDuAzyqYABS',
-                                    'startDate' => $programStartDate,
-                                    'endDate' => $programEndDate,
+                                    'startDate' => $startDate,
+                                    'endDate' => $endDate,
                                     'page' => $i,
                                     'order' => 'created:ASC'
                                 ]
@@ -490,10 +490,10 @@ class ImportDHIS2Data extends Command
         Log::info("$script_start_date_time: Loading data from DHIS2 Covax instance");
         $this->getOutput()->writeln("<info>$script_start_date_time Script started - Loading data from DHIS2 Covax instance</info>");
 
-        $programStartDate = $this->argument('programStartDate');
-        $programEndDate = $this->argument('programEndDate');
+        $startDate = $this->argument('startDate');
+        $endDate = $this->argument('endDate');
 
-        $results = self::loadEvents($programStartDate, $programEndDate);
+        $results = self::loadEvents($startDate, $endDate);
 
         $script_end_time = date('Y-m-d H:i:s');
         $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
