@@ -105,39 +105,46 @@ class FacilitySeeder extends Seeder
             // while there's a row to be read in the file, read the next row
             while ($row = fgetcsv($file)) {
                 $district = District::where('name', '=', $row[1])->first();
+                try{
+                    if(!empty($district)){
+                        // Make the new facility model
+                        $facility = new Facility([
+                            'district_id' => $district->id,
+                            'name' => $row[2],
+                            'HMIS_code' => $row[3],
+                            'DHIS2_UID' => $row[4],
+                            'smartcare_GUID' => $row[5],
+                            'eLMIS_ID' => $row[6],
+                            'iHRIS_ID' => $row[7],
+                            'ownership' => $row[9],
+                            'facility_type' => $row[10],
+                            'catchment_population_head_count' => empty($row[13]) ? null : $row[13],
+                            'catchment_population_cso' => empty($row[14]) ? null : $row[14],
+                            'operation_status' => $row[15],
+                            'location_type' => $row[8],
+                            'location' => new Point($row[12], $row[11]),	// (lat, lng)
+                        ]);
 
-                if(!empty($district)){
-                    // Make the new facility model
-                    $facility = new Facility([
-                        'district_id' => $district->id,
-                        'name' => $row[2],
-                        'HMIS_code' => $row[3],
-                        'DHIS2_UID' => $row[4],
-                        'smartcare_GUID' => $row[5],
-                        'eLMIS_ID' => $row[6],
-                        'iHRIS_ID' => $row[7],
-                        'ownership' => $row[9],
-                        'facility_type' => $row[10],
-                        'catchment_population_head_count' => empty($row[13]) ? null : $row[13],
-                        'catchment_population_cso' => empty($row[14]) ? null : $row[14],
-                        'operation_status' => $row[15],
-                        'location_type' => $row[8],
-                        'location' => new Point($row[12], $row[11]),	// (lat, lng)
-                    ]);
+                        $facility->save();
+                    }
+                } catch (Exception $e)  {
+                    $message = $e->getMessage();
+                    $time = date('Y-m-d H:i:s');
 
-                    $facility->save();
+                    $this->command->error("<error>{$time} $message Exception on row number $row[2]: </error> Failed to save facility");
                 }
             }
         } catch (Exception $e)  {
             $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');
 
-            $this->command->error("<error>{$time} $message Exception on row number $row[2]: </error> Failed to save facility");
+            $this->command->error("<error>{$time} {$message}");
+
+            // if the file has been opened, close it
+            if (! empty($file)) {
+                fclose($file);
+            }
         }
 
-        // if the file has been opened, close it
-        if (! empty($file)) {
-            fclose($file);
-        }
     }
 }
