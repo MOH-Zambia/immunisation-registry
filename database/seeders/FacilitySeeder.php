@@ -54,7 +54,7 @@ class FacilitySeeder extends Seeder
     /**
      * Path of the seed file relative to the `database` directory.
      */
-    const DATABASE_FILE_PATH = 'data/facility_list.csv';
+    const DATABASE_FILE_PATH = 'data/facilities.csv';
 
     /**
      * If the file has a header row.
