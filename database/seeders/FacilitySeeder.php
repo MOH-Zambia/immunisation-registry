@@ -132,7 +132,7 @@ class FacilitySeeder extends Seeder
             $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');
 
-            $this->getOutput()->writeln("<error>{$time} $message Exception on row number $row[2]: </error> Failed to save facility");
+            $this->command->error("<error>{$time} $message Exception on row number $row[2]: </error> Failed to save facility");
         }
 
         // if the file has been opened, close it
