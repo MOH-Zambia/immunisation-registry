@@ -18,7 +18,7 @@ class CreateFacilitiesTable extends Migration
             $table->increments('id');
             $table->integer('MFL_facility_id')->nullable();
             $table->string('HMIS_code')->nullable();
-            $table->string('DHIS2_UID')->nullable();
+            $table->string('DHIS2_UID')->unique();
             $table->string('smartcare_GUID')->nullable();
             $table->string('eLMIS_ID')->nullable();
             $table->string('iHRIS_ID')->nullable();
