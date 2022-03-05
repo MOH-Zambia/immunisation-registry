@@ -238,6 +238,7 @@ class ImportDHIS2Data extends Command
 
         $_vaccination->facility_id = $_facility_id;
         $_vaccination->source_updated_at = $_event['lastUpdated'];
+        $_vaccination->source_created_at = $_event['created'];
 
         return $_vaccination;
     }
@@ -249,7 +250,6 @@ class ImportDHIS2Data extends Command
         $_vaccination->client_id = $_client_id;
         $_vaccination->record_id = $_record_id;
         $_vaccination->source_id = $_event['event'];
-        $_vaccination->source_created_at = $_event['created'];
 
         $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);
 
