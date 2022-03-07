@@ -173,9 +173,8 @@ class ImportDHIS2DataPerFacility extends Command
 
         $_client->save(); //Save new client
 
-        $_tracked_entity_instance_json = json_encode($_tracked_entity_instance, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>SAVED Client ID Number :</info> {$_client->id} \n {$_tracked_entity_instance_json}");
+        $this->getOutput()->writeln("{$_time} <info>SAVED Client ID Number:</info> {$_client->id} <info>UID:</info> {$_client->source_id} <info>First Name:</info> {$_client->first_name} <info>Surname:</info> {$_client->last_name} <info>DOB:</info> {$_client->date_of_birth} <info>Sex:</info> {$_client->sex} <info>Created At:</info> {$_client->source_created_at} <info>Facility:</info> {$_client->facility_id}");
 
         return $_client;
     }
@@ -188,7 +187,7 @@ class ImportDHIS2DataPerFacility extends Command
 
         $_tracked_entity_instance_json = json_encode($_tracked_entity_instance, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>UPDATED Client ID Number :</info> {$_client->id} \n {$_tracked_entity_instance_json}");
+        $this->getOutput()->writeln("{$_time} <info>UPDATED Client ID Number:</info> {$_client->id} <info>UID:</info> {$_client->source_id} <info>First Name:</info> {$_client->first_name} <info>Surname:</info> {$_client->last_name} <info>DOB:</info> {$_client->date_of_birth} <info>Sex:</info> {$_client->sex} <info>Created At:</info> {$_client->source_created_at} <info>Facility:</info> {$_client->facility_id}");
 
         return $_client;
     }
@@ -254,9 +253,9 @@ class ImportDHIS2DataPerFacility extends Command
 
         $_vaccination->save();
 
-        $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
+        // $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>SAVED Vaccination ID Number :</info> {$_vaccination->id} \n {$_event_json}");
+        $this->getOutput()->writeln("{$_time} <info>SAVED Vaccination, ID Number:</info> {$_vaccination->id}, <info>UID :</info> {$_vaccination->source_id}, <info>Client ID:</info> {$_vaccination->client_id}, <info>Dose:</info> {$_vaccination->dose_number}, <info>Event Date:</info> {$_vaccination->date}, <info>Facility:</info> {$_vaccination->facility_id}");
 
         return $_vaccination;
     }
@@ -267,9 +266,8 @@ class ImportDHIS2DataPerFacility extends Command
 
         $_vaccination->update();
 
-        $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>UPDATED Vaccination ID Number :</info> {$_vaccination->id} \n {$_event_json}");
+        $this->getOutput()->writeln("{$_time} <info>UPDATED Vaccination, ID Number:</info> {$_vaccination->id}, <info>UID :</info> {$_vaccination->source_id}, <info>Client ID:</info> {$_vaccination->client_id}, <info>Dose:</info> {$_vaccination->dose_number}, <info>Event Date:</info> {$_vaccination->date}, <info>Facility:</info> {$_vaccination->facility_id}");
 
         return $_vaccination;
     }
@@ -380,9 +378,8 @@ class ImportDHIS2DataPerFacility extends Command
 
                                             $total_number_of_updated_events++;
                                             $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                            $event = json_encode($event, JSON_UNESCAPED_SLASHES);
                                             $time = date('Y-m-d H:i:s');
-                                            $this->getOutput()->writeln("{$time} <info>UPDATING Event total :</info> {$total_number_of_events} ({$runTime}ms) \n {$event}");
+                                            $this->getOutput()->writeln("{$time} <info>UPDATING Event total:</info> {$total_number_of_events} ({$runTime}ms), <info>Event UID :</info> {$event_uid}");
                                         } else {
                                             $time = date('Y-m-d H:i:s');
                                             $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event already exists in the DATABASE!</comment>");
