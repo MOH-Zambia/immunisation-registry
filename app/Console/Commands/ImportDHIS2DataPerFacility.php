@@ -141,7 +141,7 @@ class ImportDHIS2DataPerFacility extends Command
                 $_client->other_names = ucfirst(strtolower(trim($attribute['value'])));
             else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Tracked Entity Attribute UID for Sex
                 $_client->sex = $attribute['value'][0];
-            else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Tracked Entity Attribute UID for Age
+            else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Tracked Entity Attribute UID for DOB
                 $_client->date_of_birth = $attribute['value'];
             else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Tracked Entity Attribute UID for Mobile phone number
                 $_client->contact_number = $attribute['value'];
