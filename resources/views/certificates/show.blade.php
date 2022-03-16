@@ -46,7 +46,7 @@
                                     <div class="col-12">
                                         <h4 class="text-center">
                                             <img src="{{ url('img/android-icon-96x96.png') }}" alt="Coat of Arms" style="opacity: .8"> <br><br>
-                                            Government of Republic of Zambia<br>
+                                            Government of The Republic of Zambia<br>
                                             Ministry of Health <br><br>
                                             {{ $certificate->target_disease }} Vaccination Certificate <br>
                                             <small class="text-center">{{ $certificate->created_at }}</small><br><br>
