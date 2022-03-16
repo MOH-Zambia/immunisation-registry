@@ -91,7 +91,6 @@
                                                 <th>Batch Number</th>
                                                 <th>Vaccinating Organization</th>
                                                 <th>Facility</th>
-{{--                                                <th>Country</th>--}}
                                             </tr>
                                             </thead>
                                             <tbody>
@@ -103,7 +102,6 @@
                                                     <td>{{ $vaccination->vaccine_batch_number }}</td>
                                                     <td>{{ $vaccination['vaccinating_organization'] }}</td>
                                                     <td>{{ $vaccination['facility']->name }}</td>
-{{--                                                    <td>{{ $vaccination['country']->name }}</td>--}}
                                                 </tr>
                                             @endforeach
                                             </tbody>
@@ -121,10 +119,10 @@
                                         <button type="button" class="btn btn-success float-right btn-send" style="margin-right: 5px;">
                                             <i class="fas fa-share-square"></i> Send
                                         </button>
-
-                                        <button type="button" class="btn btn-warning float-right" style="margin-right: 5px;">
+                                        
+                                        <a href="{{route('certificates.generatePDF', ['uuid' => $certificate->certificate_uuid])}}" type="button" class="btn btn-warning float-right" style="margin-right: 5px;">
                                             <i class="fas fa-download"></i> Generate PDF
-                                        </button>
+                                        </a>
                                     </div>
                                 </div>
                             </div>
