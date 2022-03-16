@@ -48,7 +48,8 @@
                                             <div class="col-12">
                                                 <h4 class="text-center">
                                                     <img src="{{ url('img/android-icon-96x96.png') }}" alt="Coat of Arms" style="opacity: .8"> <br><br>
-                                                    Government of Republic of Zambia<br>
+                                                    <!-- <img src="{{ url('img/android-icon-96x96.png') }}" alt="Coat of Arms" style="opacity: .8"> <br><br> -->
+                                                    Government of The Republic of Zambia<br>
                                                     Ministry of Health <br><br>
                                                     {{ $certificate->target_disease }} Vaccination Certificate <br>
                                                     <small class="text-center">{{ $certificate->created_at }}</small><br><br>
@@ -93,7 +94,6 @@
                                                         <th>Batch Number</th>
                                                         <th>Vaccinating Organization</th>
                                                         <th>Facility</th>
-{{--                                                        <th>Country</th>--}}
                                                     </tr>
                                                     </thead>
                                                     <tbody>
@@ -105,7 +105,6 @@
                                                             <td>{{ $vaccination['vaccine_batch_number'] }}</td>
                                                             <td>{{ $vaccination['vaccinating_organization'] }}</td>
                                                             <td>{{ $vaccination['facility']->name }}</td>
-{{--                                                            <td>{{ $vaccination['country']->name }}</td>--}}
                                                         </tr>
                                                     @endforeach
                                                     </tbody>
@@ -128,12 +127,9 @@
         </div>
         <!-- /.content-wrapper -->
 
-
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.min.js"
         integrity="sha384-w1Q4orYjBQndcko6MimVbzY0tgp4pWB4lZ7lr30WKz0vr/aWKhXdBNmNb5D92v7s"
         crossorigin="anonymous"></script>
-
-
 
 </body>
 </html>
