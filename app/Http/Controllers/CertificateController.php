@@ -14,6 +14,9 @@ use Illuminate\Support\Facades\Auth;
 use Response;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
+// use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CertificateController extends AppBaseController
 {
@@ -230,6 +233,17 @@ class CertificateController extends AppBaseController
 //        return redirect(route('certificates.index'));
 //    }
 
+    public function createDirectoryIfNonExistence($path)
+    {
+        $out = new ConsoleOutput();
+        if (!(file_exists($path) && is_dir($path))) {
+            $directory = mkdir($path);
+            $out->writeln("Successfully Created Directory at : '$path'");
+        } else {
+    	    $out->writeln("Directory at : '$path', already Exists!");
+        }
+    }
+
     /**
      * Display a listing of the resource.
      *
@@ -237,43 +251,59 @@ class CertificateController extends AppBaseController
      */
     public function generatePDF($uuid)
     {
+        $out = new ConsoleOutput();
+
+        self::createDirectoryIfNonExistence(public_path('files'));
+        self::createDirectoryIfNonExistence(public_path('files/certificates'));
+        // get certificate based on uuid supplied
         $covid19_certificate = Certificate::where('certificate_uuid', $uuid)->first();
 
-        // set certificate file
-        $certificate = 'file://'.base_path().'/public/STAR_moh_gov_zm.crt';
+        if (!empty($covid19_certificate)) {
 
-        // set additional information in the signature
-        $info = array(
-            'Name' => 'Ministry of Health',
-            'Location' => 'Ndeke House, Longacres, Lusaka',
-            'Reason' => 'COVID 19 Vaccination Certificate',
-            'Website' => 'http://www.moh.gov.zm',
-        );
+            // load certificate public and private keys
+            $certificate = 'file://'.base_path().'/public/STAR_moh_gov_zm.crt';
 
-        // set document signature
-//        PDF::setSignature($certificate, $certificate, 'tcpdfdemo', '', 2, $info);
+            // set additional information in the signature
+            $info = array(
+                'Name' => 'Ministry of Health',
+                'Location' => 'Ndeke House, Longacres, Lusaka',
+                'Reason' => 'COVID 19 Vaccination Certificate',
+                'Website' => 'http://www.moh.gov.zm',
+            );
 
-        PDF::SetFont('helvetica', '', 12);
-        PDF::SetTitle('COVID 19 Vaccination Certificate');
-        PDF::AddPage();
+            // set document signature
+            PDF::setSignature($certificate, $certificate, 'm0h1ct11', '', 2, $info);
+            
+            PDF::SetFont('helvetica', '', 12);
+            PDF::SetTitle('COVID 19 Vaccination Certificate');
+            PDF::AddPage();
 
-        // print a line of text
-        $text = view('certificates.pdf_certificate')->with('certificate', $covid19_certificate);
+            // print certificate content
+            $certificate_content = view('certificates.pdf_certificate')->with('certificate', $covid19_certificate);
 
-        // add view content
-        PDF::writeHTML($text, true, 0, true, 0);
+            // $certificate_content = 'This is a <b color="#FF0000">digitally signed document</b> using the default (example) <b>tcpdf.crt</b> certificate.<br />To validate this signature you have to load the <b color="#006600">tcpdf.fdf</b> on the Arobat Reader to add the certificate to <i>List of Trusted Identities</i>.<br /><br />For more information check the source code of this example and the source code documentation for the <i>setSignature()</i> method.<br /><br /><a href="http://www.tcpdf.org">www.tcpdf.org</a>';
 
-        // add image for signature
-        PDF::Image('tcpdf.png', 180, 60, 15, 15, 'PNG');
+            // write certificate content(HTML) to PDF
+            PDF::writeHTML($certificate_content, true, 0, true, 0);
 
-        // define active area for signature appearance
-        PDF::setSignatureAppearance(180, 60, 15, 15);
+            // add image for signature
+            PDF::Image('tcpdf.png', 180, 60, 15, 15, 'PNG');
 
-        // save pdf file
-        PDF::Output(public_path('files/certificates/'.$covid19_certificate->uuid.'pdf'), 'F');
+            // define active area for signature appearance
+            PDF::setSignatureAppearance(180, 60, 15, 15);
 
-        PDF::reset();
+            // save certificate file to system
+            PDF::Output(public_path('files/certificates/'. $covid19_certificate->certificate_uuid . '.pdf'), 'F');
 
-        dd('pdf created');
+            PDF::reset();
+
+            dd('pdf created');
+
+            $out->writeln("Done!");
+
+        } else {
+            $out->writeln('Certificate of supplied UUID NOT FOUND');
+            dd('Certificate with supplied UUID NOT FOUND');
+        }
     }
 }
