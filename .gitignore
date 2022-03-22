@@ -14,5 +14,5 @@ yarn-error.log
 /.idea
 /.vscode
 
-img/qrcodes/
-img/
+/public/img/qrcodes
+/public/files
