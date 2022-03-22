@@ -227,7 +227,7 @@ class ImportDHIS2DataPerFacility extends Command
                         $_vaccination->vaccine_id = 4;
                         break;
                 }
-            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm') { // Batch Number
+            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm') { //Batch Number
                 $_vaccination->vaccine_batch_number = $dataValue['value'];
             } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
                 $_vaccination->date_of_next_dose = $dataValue['value'];
