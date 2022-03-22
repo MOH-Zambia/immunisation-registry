@@ -46,7 +46,7 @@
                                     <div class="col-12">
                                         <h4 class="text-center">
                                             <img src="{{ url('img/android-icon-96x96.png') }}" alt="Coat of Arms" style="opacity: .8"> <br><br>
-                                            Government of Republic of Zambia<br>
+                                            Republic of Zambia<br>
                                             Ministry of Health <br><br>
                                             {{ $certificate->target_disease }} Vaccination Certificate <br>
                                             <small class="text-center">{{ $certificate->created_at }}</small><br><br>
@@ -71,7 +71,6 @@
                                         <b>Other Names:</b> {{ $certificate->client['other_names'] }}<br>
                                         <b>NRC:</b> {{ $certificate->client['NRC'] }}<br>
                                         <b>Passport Number:</b> {{ $certificate->client['passport_number'] }}<br>
-                                        <b>Nationality:</b> {{ $certificate->client->country['name'] }}<br>
                                         <b>Sex:</b> {{ $certificate->client['sex'] }}<br>
                                         <b>Date of Birth:</b> {{ $certificate->client['date_of_birth']->format('d-M-Y') }}<br>
                                     </div>
