@@ -258,6 +258,8 @@ class CertificateController extends AppBaseController
         // get certificate based on uuid supplied
         $covid19_certificate = Certificate::where('certificate_uuid', $uuid)->first();
 
+        $filename = 'files/certificates/'. $covid19_certificate->certificate_uuid . '.pdf';
+
         if (!empty($covid19_certificate)) {
 
             // load certificate public and private keys
@@ -293,13 +295,15 @@ class CertificateController extends AppBaseController
             PDF::setSignatureAppearance(180, 60, 15, 15);
 
             // save certificate file to system
-            PDF::Output(public_path('files/certificates/'. $covid19_certificate->certificate_uuid . '.pdf'), 'D');
+            PDF::Output(public_path($filename), 'F');
 
             PDF::reset();
 
             // dd('pdf created');
 
             $out->writeln("Done!");
+            
+            return response()->download(public_path($filename));
 
         } else {
             $out->writeln('Certificate of supplied UUID NOT FOUND');
