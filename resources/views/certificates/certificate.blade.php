@@ -142,7 +142,7 @@
 {{--                                                    <i class="fas fa-share-square"></i> Send--}}
 {{--                                                </button>--}}
 
-                                                <a href="{{ url('generatePDF') }}" class="btn btn-warning float-right" style="margin-right: 5px;">
+                                                <a href="{{route('certificates.generatePDF', ['uuid' => $certificate->certificate_uuid])}}" class="btn btn-warning float-right" style="margin-right: 5px;">
                                                     <i class="fas fa-download"></i> Generate PDF
                                                 </a>
                                             </div>
