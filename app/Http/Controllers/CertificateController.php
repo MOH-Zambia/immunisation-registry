@@ -297,7 +297,7 @@ class CertificateController extends AppBaseController
 
             PDF::reset();
 
-            dd('pdf created');
+            // dd('pdf created');
 
             $out->writeln("Done!");
 
