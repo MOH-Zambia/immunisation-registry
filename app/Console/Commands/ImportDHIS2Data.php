@@ -279,18 +279,15 @@ class ImportDHIS2Data extends Command
     {
         $httpClient = new GuzzleHttp\Client();
 
-        // disable cert verification
-        // $client->setDefaultOption(['verify'=>false]);
-
         $facilities = Facility::all(); //Get all facilities from database
         $total_number_of_events = 0; //Total events counter
         $total_number_of_saved_events = 0; //Saved events counter
-        $total_number_of_updated_events = 0; //Saved events counter
+        $total_number_of_updated_events = 0; //Updated events counter
 
         foreach($facilities as $facility) {
 
-            $_time = date('Y-m-d H:i:s');
-            $this->getOutput()->writeln("{$_time} <info>Loading data from Facility Name:</info> {$facility->name}, <info>Facility DHIS2 UID:</info> {$facility->DHIS2_UID}, <info>Facility ID:</info> {$facility->id}");
+            $time = date('Y-m-d H:i:s');
+            $this->getOutput()->writeln("{$time} <info>Loading data from Facility Name:</info> {$facility->name}, <info>Facility DHIS2 UID:</info> {$facility->DHIS2_UID}, <info>Facility ID:</info> {$facility->id}");
 
             if(!empty($facility->DHIS2_UID)) {
                 try {
@@ -301,6 +298,7 @@ class ImportDHIS2Data extends Command
                             'program' => 'yDuAzyqYABS',
                             'startDate' => $startDate,
                             'endDate' => $endDate,
+                            'order' => 'created',
                             'totalPages' => true
                         ]
                     ]);
@@ -317,8 +315,8 @@ class ImportDHIS2Data extends Command
                                     'program' => 'yDuAzyqYABS',
                                     'startDate' => $startDate,
                                     'endDate' => $endDate,
+                                    'order' => 'created',
                                     'page' => $i,
-                                    'order' => 'created:ASC'
                                 ]
                             ]);
 
@@ -326,14 +324,17 @@ class ImportDHIS2Data extends Command
                                 $response_body = json_decode($response->getBody(), true);
 
                                 foreach ($response_body['events'] as $event) {
-                                    if ($event['status'] == "SCHEDULE" || $event['status'] == "SKIPPED")
-                                        continue;
-
                                     $total_number_of_events++;
-                                    $startTime = microtime(true);
                                     $event_uid = $event['event'];
 
+                                    if ($event['status'] == "SCHEDULE" || $event['status'] == "SKIPPED") {
+                                        $time = date('Y-m-d H:i:s');
+                                        $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event is either SCHEDULED | SKIPPED!</comment>");
+                                        continue;
+                                    }
+
                                     try {
+                                        $startTime = microtime(true);
                                         //Initialise transaction
                                         DB::beginTransaction();
 

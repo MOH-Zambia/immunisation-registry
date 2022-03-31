@@ -278,7 +278,7 @@ class ImportDHIS2DataPerFacility extends Command
         $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid)->first();; //Get Facility via the supplied DHIS2 UID
         $total_number_of_events = 0; //Total events counter
         $total_number_of_saved_events = 0; //Saved events counter
-        $total_number_of_updated_events = 0; //Saved events counter
+        $total_number_of_updated_events = 0; //Updated events counter
 
         if (!empty($facility)) {
             $_time = date('Y-m-d H:i:s');
@@ -292,7 +292,6 @@ class ImportDHIS2DataPerFacility extends Command
                         'program' => 'yDuAzyqYABS',
                         'startDate' => $startDate,
                         'endDate' => $endDate,
-                        'status' => ['ACTIVE', 'COMPLETED', 'VISITED', 'OVERDUE'],
                         'totalPages' => true,
                         'order' => 'created',
                         'pageSize' => 100
@@ -300,12 +299,15 @@ class ImportDHIS2DataPerFacility extends Command
                 ]);
 
                 if ($response->getStatusCode() == 200) {
+                    $time = date('Y-m-d H:i:s');
+                    $this->getOutput()->writeln("{$time} <comment>Before json_decode</comment>");
+
                     $response_body = json_decode($response->getBody(), true);
                     $pageCount = $response_body['pager']['pageCount'];
                     
                     $response_body_pager = json_encode($response_body['pager']);
                     $time = date('Y-m-d H:i:s');
-                    $this->getOutput()->writeln("{$time} <comment>OUTER Response Body :</comment> {$response_body_pager}");
+                    $this->getOutput()->writeln("{$time} <comment>OUTER Response Body Pager :</comment> {$response_body_pager}");
 
                     for ($i = 1; $i <= $pageCount; $i++) {
                         $response = $httpClient->request('GET', env('DHIS2_BASE_URL')."events.json", [
@@ -315,10 +317,8 @@ class ImportDHIS2DataPerFacility extends Command
                                 'program' => 'yDuAzyqYABS',
                                 'startDate' => $startDate,
                                 'endDate' => $endDate,
-                                'status' => ['ACTIVE', 'COMPLETED', 'VISITED', 'OVERDUE'],
                                 'page' => $i,
                                 'order' => 'created',
-                                'pageSize' => 100,
                                 'skipMeta' => true
                             ]
                         ]);
@@ -328,15 +328,20 @@ class ImportDHIS2DataPerFacility extends Command
 
                             $response_body_pager = json_encode($response_body['pager']);
                             $time = date('Y-m-d H:i:s');
-                            $this->getOutput()->writeln("{$time} <comment>INNER Response Body :</comment> {$response_body_pager}");
+                            $this->getOutput()->writeln("{$time} <comment>INNER Response Body Pager :</comment> {$response_body_pager}");
 
                             foreach ($response_body['events'] as $event) {
-
                                 $total_number_of_events++;
-                                $startTime = microtime(true);
                                 $event_uid = $event['event'];
+        
+                                if ($event['status'] == "SCHEDULE" || $event['status'] == "SKIPPED") {
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event is either SCHEDULED | SKIPPED!</comment>");
+                                    continue;
+                                }
 
                                 try {
+                                    $startTime = microtime(true);
                                     //Initialise transaction
                                     DB::beginTransaction();
 
