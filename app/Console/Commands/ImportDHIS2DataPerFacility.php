@@ -292,7 +292,7 @@ class ImportDHIS2DataPerFacility extends Command
                         'program' => 'yDuAzyqYABS',
                         'startDate' => $startDate,
                         'endDate' => $endDate,
-                        'status' => 'ACTIVE', 'COMPLETED', 'VISITED',  'OVERDUE',
+                        'status' => ['ACTIVE', 'COMPLETED', 'VISITED', 'OVERDUE'],
                         'totalPages' => true,
                         'order' => 'created',
                         'pageSize' => 100
@@ -315,7 +315,7 @@ class ImportDHIS2DataPerFacility extends Command
                                 'program' => 'yDuAzyqYABS',
                                 'startDate' => $startDate,
                                 'endDate' => $endDate,
-                                'status' => 'ACTIVE', 'COMPLETED', 'VISITED',  'OVERDUE',
+                                'status' => ['ACTIVE', 'COMPLETED', 'VISITED', 'OVERDUE'],
                                 'page' => $i,
                                 'order' => 'created',
                                 'pageSize' => 100,
