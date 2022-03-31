@@ -25,7 +25,7 @@ namespace App\Console\Commands;
 /**
  * The script ImportDHIS2DataPerFacilityClient.php
  *
- * This script fetches DHIS2 Data per Facility and Client, via a passed DHIS2 UID and a speficied period, start and end dates respectively.
+ * This script fetches DHIS2 Data per Facility and Client, via a passed DHIS2 UID and Client UID, start and end dates respectively.
  * @package IR
  * @subpackage Commands
  * @access public
@@ -58,7 +58,7 @@ class ImportDHIS2DataPerFacilityClient extends Command
      *
      * @var string
      */
-    protected $signature = 'command:ImportDHIS2DataPerFacilityClient {startDate} {endDate} {facilityDhis2Uid} {clientUid}';
+    protected $signature = 'command:ImportDHIS2DataPerFacilityClient {facilityDhis2Uid} {clientUid}';
 
     /**
      * The console command description.
@@ -271,11 +271,11 @@ class ImportDHIS2DataPerFacilityClient extends Command
         return $_vaccination;
     }
 
-    public function loadEvents($startDate, $endDate, $facilityDhis2Uid, $clientUid): array
+    public function loadEvents($facilityDhis2Uid, $clientUid): array
     {
         $httpClient = new GuzzleHttp\Client();
 
-        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid)->first();; //Get Facility via the supplied DHIS2 UID
+        $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid)->first(); //Get Facility via the supplied DHIS2 UID
         $total_number_of_events = 0; //Total events counter
         $total_number_of_saved_events = 0; //Saved events counter
         $total_number_of_updated_events = 0; //Saved events counter
@@ -290,139 +290,120 @@ class ImportDHIS2DataPerFacilityClient extends Command
                     'query' => [
                         'orgUnit' => $facility->DHIS2_UID,
                         'program' => 'yDuAzyqYABS',
-                        'startDate' => $startDate,
-                        'endDate' => $endDate,
-                        'totalPages' => true
+                        'trackedEntityInstance' => $clientUid,
+                        'skipPaging' => true,
                     ]
                 ]);
 
                 if ($response->getStatusCode() == 200) {
                     $response_body = json_decode($response->getBody(), true);
-                    $pageCount = $response_body['pager']['pageCount'];
 
-                    for ($i = 1; $i <= $pageCount; $i++) {
-                        $response = $httpClient->request('GET', env('DHIS2_BASE_URL') . "events.json", [
-                            'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
-                            'query' => [
-                                'orgUnit' => $facility->DHIS2_UID,
-                                'program' => 'yDuAzyqYABS',
-                                'startDate' => $startDate,
-                                'endDate' => $endDate,
-                                'page' => $i,
-                                'order' => 'created:ASC'
-                            ]
-                        ]);
+                    foreach ($response_body['events'] as $event) {
+                        $total_number_of_events++;
+                        $event_uid = $event['event'];
 
-                        if ($response->getStatusCode() == 200) {
-                            $response_body = json_decode($response->getBody(), true);
+                        if ($event['status'] == "SCHEDULE" || $event['status'] == "SKIPPED") {
+                            $time = date('Y-m-d H:i:s');
+                            $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event is either SCHEDULED | SKIPPED!</comment>");
+                            continue;
+                        }
 
-                            foreach ($response_body['events'] as $event) {
-                                $tracked_entity_instance_uid = $event['trackedEntityInstance'];
+                        try {
+                            $startTime = microtime(true);
+                            //Initialise transaction
+                            DB::beginTransaction();
 
-                                if (($event['status'] == "SCHEDULE") || ($event['status'] == "SKIPPED") || 
-                                    ($tracked_entity_instance_uid != $clientUid))
-                                    continue;
+                            //Preliminary assignments
+                            $tracked_entity_instance_uid = $clientUid;
+                            $client = Client::where('source_id', $tracked_entity_instance_uid)->first();
+                            //Get latest tracked entity instance
+                            $tracked_entity_instance = self::getTrackedEntityInstance($httpClient, $tracked_entity_instance_uid);
 
-                                $total_number_of_events++;
-                                $startTime = microtime(true);
-                                $event_uid = $event['event'];
+                            if (empty($client)) {
+                                //An if statement here perhaps to check if the tracked_entity
+                                $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
 
-                                try {
-                                    //Initialise transaction
-                                    DB::beginTransaction();
+                                $new_client_side_record = self::saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
 
-                                    //Preliminary assignments
-                                    $client = Client::where('source_id', $tracked_entity_instance_uid)->first();
-                                    //Get latest tracked entity instance
-                                    $tracked_entity_instance = self::getTrackedEntityInstance($httpClient, $tracked_entity_instance_uid);
+                                $client = self::saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
+                            } else {
+                                $source_client_last_updated = self::getTimestampFromString($tracked_entity_instance['lastUpdated']);
+                                $source_client_created = self::getTimestampFromString($tracked_entity_instance['created']);
 
-                                    if (empty($client)) {
-                                        //An if statement here perhaps to check if the tracked_entity
-                                        $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
+                                if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
+                                    (($client->source_updated_at < $source_client_last_updated) && ($client->source_created_at == $source_client_created))) {
+                                    //get the existing record
+                                    $old_client_side_record = Record::where('record_id', $client->source_id)->first();
 
-                                        $new_client_side_record = self::saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
+                                    $updated_client_side_record = self::updateRecord($old_client_side_record,  $tracked_entity_instance);
 
-                                        $client = self::saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
-                                    } else {
-                                        $source_client_last_updated = self::getTimestampFromString($tracked_entity_instance['lastUpdated']);
-                                        $source_client_created = self::getTimestampFromString($tracked_entity_instance['created']);
-
-                                        if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
-                                            (($client->source_updated_at < $source_client_last_updated) && ($client->source_created_at == $source_client_created))) {
-                                            //get the existing record
-                                            $old_client_side_record = Record::where('record_id', $client->source_id)->first();
-
-                                            $updated_client_side_record = self::updateRecord($old_client_side_record,  $tracked_entity_instance);
-
-                                            //probably an if statement here
-                                            $client = self::updateClient($client, $tracked_entity_instance, $facility->id);
-                                        } else {
-                                            $time = date('Y-m-d H:i:s');
-                                            $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$client->source_id}, <comment>as record is still upto date</comment>");
-                                        }
-                                    }
-
-                                    $vaccination = Vaccination::where('source_id', $event_uid)->first();
-
-                                    if (!empty($vaccination)) {
-                                        $source_event_last_updated = self::getTimestampFromString($event['lastUpdated']);
-                                        $source_event_created = self::getTimestampFromString($event['created']);
-
-                                        //Check for last updated ? Vaccination Update logic kicks in
-                                        if ((empty($vaccination->source_created_at) || empty($vaccination->source_updated_at)) ||
-                                            (($vaccination->source_updated_at < $source_event_last_updated) && ($vaccination->client_id == $client->id) && ($vaccination->source_created_at == $source_event_created))) {
-                                            $old_event_side_record = Record::where('record_id', $event_uid)->first();
-                                            //Perhaps an if statement
-                                            $updated_event_side_record = self::updateRecord($old_event_side_record, $event);
-
-                                            $vaccination = self::updateVaccination($vaccination, $event, $facility->id);
-
-                                            $total_number_of_updated_events++;
-                                            $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                            $time = date('Y-m-d H:i:s');
-                                            $this->getOutput()->writeln("{$time} <info>UPDATING Event total:</info> {$total_number_of_events} ({$runTime}ms), <info>Event UID :</info> {$event_uid}");
-                                        } else {
-                                            $time = date('Y-m-d H:i:s');
-                                            $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event already exists in the DATABASE!</comment>");
-                                        }
-                                    } else {
-                                        //Store new even data in record table
-                                        $new_event_side_record = self::saveRecord($event_uid, 'EVENT', $event);
-                                        //Store new client, record and event data in the vaccination table
-                                        $vaccination = self::saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
-
-                                        $total_number_of_saved_events++;
-                                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                                        $event = json_encode($event, JSON_UNESCAPED_SLASHES);
-                                        $time = date('Y-m-d H:i:s');
-                                        $this->getOutput()->writeln("{$time} <info>SAVING Event:</info> {$total_number_of_events}, <info>Event UID:</info> {$event_uid}, <info>Facility:</info> {$facility->name}, <info>Facility UID:</info> {$facility->DHIS2_UID}, <info>TRACKED_ENTITY_INSTANCE:</info> {$tracked_entity_instance_uid}");
-                                    }
-
-                                    DB::commit(); //if no error on record, vaccination and importlog commit data to database
-                                    $this->getOutput()->writeln("{$time} <info>PERSISTED Event:</info> {$event_uid} <info>to the DATABASE!</info>");
-
-                                } catch (QueryException $e) {
-                                    DB::rollback(); //Rollback database transaction if any error occurs
-
-                                    $message = $e->getMessage();
+                                    //probably an if statement here
+                                    $client = self::updateClient($client, $tracked_entity_instance, $facility->id);
+                                } else {
                                     $time = date('Y-m-d H:i:s');
-                                    $event = json_encode($event, JSON_UNESCAPED_SLASHES);
-
-                                    Log::error("$time QueryException: $message \n $event");
-                                    $this->getOutput()->writeln("<error>{$time} QueryException on Event Number {$total_number_of_events}: $message \n $event</error>");
-                                } catch (Exception $e) {
-                                    DB::rollback(); //Rollback database transaction if any error occurs
-
-                                    $message = $e->getMessage();
-                                    $time = date('Y-m-d H:i:s');
-                                    $event = json_encode($event, JSON_UNESCAPED_SLASHES);
-
-                                    Log::error("$time Exception: $message \n $event");
-                                    $this->getOutput()->writeln("<error>{$time} Exception on event number {$total_number_of_events}: $message \n $event</error>");
+                                    $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$client->source_id}, <comment>as record is still upto date</comment>");
                                 }
-                            } //End foreach
-                        }//End if ($response->getStatusCode() == 200)
-                    }//End $i = 1; $i <= $pageCount; $i++
+                            }
+
+                            $vaccination = Vaccination::where('source_id', $event_uid)->first();
+
+                            if (!empty($vaccination)) {
+                                $source_event_last_updated = self::getTimestampFromString($event['lastUpdated']);
+                                $source_event_created = self::getTimestampFromString($event['created']);
+
+                                //Check for last updated ? Vaccination Update logic kicks in
+                                if ((empty($vaccination->source_created_at) || empty($vaccination->source_updated_at)) ||
+                                    (($vaccination->source_updated_at < $source_event_last_updated) && ($vaccination->client_id == $client->id) && ($vaccination->source_created_at == $source_event_created))) {
+                                    $old_event_side_record = Record::where('record_id', $event_uid)->first();
+                                    //Perhaps an if statement
+                                    $updated_event_side_record = self::updateRecord($old_event_side_record, $event);
+
+                                    $vaccination = self::updateVaccination($vaccination, $event, $facility->id);
+
+                                    $total_number_of_updated_events++;
+                                    $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("{$time} <info>UPDATING Event total:</info> {$total_number_of_events} ({$runTime}ms), <info>Event UID :</info> {$event_uid}");
+                                } else {
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event already exists in the DATABASE!</comment>");
+                                }
+                            } else {
+                                //Store new even data in record table
+                                $new_event_side_record = self::saveRecord($event_uid, 'EVENT', $event);
+                                //Store new client, record and event data in the vaccination table
+                                $vaccination = self::saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
+
+                                $total_number_of_saved_events++;
+                                $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                                $event = json_encode($event, JSON_UNESCAPED_SLASHES);
+                                $time = date('Y-m-d H:i:s');
+                                $this->getOutput()->writeln("{$time} <info>SAVING Event:</info> {$total_number_of_events}, <info>Event UID:</info> {$event_uid}, <info>Facility:</info> {$facility->name}, <info>Facility UID:</info> {$facility->DHIS2_UID}, <info>TRACKED_ENTITY_INSTANCE:</info> {$tracked_entity_instance_uid}");
+                            }
+
+                            DB::commit(); //if no error on record, vaccination and importlog commit data to database
+                            $this->getOutput()->writeln("{$time} <info>PERSISTED Event:</info> {$event_uid} <info>to the DATABASE!</info>");
+
+                        } catch (QueryException $e) {
+                            DB::rollback(); //Rollback database transaction if any error occurs
+
+                            $message = $e->getMessage();
+                            $time = date('Y-m-d H:i:s');
+                            $event = json_encode($event, JSON_UNESCAPED_SLASHES);
+
+                            Log::error("$time QueryException: $message \n $event");
+                            $this->getOutput()->writeln("<error>{$time} QueryException on Event Number {$total_number_of_events}: $message \n $event</error>");
+                        } catch (Exception $e) {
+                            DB::rollback(); //Rollback database transaction if any error occurs
+
+                            $message = $e->getMessage();
+                            $time = date('Y-m-d H:i:s');
+                            $event = json_encode($event, JSON_UNESCAPED_SLASHES);
+
+                            Log::error("$time Exception: $message \n $event");
+                            $this->getOutput()->writeln("<error>{$time} Exception on event number {$total_number_of_events}: $message \n $event</error>");
+                        }
+                    } //End foreach
                 }//End $response->getStatusCode() == 200
 
             } catch (ConnectException $e) {
@@ -482,12 +463,10 @@ class ImportDHIS2DataPerFacilityClient extends Command
         Log::info("$script_start_date_time: Loading Per Facility Data from the DHIS2 Covax instance");
         $this->getOutput()->writeln("<info>$script_start_date_time Script started - Loading Per Facility Per Client Data from the DHIS2 Covax instance</info>");
 
-        $startDate = $this->argument('startDate');
-        $endDate = $this->argument('endDate');
         $facilityDhis2Uid = $this->argument('facilityDhis2Uid');
         $clientUid = $this->argument('clientUid');
 
-        $results = self::loadEvents($startDate, $endDate, $facilityDhis2Uid, $clientUid);
+        $results = self::loadEvents($facilityDhis2Uid, $clientUid);
 
         $script_end_time = date('Y-m-d H:i:s');
         $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
