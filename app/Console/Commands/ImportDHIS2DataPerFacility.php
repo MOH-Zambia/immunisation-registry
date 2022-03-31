@@ -253,7 +253,6 @@ class ImportDHIS2DataPerFacility extends Command
 
         $_vaccination->save();
 
-        // $_event_json = json_encode($_event, JSON_UNESCAPED_SLASHES);
         $_time = date('Y-m-d H:i:s');
         $this->getOutput()->writeln("{$_time} <info>SAVED Vaccination, ID Number:</info> {$_vaccination->id}, <info>UID :</info> {$_vaccination->source_id}, <info>Client ID:</info> {$_vaccination->client_id}, <info>Dose:</info> {$_vaccination->dose_number}, <info>Event Date:</info> {$_vaccination->date}, <info>Facility:</info> {$_vaccination->facility_id}");
 
@@ -293,33 +292,45 @@ class ImportDHIS2DataPerFacility extends Command
                         'program' => 'yDuAzyqYABS',
                         'startDate' => $startDate,
                         'endDate' => $endDate,
-                        'totalPages' => true
+                        'status' => 'ACTIVE', 'COMPLETED', 'VISITED',  'OVERDUE',
+                        'totalPages' => true,
+                        'order' => 'created',
+                        'pageSize' => 100
                     ]
                 ]);
 
                 if ($response->getStatusCode() == 200) {
                     $response_body = json_decode($response->getBody(), true);
                     $pageCount = $response_body['pager']['pageCount'];
+                    
+                    $response_body_pager = json_encode($response_body['pager']);
+                    $time = date('Y-m-d H:i:s');
+                    $this->getOutput()->writeln("{$time} <comment>OUTER Response Body :</comment> {$response_body_pager}");
 
                     for ($i = 1; $i <= $pageCount; $i++) {
-                        $response = $httpClient->request('GET', env('DHIS2_BASE_URL') . "events.json", [
+                        $response = $httpClient->request('GET', env('DHIS2_BASE_URL')."events.json", [
                             'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
                             'query' => [
                                 'orgUnit' => $facility->DHIS2_UID,
                                 'program' => 'yDuAzyqYABS',
                                 'startDate' => $startDate,
                                 'endDate' => $endDate,
+                                'status' => 'ACTIVE', 'COMPLETED', 'VISITED',  'OVERDUE',
                                 'page' => $i,
-                                'order' => 'created:ASC'
+                                'order' => 'created',
+                                'pageSize' => 100,
+                                'skipMeta' => true
                             ]
                         ]);
 
                         if ($response->getStatusCode() == 200) {
                             $response_body = json_decode($response->getBody(), true);
 
+                            $response_body_pager = json_encode($response_body['pager']);
+                            $time = date('Y-m-d H:i:s');
+                            $this->getOutput()->writeln("{$time} <comment>INNER Response Body :</comment> {$response_body_pager}");
+
                             foreach ($response_body['events'] as $event) {
-                                if ($event['status'] == "SCHEDULE" || $event['status'] == "SKIPPED")
-                                    continue;
 
                                 $total_number_of_events++;
                                 $startTime = microtime(true);
