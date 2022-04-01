@@ -335,7 +335,7 @@ class ImportDHIS2DataPerFacility extends Command
         
                                 if ($event['status'] == "SCHEDULE" || $event['status'] == "SKIPPED" || $event['status'] == "OVERDUE") {
                                     $time = date('Y-m-d H:i:s');
-                                    $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event is either SCHEDULED | SKIPPED!</comment>");
+                                    $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event is either SCHEDULED | SKIPPED | OVERDUE!</comment>");
                                     continue;
                                 }
 
