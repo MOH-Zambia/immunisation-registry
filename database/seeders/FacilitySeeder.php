@@ -54,7 +54,7 @@ class FacilitySeeder extends Seeder
     /**
      * Path of the seed file relative to the `database` directory.
      */
-    const DATABASE_FILE_PATH = 'data/facilities.csv';
+    const DATABASE_FILE_PATH = 'data/Facility_list_update_2022-04-05.csv';
 
     /**
      * If the file has a header row.
@@ -87,6 +87,9 @@ class FacilitySeeder extends Seeder
      */
     public function run()
     {
+        // Saved Facilities count
+        $saved_facilities = 0;
+        $total_facilities = 0;
         // resolve the path of the seed file
         $file_path = database_path(self::DATABASE_FILE_PATH);
 
@@ -104,6 +107,7 @@ class FacilitySeeder extends Seeder
 
             // while there's a row to be read in the file, read the next row
             while ($row = fgetcsv($file)) {
+                $total_facilities++;
                 $district = District::where('name', '=', $row[1])->first();
                 try{
                     if(!empty($district)){
@@ -126,6 +130,10 @@ class FacilitySeeder extends Seeder
                         ]);
 
                         $facility->save();
+
+                        $saved_facilities++;
+                        $time = date('Y-m-d H:i:s');
+                        $this->command->comment("<comment>{$time} Saved Facility $row[2]: </comment> SUCCESS");
                     }
                 } catch (Exception $e)  {
                     $message = $e->getMessage();
@@ -134,6 +142,10 @@ class FacilitySeeder extends Seeder
                     $this->command->error("<error>{$time} $message Exception on row number $row[2]: </error> Failed to save facility");
                 }
             }
+
+            $time = date('Y-m-d H:i:s');
+            $this->command->comment("<comment>{$time} Saved a total of : </comment> {$saved_facilities} <comment>Facility(ies) from a total of </comment> {$total_facilities} <comment>scanned facilities</comment>");
+
         } catch (Exception $e)  {
             $message = $e->getMessage();
             $time = date('Y-m-d H:i:s');

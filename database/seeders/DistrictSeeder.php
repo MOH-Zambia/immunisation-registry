@@ -15,7 +15,7 @@ class DistrictSeeder extends Seeder
     /**
      * Path of the seed file relative to the `database` directory.
      */
-    const DATABASE_FILE_PATH = 'data/Districts.geojson';
+    const DATABASE_FILE_PATH = 'data/Districts_update_2022-04-05.geojson';
 
 
     /**
