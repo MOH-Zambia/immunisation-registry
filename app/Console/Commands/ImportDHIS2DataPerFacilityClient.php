@@ -65,7 +65,7 @@ class ImportDHIS2DataPerFacilityClient extends Command
      *
      * @var string
      */
-    protected $description = 'Import DHIS2 Data per Facility and Client from COVAX instance';
+    protected $description = 'Import DHIS2 Data per Facility and Client from the COVAX Instance';
 
     /**
      * Create a new command instance.
@@ -329,6 +329,28 @@ class ImportDHIS2DataPerFacilityClient extends Command
                             } else {
                                 $source_client_last_updated = self::getTimestampFromString($tracked_entity_instance['lastUpdated']);
                                 $source_client_created = self::getTimestampFromString($tracked_entity_instance['created']);
+
+                                $time = date('Y-m-d H:i:s');
+                                $this->getOutput()->writeln("{$time} <comment>Client Created At:</comment> {$client->source_created_at}, <comment>Client Updated At: </comment> {$client->source_updated_at}");
+                                $time = date('Y-m-d H:i:s');
+                                $this->getOutput()->writeln("{$time} <comment>DHIS2 Created At:</comment> {$source_client_created}, <comment>DHIS2 Updated At: </comment> {$source_client_last_updated}");
+
+                                $time = date('Y-m-d H:i:s');
+                                if ($client->source_updated_at < $source_client_last_updated) {
+                                    $this->getOutput()->writeln("{$time} <comment>Client Updated At is LESS THAN DHIS2 Updated AT:</comment>");
+                                } else {
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("{$time} <comment>Client Updated At is NOT LESS THAN DHIS2 Updated AT:</comment>");
+                                }
+
+                                $time = date('Y-m-d H:i:s');
+                                if (($client->source_created_at == $source_client_created)) {
+                                    $this->getOutput()->writeln("{$time} <comment>Created AT Dates Are Equal:</comment>");
+                                } else {
+                                    $time = date('Y-m-d H:i:s');
+                                    $this->getOutput()->writeln("{$time} <comment>Created AT Dates Are NOT Equal:</comment>");
+                                }
+
 
                                 if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
                                     (($client->source_updated_at < $source_client_last_updated) && ($client->source_created_at == $source_client_created))) {
