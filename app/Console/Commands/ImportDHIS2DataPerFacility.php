@@ -65,7 +65,7 @@ class ImportDHIS2DataPerFacility extends Command
      *
      * @var string
      */
-    protected $description = 'Import DHIS2 Data per Facility from COVAX instance';
+    protected $description = 'Import DHIS2 Data per Facility from the COVAX Instance';
 
     /**
      * Create a new command instance.
@@ -77,203 +77,13 @@ class ImportDHIS2DataPerFacility extends Command
         parent::__construct();
     }
 
-
-    public function getTimestampFromString($_date_time)
-    {
-        $_date_time_ = strtotime($_date_time);
-        return date('Y-m-d H:i:s', $_date_time_);
-    }
-
-    public function getTrackedEntityInstance($_httpClient, $_tracked_entity_instance_uid)
-    {
-        $_response = $_httpClient->request('GET', env('DHIS2_BASE_URL'). "trackedEntityInstances.json?trackedEntityInstance={$_tracked_entity_instance_uid}", [
-            'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
-        ]);
-
-        if ($_response->getStatusCode() == 200) {
-            $_response_body = json_decode($_response->getBody(), true);
-            return $_response_body['trackedEntityInstances'][0];
-        };
-        return json_encode(json_decode ("{}"));
-    }
-
-    public function saveRecord($_source_id, $_data_type, $_data): ? Record
-    {
-        //_source_id is passed seperately as it is retrieved differently | event vs tracked_entity_instance
-        $_record =  new Record([
-            'record_id' => $_source_id,
-            'data_source' => 'MOH_DHIS2_COVAX',
-            'data_type' => $_data_type,
-            'hash' => sha1(json_encode($_data)),
-            'data' => json_encode($_data)
-        ]);
-
-        $_record -> save();
-
-        return $_record;
-    }
-
-    public function updateRecord($_old_record, $_updated_data): ? Record
-    {
-        //only 'hash' and 'data' fields are to be updated, unless otherwise.
-        $_old_record->hash = sha1(json_encode($_updated_data));
-        $_old_record->data = json_encode($_updated_data);
-
-        $_old_record->update();
-
-        return $_old_record;
-    }
-
-    public function assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id): ? Client
-    {
-        foreach ($_tracked_entity_instance['attributes'] as $attribute) {
-            if ($attribute['attribute'] == 'zUQCBnWbBer') //Tracked Entity Attribute UID for Card Number
-                $_client->card_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'Ewi7FUfcHAD') //Tracked Entity Attribute UID for NRC
-                $_client->NRC = $attribute['value'];
-            else if ($attribute['attribute'] == 'pd02AeZHXWi') //Tracked Entity Attribute UID for Passport Number
-                $_client->passport_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'TfdH5KvFmMy') //Tracked Entity Attribute UID for First Name
-                $_client->first_name = ucfirst(strtolower(trim($attribute['value'])));
-            else if ($attribute['attribute'] == 'aW66s2QSosT') //Tracked Entity Attribute UID for Surname
-                $_client->last_name = ucfirst(strtolower(trim($attribute['value'])));
-            else if ($attribute['attribute'] == 'Bag3HrPOKRm') //Tracked Entity Attribute UID for Other Names
-                $_client->other_names = ucfirst(strtolower(trim($attribute['value'])));
-            else if ($attribute['attribute'] == 'CklPZdOd6H1')  //Tracked Entity Attribute UID for Sex
-                $_client->sex = $attribute['value'][0];
-            else if ($attribute['attribute'] == 'mAWcalQYYyk')  //Tracked Entity Attribute UID for DOB
-                $_client->date_of_birth = $attribute['value'];
-            else if ($attribute['attribute'] == 'ciCR6BBvIT4')  //Tracked Entity Attribute UID for Mobile phone number
-                $_client->contact_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'ctpwSFedWFn')  //Tracked Entity Attribute UID for Email Address
-                $_client->contact_email_address = $attribute['value'];
-            else if ($attribute['attribute'] == 'VCtm2pySeEV')  //Tracked Entity Attribute UID for Address (current)
-                $_client->address_line1 = $attribute['value'];
-            else if ($attribute['attribute'] == 'gB3BrfkEmkC') //Tracked Entity Attribute UID for Guardian's NRC
-                $_client->guardian_NRC = $attribute['value'];
-            else if ($attribute['attribute'] == 'TodvbRCs4La') //Tracked Entity Attribute UID for Guardian's Passport Number
-                $_client->guardian_passport_number = $attribute['value'];
-            else if ($attribute['attribute'] == 'LY2bDXpNvS7')  //Tracked Entity Attribute UID for Occupation
-                $_client->occupation = $attribute['value'];
-        }
-        $_client->facility_id = $_facility_id;
-        $_client->source_created_at = $_tracked_entity_instance['created'];
-        $_client->source_updated_at = $_tracked_entity_instance['lastUpdated'];
-
-        return $_client;
-    }
-
-    public function saveClient($_tracked_entity_instance, $_facility_id, $_record_id): ? Client
-    {
-        $_client = new Client();
-        $_client->source_id = $_tracked_entity_instance['trackedEntityInstance'];
-        $_client->record_id = $_record_id;
-
-        $_client = self::assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id);
-
-        $_client->save(); //Save new client
-
-        $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>SAVED Client ID Number:</info> {$_client->id} <info>UID:</info> {$_client->source_id} <info>First Name:</info> {$_client->first_name} <info>Surname:</info> {$_client->last_name} <info>DOB:</info> {$_client->date_of_birth} <info>Sex:</info> {$_client->sex} <info>Created At:</info> {$_client->source_created_at} <info>Facility:</info> {$_client->facility_id}");
-
-        return $_client;
-    }
-
-    public function updateClient($_client, $_tracked_entity_instance, $_facility_id): ? Client
-    {
-        $_client = self::assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id);
-
-        $_client->update(); //Update client info
-
-        $_tracked_entity_instance_json = json_encode($_tracked_entity_instance, JSON_UNESCAPED_SLASHES);
-        $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>UPDATED Client ID Number:</info> {$_client->id} <info>UID:</info> {$_client->source_id} <info>First Name:</info> {$_client->first_name} <info>Surname:</info> {$_client->last_name} <info>DOB:</info> {$_client->date_of_birth} <info>Sex:</info> {$_client->sex} <info>Created At:</info> {$_client->source_created_at} <info>Facility:</info> {$_client->facility_id}");
-
-        return $_client;
-    }
-
-    public function assignCommonVaccinationFields($_vaccination, $_event, $_facility_id): ? Vaccination
-    {
-        $_vaccination->date = $_event['eventDate'];
-
-        switch ($_event['programStage']) {
-            case 'a1jCssI2LkW': //programStage: Vaccination Dose 1
-                $_vaccination->dose_number = '1';
-                break;
-            case 'RiV7VDxXQLN': //programStage: Vaccination Dose 2
-                $_vaccination->dose_number = '2';
-                break;
-            case 'jatC7jRwVKO': //programStage: Vaccination Booster Dose
-                $_vaccination->dose_number = 'Booster';
-                break;
-        }
-
-        foreach ($_event['dataValues'] as $dataValue) {
-            if ($dataValue['dataElement'] == 'bbnyNYD1wgS') { //Vaccine Name
-                switch ($dataValue['value']) {
-                    case 'AstraZeneca_zm':
-                        $_vaccination->vaccine_id = 1;
-                        break;
-                    case 'Johnson_Johnsons_zm':
-                        $_vaccination->vaccine_id = 3;
-                        break;
-                    case 'Sinopharm':
-                        $_vaccination->vaccine_id = 7;
-                        break;
-                    case 'Pfizer':
-                        $_vaccination->vaccine_id = 6;
-                        break;
-                    case 'Moderna':
-                        $_vaccination->vaccine_id = 4;
-                        break;
-                }
-            } else if ($dataValue['dataElement'] == 'Yp1F4txx8tm') { //Batch Number
-                $_vaccination->vaccine_batch_number = $dataValue['value'];
-            } else if ($dataValue['dataElement'] == 'FFWcps4MfuH') { //Suggested date for next dose
-                $_vaccination->date_of_next_dose = $dataValue['value'];
-            }
-        }
-
-        $_vaccination->facility_id = $_facility_id;
-        $_vaccination->source_created_at = $_event['created'];
-        $_vaccination->source_updated_at = $_event['lastUpdated'];
-
-        return $_vaccination;
-    }
-
-    public function saveVaccination($_event, $_client_id, $_facility_id, $_record_id): ? Vaccination
-    {
-        $_vaccination = new Vaccination();
-
-        $_vaccination->client_id = $_client_id;
-        $_vaccination->record_id = $_record_id;
-        $_vaccination->source_id = $_event['event'];
-
-        $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);
-
-        $_vaccination->save();
-
-        $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>SAVED Vaccination, ID Number:</info> {$_vaccination->id}, <info>UID :</info> {$_vaccination->source_id}, <info>Client ID:</info> {$_vaccination->client_id}, <info>Dose:</info> {$_vaccination->dose_number}, <info>Event Date:</info> {$_vaccination->date}, <info>Facility:</info> {$_vaccination->facility_id}");
-
-        return $_vaccination;
-    }
-
-    public function updateVaccination($_vaccination, $_event, $_facility_id): ? Vaccination
-    {
-        $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);
-
-        $_vaccination->update();
-
-        $_time = date('Y-m-d H:i:s');
-        $this->getOutput()->writeln("{$_time} <info>UPDATED Vaccination, ID Number:</info> {$_vaccination->id}, <info>UID :</info> {$_vaccination->source_id}, <info>Client ID:</info> {$_vaccination->client_id}, <info>Dose:</info> {$_vaccination->dose_number}, <info>Event Date:</info> {$_vaccination->date}, <info>Facility:</info> {$_vaccination->facility_id}");
-
-        return $_vaccination;
-    }
-
     public function loadEvents($startDate, $endDate, $facilityDhis2Uid): array
     {
         $httpClient = new GuzzleHttp\Client();
+        $utility = new Utilities();
+        $persistRecord = new PersistRecord();
+        $persistClient = new PersistClient();
+        $persistVaccination = new PersistVaccination();
 
         $facility = Facility::where('DHIS2_UID', $facilityDhis2Uid)->first();; //Get Facility via the supplied DHIS2 UID
         $total_number_of_events = 0; //Total events counter
@@ -348,28 +158,29 @@ class ImportDHIS2DataPerFacility extends Command
                                     $tracked_entity_instance_uid = $event['trackedEntityInstance'];
                                     $client = Client::where('source_id', $tracked_entity_instance_uid)->first();
                                     //Get latest tracked entity instance
-                                    $tracked_entity_instance = self::getTrackedEntityInstance($httpClient, $tracked_entity_instance_uid);
+                                    $tracked_entity_instance = $utility->getTrackedEntityInstance($httpClient, $tracked_entity_instance_uid);
 
                                     if (empty($client)) {
                                         //An if statement here perhaps to check if the tracked_entity
                                         $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
 
-                                        $new_client_side_record = self::saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
+                                        $new_client_side_record = $persistRecord->saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
 
-                                        $client = self::saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
+                                        $client = $persistClient->saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
                                     } else {
-                                        $source_client_last_updated = self::getTimestampFromString($tracked_entity_instance['lastUpdated']);
-                                        $source_client_created = self::getTimestampFromString($tracked_entity_instance['created']);
+                                        $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
+                                        $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['lastUpdated'], $client->source_updated_at);
 
                                         if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
-                                            (($client->source_updated_at < $source_client_last_updated) && ($client->source_created_at == $source_client_created))) {
+                                            (($updated_at_timestamps_difference >= 2) && 
+                                            ($created_at_timestamps_difference <= 2) && ($created_at_timestamps_difference >= -2))) {
                                             //get the existing record
                                             $old_client_side_record = Record::where('record_id', $client->source_id)->first();
 
-                                            $updated_client_side_record = self::updateRecord($old_client_side_record,  $tracked_entity_instance);
+                                            $updated_client_side_record = $persistRecord->updateRecord($old_client_side_record,  $tracked_entity_instance);
 
                                             //probably an if statement here
-                                            $client = self::updateClient($client, $tracked_entity_instance, $facility->id);
+                                            $client = $persistClient->updateClient($client, $tracked_entity_instance, $facility->id);
                                         } else {
                                             $time = date('Y-m-d H:i:s');
                                             $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$client->source_id}, <comment>as record is still upto date</comment>");
@@ -378,18 +189,19 @@ class ImportDHIS2DataPerFacility extends Command
 
                                     $vaccination = Vaccination::where('source_id', $event_uid)->first();
 
-                                    if (!empty($vaccination)) {
-                                        $source_event_last_updated = self::getTimestampFromString($event['lastUpdated']);
-                                        $source_event_created = self::getTimestampFromString($event['created']);
-
+                                    if (!empty($vaccination)) {                             
+                                        $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($event['created'], $vaccination->source_created_at);
+                                        $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($event['lastUpdated'], $vaccination->source_updated_at);
+        
                                         //Check for last updated ? Vaccination Update logic kicks in
                                         if ((empty($vaccination->source_created_at) || empty($vaccination->source_updated_at)) ||
-                                            (($vaccination->source_updated_at < $source_event_last_updated) && ($vaccination->client_id == $client->id) && ($vaccination->source_created_at == $source_event_created))) {
+                                            (($updated_at_timestamps_difference >= 2) && ($vaccination->client_id == $client->id) && 
+                                            ($created_at_timestamps_difference <= 2) && ($created_at_timestamps_difference >= -2))) {
                                             $old_event_side_record = Record::where('record_id', $event_uid)->first();
                                             //Perhaps an if statement
-                                            $updated_event_side_record = self::updateRecord($old_event_side_record, $event);
+                                            $updated_event_side_record = $persistRecord->updateRecord($old_event_side_record, $event);
 
-                                            $vaccination = self::updateVaccination($vaccination, $event, $facility->id);
+                                            $vaccination = $persistVaccination->updateVaccination($vaccination, $event, $facility->id);
 
                                             $total_number_of_updated_events++;
                                             $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
@@ -401,9 +213,9 @@ class ImportDHIS2DataPerFacility extends Command
                                         }
                                     } else {
                                         //Store new even data in record table
-                                        $new_event_side_record = self::saveRecord($event_uid, 'EVENT', $event);
+                                        $new_event_side_record = $persistRecord->saveRecord($event_uid, 'EVENT', $event);
                                         //Store new client, record and event data in the vaccination table
-                                        $vaccination = self::saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
+                                        $vaccination = $persistVaccination->saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
 
                                         $total_number_of_saved_events++;
                                         $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
@@ -474,7 +286,6 @@ class ImportDHIS2DataPerFacility extends Command
 
         } else {
             $time = date('Y-m-d H:i:s');
-
             Log::error("$time Facility with DHIS2 UID: {$facilityDhis2Uid}, NOT FOUND. UID is Invalid or Does Not Exist!");
             $this->getOutput()->writeln("$time <error>Facility with DHIS2 UID: {$facilityDhis2Uid}, NOT FOUND. UID is Invalid or Does Not Exist!");
         }
