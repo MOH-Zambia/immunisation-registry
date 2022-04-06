@@ -49,7 +49,7 @@ class SendSMS extends Command
         $sender = "MOH";
 
         //Your message to send, Adding URL encoding.
-        $message = urlencode("Ministry of Health Immunisation Registry, Your OPT is: $OTP");
+        $message = urlencode("Ministry of Health Immunisation Registry, Your OTP is: $OTP");
 
         $ch= curl_init();
         curl_setopt($ch, CURLOPT_URL,"http://$host:$port/cgi-bin/sendsms?smsc=$smsc&username=$username&password=$password&to=$receipient&from=$sender&text=$message");
