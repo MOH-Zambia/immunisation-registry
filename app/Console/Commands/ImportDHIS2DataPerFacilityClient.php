@@ -139,6 +139,12 @@ class ImportDHIS2DataPerFacilityClient extends Command
                             } else {
                                 $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
                                 $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['lastUpdated'], $client->source_updated_at);
+                                
+                                $time = date('Y-m-d H:i:s');
+                                $this->getOutput()->writeln("{$time} <comment>DHIS2 Created At:</comment> {$tracked_entity_instance['created']}, <comment>DHIS2 Updated At: </comment> {$tracked_entity_instance['lastUpdated']}");
+
+                                $time = date('Y-m-d H:i:s');
+                                $this->getOutput()->writeln("{$time} <comment>Client Created At:</comment> {$client->source_created_at}, <comment>Client Updated At: </comment> {$client->source_updated_at}");
 
                                 if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
                                     (($updated_at_timestamps_difference >= 2) && 
