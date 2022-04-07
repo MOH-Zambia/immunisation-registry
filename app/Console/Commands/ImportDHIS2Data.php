@@ -156,7 +156,7 @@ class ImportDHIS2Data extends Command
                                             $client = $persistClient->saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
                                         } else {                                
                                             $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
-                                            $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['lastUpdated'], $client->source_updated_at);
+                                            $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($client->source_updated_at, $tracked_entity_instance['lastUpdated']);
             
                                             if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
                                                 (($updated_at_timestamps_difference >= 2) && 
@@ -178,7 +178,7 @@ class ImportDHIS2Data extends Command
 
                                         if (!empty($vaccination)) {                             
                                             $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($event['created'], $vaccination->source_created_at);
-                                            $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($event['lastUpdated'], $vaccination->source_updated_at);
+                                            $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($vaccination->source_updated_at, $event['lastUpdated']);
 
                                             //Check for last updated ? Vaccination Update logic kicks in
                                             if ((empty($vaccination->source_created_at) || empty($vaccination->source_updated_at)) ||
