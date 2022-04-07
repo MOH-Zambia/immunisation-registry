@@ -149,10 +149,7 @@ class ImportDHIS2DataPerFacilityClient extends Command
                                 $time = date('Y-m-d H:i:s');
                                 $this->getOutput()->writeln("{$time} <comment>Client Created At:</comment> {$client->source_created_at}, <comment>Client Updated At: </comment> {$client->source_updated_at}");
 
-                                if ((empty($client->source_created_at) || empty($client->source_updated_at)) ||
-                                    (($updated_at_timestamps_difference >= 2) &&
-                                     ((($created_at_timestamps_difference <= 2) && ($created_at_timestamps_difference >= -2)) ||
-                                     ($event['trackedEntityInstance'] == $client->source_id)))) {
+                                if ($persistClient->shouldUpdate($client, $event['trackedEntityInstance'], $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
                                     //get the existing record
                                     $old_client_side_record = Record::where('record_id', $client->source_id)->first();
 

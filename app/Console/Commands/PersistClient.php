@@ -22,6 +22,23 @@ class PersistClient
         self::$output = new ConsoleOutput();
     }
 
+    public function shouldUpdate($_client, $_tracked_entity_uid, $_created_diff, $_updated_diff): bool
+    {
+        $_abs_created_diff = abs($_created_diff);
+        $_abs_updated_diff = abs($_updated_diff);
+        if (empty($_client->source_created_at) || empty($_client->source_updated_at)) {
+            return true;
+        } else if (($_updated_diff >= 2) && 
+                  ((($created_at_timestamps_difference <= 2) && ($created_at_timestamps_difference >= -2)) || 
+                  ($_tracked_entity_uid == $_client->source_id))) {
+            return true; 
+        } else if ((($_abs_created_diff >= 7198) && ($_abs_created_diff <=7202)) || 
+                  (($_abs_updated_diff >= 7198) && ($_abs_updated_diff <=7202))) { //This block is to cater for 2 hours timezone differences betweent the two servers
+            return true;
+        }
+        return false;
+    }
+
     public function assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id): ? Client
     {
         foreach ($_tracked_entity_instance['attributes'] as $attribute) {
