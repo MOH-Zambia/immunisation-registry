@@ -179,9 +179,7 @@ class ImportDHIS2Data extends Command
                                             $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($vaccination->source_updated_at, $event['lastUpdated']);
 
                                             //Check for last updated ? Vaccination Update logic kicks in
-                                            if ((empty($vaccination->source_created_at) || empty($vaccination->source_updated_at)) ||
-                                                (($updated_at_timestamps_difference >= 2) && ($vaccination->client_id == $client->id) && 
-                                                ($created_at_timestamps_difference <= 2) && ($created_at_timestamps_difference >= -2))) {
+                                            if ($persistVaccination->shouldUpdate($vaccination, $client->id, $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
                                                 $old_event_side_record = Record::where('record_id', $event_uid)->first();
                                                 //Perhaps an if statement
                                                 $updated_event_side_record = $persistRecord->updateRecord($old_event_side_record, $event);

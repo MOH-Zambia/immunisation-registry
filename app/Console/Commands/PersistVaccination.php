@@ -21,6 +21,22 @@ class PersistVaccination
         self::$output = new ConsoleOutput();
     }
 
+    public function shouldUpdate($_vaccination, $_client_id, $_created_diff, $_updated_diff): bool
+    {
+
+        $_abs_created_diff = abs($_created_diff);
+        $_abs_updated_diff = abs($_updated_diff);
+        if (empty($_vaccination->source_created_at) || empty($_vaccination->source_updated_at)) {
+            return true;
+        } else if (($_updated_diff >= 2) && ($_created_diff <= 2) && ($_created_diff >= -2) && ($_vaccination->client_id == $_client_id)) {
+            return true; 
+        } else if ((($_abs_created_diff >= 7198) && ($_abs_created_diff <=7202)) || 
+                  (($_abs_updated_diff >= 7198) && ($_abs_updated_diff <=7202))) { //This block is to cater for 2 hours timezone differences betweent the two servers
+            return true;
+        }
+        return false;
+    }
+
     public function assignCommonVaccinationFields($_vaccination, $_event, $_facility_id): ? Vaccination
     {
         $_vaccination->date = $_event['eventDate'];
