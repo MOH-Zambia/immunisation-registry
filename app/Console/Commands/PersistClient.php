@@ -29,7 +29,7 @@ class PersistClient
         if (empty($_client->source_created_at) || empty($_client->source_updated_at)) {
             return true;
         } else if (($_updated_diff >= 2) && 
-                  ((($created_at_timestamps_difference <= 2) && ($created_at_timestamps_difference >= -2)) || 
+                  ((($_created_diff <= 2) && ($_created_diff >= -2)) || 
                   ($_tracked_entity_uid == $_client->source_id))) {
             return true; 
         } else if ((($_abs_created_diff >= 7198) && ($_abs_created_diff <=7202)) || 
