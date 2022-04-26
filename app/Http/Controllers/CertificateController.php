@@ -63,8 +63,7 @@ class CertificateController extends AppBaseController
                     'clients.first_name',
                     'clients.other_names',
                     'certificates.trusted_vaccine_code',
-                    'certificates.created_at',
-                    'certificates.updated_at'
+                    'certificates.created_at'
                 ]);
 
             return Datatables::of($certificates)
