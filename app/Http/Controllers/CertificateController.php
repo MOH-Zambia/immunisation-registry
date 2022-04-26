@@ -57,8 +57,8 @@ class CertificateController extends AppBaseController
             $certificates = Certificate::join('clients', 'certificates.client_id', '=', 'clients.id')
                 ->select([
                     'certificates.id',
-                    'certificates.certificate_uuid',
                     'clients.NRC',
+                    'clients.passport_number',
                     'clients.last_name',
                     'clients.first_name',
                     'clients.other_names',
@@ -74,9 +74,6 @@ class CertificateController extends AppBaseController
                 })
                 ->editColumn('created_at', function ($request) {
                     return $request->created_at->format('Y-m-d');
-                })
-                ->editColumn('updated_at', function ($request) {
-                    return $request->updated_at->format('Y-m-d');
                 })
                 ->rawColumns(['action'])
                 ->make(true);
