@@ -40,11 +40,11 @@
                 <table class="table" id="certificates-table">
                     <thead>
                         <tr>
-                            <th>NRC</th>
-                            <th>Passport</th>
                             <th>Last Name</th>
                             <th>First Name</th>
                             <th>Other Names</th>
+                            <th>NRC</th>
+                            <th>Passport</th>
                             <th>Trusted Vaccine Code</th>
                             <th>Created At</th>
                             <th>Action</th>
@@ -72,14 +72,6 @@
                 ajax: "{{ route('certificates.datatable') }}",
                 columns: [
                     {
-                        data: 'NRC',
-                        name: 'clients.NRC'
-                    },
-                    {
-                        data: 'passport_number',
-                        name: 'clients.passport_number'
-                    },
-                    {
                         data: 'last_name',
                         name: 'clients.last_name'
                     },
@@ -90,6 +82,14 @@
                     {
                         data: 'other_names',
                         name: 'clients.other_names'
+                    },
+                    {
+                        data: 'NRC',
+                        name: 'clients.NRC'
+                    },
+                    {
+                        data: 'passport_number',
+                        name: 'clients.passport_number'
                     },
                     {
                         data: 'trusted_vaccine_code',
