@@ -6,6 +6,9 @@
             thead {
                 background-color: #04AA6D;
             }
+            .capitalize-text {
+                text-transform: capitalize; 
+            }
         </style>
     </head>
     <body>
@@ -36,9 +39,9 @@
                             <b>Certificate UUID</b> {{ $certificate->certificate_uuid }}<br>
                             <b>Trusted Vaccine Code:</b> {{ $certificate->trusted_vaccine_code }}<br>
                             <br>
-                            <b>Last Name:</b> {{ $certificate->client['last_name'] }}<br>
-                            <b>First Name:</b> {{ $certificate->client['first_name'] }}<br>
-                            <b>Other Names:</b> {{ $certificate->client['other_names'] }}<br>
+                            <b>Last Name:</b> <span class="capitalize-text">{{ $certificate->client['last_name'] }}</span><br>
+                            <b>First Name:</b> <span class="capitalize-text">{{ $certificate->client['first_name'] }}</span><br>
+                            <b>Other Names:</b> <span class="capitalize-text">{{ $certificate->client['other_names'] }}</span><br>
                             <b>NRC:</b> {{ $certificate->client['NRC'] }}<br>
                             <b>Passport Number:</b> {{ $certificate->client['passport_number'] }}<br>
                             <b>Sex:</b> {{ $certificate->client['sex'] }}<br>

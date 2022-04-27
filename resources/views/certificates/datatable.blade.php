@@ -15,6 +15,9 @@
         #certificates-table_wrapper {
             padding: 10px;
         }
+        .capitalize-text {
+            text-transform: capitalize; 
+        }
     </style>
 @endpush
 
@@ -73,15 +76,18 @@
                 columns: [
                     {
                         data: 'last_name',
-                        name: 'clients.last_name'
+                        name: 'clients.last_name',
+                        class: 'capitalize-text'
                     },
                     {
                         data: 'first_name',
-                        name: 'clients.first_name'
+                        name: 'clients.first_name',
+                        class: 'capitalize-text'
                     },
                     {
                         data: 'other_names',
-                        name: 'clients.other_names'
+                        name: 'clients.other_names',
+                        class: 'capitalize-text'
                     },
                     {
                         data: 'NRC',
