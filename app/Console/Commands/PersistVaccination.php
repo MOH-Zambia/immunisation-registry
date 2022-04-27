@@ -31,7 +31,7 @@ class PersistVaccination
         } else if (($_updated_diff >= 2) && ($_created_diff <= 2) && ($_created_diff >= -2) && ($_vaccination->client_id == $_client_id)) {
             return true; 
         } else if ((($_abs_created_diff >= 7198) && ($_abs_created_diff <=7202)) || 
-                  (($_abs_updated_diff >= 7198) && ($_abs_updated_diff <=7202))) { //This block is to cater for 2 hours timezone differences betweent the two servers
+                  (($_abs_updated_diff >= 7198) && ($_abs_updated_diff <=7202))) { //This block is to cater for 2 hours timezone differences between the two servers
             return true;
         }
         return false;

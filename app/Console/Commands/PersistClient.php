@@ -33,7 +33,7 @@ class PersistClient
                   ($_tracked_entity_uid == $_client->source_id))) {
             return true; 
         } else if ((($_abs_created_diff >= 7198) && ($_abs_created_diff <=7202)) || 
-                  (($_abs_updated_diff >= 7198) && ($_abs_updated_diff <=7202))) { //This block is to cater for 2 hours timezone differences betweent the two servers
+                  (($_abs_updated_diff >= 7198) && ($_abs_updated_diff <=7202))) { //This block is to cater for 2 hours timezone differences between the two servers
             return true;
         }
         return false;
