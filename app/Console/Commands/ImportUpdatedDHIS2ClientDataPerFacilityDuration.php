@@ -131,7 +131,6 @@ class ImportUpdatedDHIS2ClientDataPerFacilityDuration extends Command
                                 $total_skipped_clients++;
                                 $time = date('Y-m-d H:i:s');
                                 $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$tracked_entity_instance_uid}, <comment>because Client currently does not have existing records on the destination platform!</comment>");
-                                continue;
                             } else {
                                 $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
                                 $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($client->source_updated_at, $tracked_entity_instance['lastUpdated']);
