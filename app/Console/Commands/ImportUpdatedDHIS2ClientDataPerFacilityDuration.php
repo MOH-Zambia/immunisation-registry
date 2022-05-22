@@ -114,6 +114,7 @@ class ImportUpdatedDHIS2ClientDataPerFacilityDuration extends Command
                         $tracked_entity_instance_uid = $tracked_entity_instance['trackedEntityInstance'];
 
                         if ($tracked_entity_instance['inactive'] == true || $tracked_entity_instance['deleted'] == true) {
+                            $total_skipped_clients++;
                             $time = date('Y-m-d H:i:s');
                             $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$tracked_entity_instance_uid}, <comment>because Client is either INACTIVE | DELETED!</comment>");
                             continue;
