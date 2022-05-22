@@ -34,7 +34,9 @@ class Kernel extends ConsoleKernel
         // $schedule->command("command:ImportDHIS2Data $startDate $endDate")->daily();
         $schedule->command("command:GenerateVaccinationCertificates")->daily()->at("06:00");
         // $schedule->command("command:ImportDHIS2DataPerFacility $startDate $endDate $facilityDhis2Uid")->daily()->at("12:00");
-        $schedule->command("command:ImportUpdatedDHIS2Data")->daily()->at("01:00");
+        $schedule->command("command:ImportUpdatedDHIS2Data")->daily()->at("04:00");
+        $schedule->command("command:ImportUpdatedDHIS2ClientData")->daily()->at("00:00");
+        
     }
 
     /**
