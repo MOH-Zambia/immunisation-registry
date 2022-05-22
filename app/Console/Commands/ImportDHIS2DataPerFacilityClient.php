@@ -259,7 +259,7 @@ class ImportDHIS2DataPerFacilityClient extends Command
         } else {
             $time = date('Y-m-d H:i:s');
             Log::error("$time Facility with DHIS2 UID: {$facilityDhis2Uid}, NOT FOUND. UID is Invalid or Does Not Exist!");
-            $this->getOutput()->writeln("$time <error>Facility with DHIS2 UID: {$facilityDhis2Uid}, NOT FOUND. UID is Invalid or Does Not Exist!");
+            $this->getOutput()->writeln("$time <error>Facility with DHIS2 UID: {$facilityDhis2Uid}, NOT FOUND. UID is Invalid or Does Not Exist!</error>");
         }
 
         return array($total_number_of_saved_events, $total_number_of_events, $total_number_of_updated_events);
