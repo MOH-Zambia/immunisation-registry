@@ -127,6 +127,7 @@ class ImportDHIS2DataPerFacility extends Command
                                 'program' => 'yDuAzyqYABS',
                                 'startDate' => $startDate,
                                 'endDate' => $endDate,
+                                'fields' => '*',
                                 'page' => $i,
                                 'pageSize' => 100,
                                 'skipMeta' => true

@@ -103,6 +103,7 @@ class ImportDHIS2Data extends Command
                             'program' => 'yDuAzyqYABS',
                             'startDate' => $startDate,
                             'endDate' => $endDate,
+                            'fields' => '*',
                             'totalPages' => true
                         ]
                     ]);
@@ -119,6 +120,7 @@ class ImportDHIS2Data extends Command
                                     'program' => 'yDuAzyqYABS',
                                     'startDate' => $startDate,
                                     'endDate' => $endDate,
+                                    'fields' => '*',
                                     'page' => $i,
                                 ]
                             ]);
