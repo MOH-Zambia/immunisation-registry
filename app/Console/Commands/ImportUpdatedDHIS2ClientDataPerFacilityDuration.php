@@ -122,7 +122,6 @@ class ImportUpdatedDHIS2ClientDataPerFacilityDuration extends Command
 
                         try {
                             $startTime = microtime(true);
-                            //Initialise transaction
                             DB::beginTransaction();
 
                             $client = Client::where('source_id', $tracked_entity_instance_uid)->first();
@@ -135,7 +134,7 @@ class ImportUpdatedDHIS2ClientDataPerFacilityDuration extends Command
                                 $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
                                 $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($client->source_updated_at, $tracked_entity_instance['lastUpdated']);
 
-                                if ($persistClient->shouldUpdate($client, $tracked_entity_instance, $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
+                                if ($persistClient->shouldUpdate($client, $tracked_entity_instance_uid, $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
                                     //get the existing record
                                     $old_client_side_record = Record::where('record_id', $client->source_id)->first();
 
