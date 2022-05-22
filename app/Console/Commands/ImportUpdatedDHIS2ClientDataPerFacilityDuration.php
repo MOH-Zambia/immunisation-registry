@@ -233,20 +233,8 @@ class ImportUpdatedDHIS2ClientDataPerFacilityDuration extends Command
         Log::info("$script_start_date_time: Loading Updated Client Data from DHIS2 Covax Instance");
         $this->getOutput()->writeln("<info>$script_start_date_time Script started - Loading Updated Client Data from DHIS2 Covax Instance</info>");
 
-        if (empty($this->argument('startDate'))) {
-            $this->getOutput()->writeln("<info>Start Date was not passed in</info>");
-            $startDate = date('Y-m-d',strtotime("yesterday"));
-        } else {
-            $startDate = $this->argument('startDate');
-        }
-
-        if (empty($this->argument('endDate'))) {
-            $this->getOutput()->writeln("<info>End Date was not passed in</info>");
-            $endDate = date('Y-m-d');
-        } else {
-            $endDate = $this->argument('endDate');
-        }
-
+        $startDate = $this->argument('startDate');
+        $endDate = $this->argument('endDate');
         $facilityDhis2Uid = $this->argument('facilityDhis2Uid');
 
         $results = self::loadEvents($startDate, $endDate, $facilityDhis2Uid);
