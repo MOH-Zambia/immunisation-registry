@@ -112,7 +112,7 @@ class ImportDHIS2Data extends Command
                         $pageCount = $response_body['pager']['pageCount'];
 
                         for ($i = 1; $i <= $pageCount; $i++) {
-                            $response = $httpClient->request('GET', env('DHIS2_BASE_URL') . "events.json", [
+                            $response = $httpClient->request('GET', env('DHIS2_BASE_URL')."events.json", [
                                 'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
                                 'query' => [
                                     'orgUnit' => $facility->DHIS2_UID,

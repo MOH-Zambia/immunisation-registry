@@ -103,6 +103,7 @@ class ImportDHIS2DataPerFacility extends Command
                         'startDate' => $startDate,
                         'endDate' => $endDate,
                         'totalPages' => true,
+                        'fields' => '*',
                         'pageSize' => 100
                     ]
                 ]);

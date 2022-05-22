@@ -101,6 +101,7 @@ class ImportDHIS2DataPerFacilityClient extends Command
                         'orgUnit' => $facility->DHIS2_UID,
                         'program' => 'yDuAzyqYABS',
                         'trackedEntityInstance' => $clientUid,
+                        'fields' => '*',
                         'skipPaging' => true,
                     ]
                 ]);

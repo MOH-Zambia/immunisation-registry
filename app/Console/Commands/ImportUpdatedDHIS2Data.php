@@ -104,6 +104,7 @@ class ImportUpdatedDHIS2Data extends Command
                             'program' => 'yDuAzyqYABS',
                             'lastUpdatedStartDate' => $startDate,
                             'lastUpdatedEndDate' => $endDate,
+                            'fields' => '*',
                             'skipPaging' => true,
                             'skipMeta' => true
                         ]
