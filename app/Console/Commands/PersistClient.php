@@ -101,7 +101,7 @@ class PersistClient
         $_client->update(); //Update client info
 
         $_time = date('Y-m-d H:i:s');
-        self::$output->writeln("{$_time} <info>UPDATED Client ID Number:</info> {$_client->id} <info>UID:</info> {$_client->source_id} <info>First Name:</info> {$_client->first_name} <info>Surname:</info> {$_client->last_name} <info>DOB:</info> {$_client->date_of_birth} <info>Sex:</info> {$_client->sex} <info>Created At:</info> {$_client->source_created_at} <info>Facility:</info> {$_client->facility_id}");
+        self::$output->writeln("{$_time} <info>UPDATED Client ID Number:</info> {$_client->id} <info>UID:</info> {$_client->source_id} <info>First Name:</info> {$_client->first_name} <info>Surname:</info> {$_client->last_name} <info>DOB:</info> {$_client->date_of_birth} <info>Sex:</info> {$_client->sex} <info>Created At:</info> {$_client->source_created_at} <info>Updated At:</info> {$_client->source_updated_at} <info>Facility:</info> {$_client->facility_id}");
 
         return $_client;
     }
