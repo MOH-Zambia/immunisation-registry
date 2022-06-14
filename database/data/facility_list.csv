@@ -1,4 +1,4 @@
-province,district,name,HMIS_code,DHIS2_UID,smartcare_GUID,eLMIS_ID,iHRIS_ID,location,ownership,facility_type,longitude,latitude,catchment_population_head_count,catchment_population_cso,operation_status
+Province,District,Name,HMIS_code,DHIS2_UID,smartcare_GUID,eLMIS_ID,iHRIS_ID,location,ownership,facility_type,longitude,latitude,catchment_population_head_count,catchment_population_cso,operation_status
 Central,Chibombo,Chamakubi Health Post,10010001,pXhz0PLiYZX,7b46450b78a04a1db64c0fc9bb014773,,facility|1,Rural,GRZ,Health Post,27.64199073,-14.79990288,6624,6624,Operational
 Central,Chibombo,Chibombo Rural Health Centre,10010002,di3U5u7F8Y3,76204ada31e44ef68c5327a5f376f970,,facility|2,Rural,GRZ,Rural Health Centre,28.07594009,-14.6638325,16000,14056,Operational
 Central,Chibombo,Chikobo Rural Health Centre,10010003,B5LpoYehUfI,1fd3ff553f82482887ed9f6ad963636f,,facility|3,Rural,GRZ,Rural Health Centre,28.05468418,-14.77719348,12601,6834,Operational
@@ -3293,7 +3293,7 @@ Southern,Mazabuka,Hillside Health Center Urban,,wkKM5lwl49a,,,,,GRZ,Urban Health
 Southern,Namwala,Namankubaula Health Post,,bGX8etC0E8b,,,,,GRZ,Health Post,,,,,Operational
 Southern,Pemba,Mayasanino Health Post,,Rw3Vl2ZYqM7,,,,,GRZ,Health Post,,,,,Operational
 Southern,Pemba,Michelo Rural Health Post,,Po2SILSShT9,,,,,GRZ,Rural Health Centre,,,,,Operational
-Southern,Pemba,Moyo Mini Hospital,,bBnY5idPQo9,,,,,,,,,,,Operational
+Southern,Pemba,Moyo Mini Hospital,,bBnY5idPQo9,,,,,GRZ,,,,,,Operational
 Southern,Pemba,Munyama Health Post,,yF5TJqmZ1o1,,,,,GRZ,Health Post,,,,,Operational
 Southern,Siavonga,Dibbwi Health Post,,sCS5roVV1Zg,,,,,GRZ,Health Post,,,,,Operational
 Southern,Siavonga,Fishing Camps Health Post,,R1sICBGplhG,,,,,GRZ,Health Post,,,,,Operational
@@ -3321,5 +3321,5 @@ Western,Nkeyema,Nkeyema Zonal Rural Health Centre,,S4UxNw6bAJX,,,,,GRZ,Rural Hea
 Western,Sesheke,Katima Mulilo Mini Hospital,,GuzNia9SGEi,,,,,,,,,,,Operational
 Western,Sesheke,Walawala Rural Health Post,,S7hTuimadqP,,,,,GRZ,Rural Health Centre,,,,,Operational
 Western,Sikongo,Sikongo Rural Health Centre,,ASnusR9MFtb,,,,,GRZ,Rural Health Centre,22.1525,-15.0342,,,Operational
-Western,Sioma,Kalenge,,Pnhix2KnWuM,,,,,,,,,,,Operational
+Western,Sioma,Kalenge Health Post,,Pnhix2KnWuM,,,,,,,,,,,Operational
 Western,Sioma,Nangweshi Mini Hospital,,wAN3mRqt6az,,,,,,,,,,,Operational
