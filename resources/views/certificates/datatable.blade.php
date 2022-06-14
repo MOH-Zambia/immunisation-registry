@@ -77,40 +77,33 @@
                     {
                         data: 'last_name',
                         name: 'clients.last_name',
-                        class: 'capitalize-text',
-                        searchable: false
+                        class: 'capitalize-text'
                     },
                     {
                         data: 'first_name',
                         name: 'clients.first_name',
-                        class: 'capitalize-text',
-                        searchable: false
+                        class: 'capitalize-text'
                     },
                     {
                         data: 'other_names',
                         name: 'clients.other_names',
-                        class: 'capitalize-text',
-                        searchable: false
+                        class: 'capitalize-text'
                     },
                     {
                         data: 'NRC',
-                        name: 'clients.NRC',
-                        orderable: false
+                        name: 'clients.NRC'
                     },
                     {
                         data: 'passport_number',
-                        name: 'clients.passport_number',
-                        orderable: false
+                        name: 'clients.passport_number'
                     },
                     {
                         data: 'trusted_vaccine_code',
-                        name: 'certificates.trusted_vaccine_code',
-                        searchable: false
+                        name: 'certificates.trusted_vaccine_code'
                     },
                     {
                         data: 'created_at',
-                        name: 'certificates.created_at',
-                        searchable: false
+                        name: 'certificates.created_at'
                     },
                     {
                         data: 'action',
