@@ -77,17 +77,17 @@
                     {
                         data: 'last_name',
                         name: 'clients.last_name',
-                        class: 'capitalize-text'
+                        searchable: false
                     },
                     {
                         data: 'first_name',
                         name: 'clients.first_name',
-                        class: 'capitalize-text'
+                        searchable: false
                     },
                     {
                         data: 'other_names',
                         name: 'clients.other_names',
-                        class: 'capitalize-text'
+                        searchable: false
                     },
                     {
                         data: 'NRC',
