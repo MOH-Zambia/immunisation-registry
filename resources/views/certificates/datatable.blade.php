@@ -99,11 +99,13 @@
                     },
                     {
                         data: 'trusted_vaccine_code',
-                        name: 'certificates.trusted_vaccine_code'
+                        name: 'certificates.trusted_vaccine_code',
+                        searchable: false
                     },
                     {
                         data: 'created_at',
-                        name: 'certificates.created_at'
+                        name: 'certificates.created_at',
+                        searchable: false
                     },
                     {
                         data: 'action',
