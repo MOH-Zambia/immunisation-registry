@@ -37,17 +37,6 @@ class CertificateController extends AppBaseController
      */
     public function index(Request $request)
     {
-        $certificates = $this->certificateRepository->paginate(50);
-
-        // User role
-        $role = Auth::user()->role['name'];
-
-        if($role == 'Authenticated User') {
-            $certificates = $this->certificateRepository->paginate(50, ['client_id' => Auth::user()->client['id']]);
-            return view('certificates.index')
-                ->with('certificates', $certificates);
-        }
-
         return view('certificates.datatable');
     }
 
@@ -64,7 +53,7 @@ class CertificateController extends AppBaseController
                     'clients.other_names',
                     'certificates.trusted_vaccine_code',
                     'certificates.created_at'
-                ]);
+                ])->orderBy('certificates.id', 'DESC')->limit(50);
 
             return Datatables::of($certificates)
                 ->addIndexColumn()
@@ -75,7 +64,8 @@ class CertificateController extends AppBaseController
                     return $request->created_at->format('Y-m-d');
                 })
                 ->rawColumns(['action'])
-                ->make(true);
+                // ->make(true);
+                ->toJson();
         }
     }
 

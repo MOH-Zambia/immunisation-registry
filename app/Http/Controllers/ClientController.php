@@ -34,11 +34,6 @@ class ClientController extends AppBaseController
      */
     public function index(Request $request)
     {
-//        $clients = $this->clientRepository->paginate(50);
-
-//        return view('clients.index')
-//            ->with('clients', $clients);
-
         return view('clients.datatable');
     }
 
@@ -56,7 +51,7 @@ class ClientController extends AppBaseController
             'sex',
             'contact_number',
             'contact_email_address'
-        ]);
+        ])->orderBy('id', 'DESC')->limit(50);
 
         return Datatables::of($clients)
             ->addIndexColumn()
