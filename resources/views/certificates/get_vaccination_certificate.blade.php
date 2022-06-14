@@ -117,10 +117,10 @@
                     </div>
 
                     <div class="code_group">
-                        <input id="code1" type="text" class="form-control" placeholder="0">
-                        <input id="code2" type="text" class="form-control" placeholder="0">
-                        <input id="code3" type="text" class="form-control" placeholder="0">
-                        <input id="code4" type="text" class="form-control" placeholder="0">
+                        <input id="code1" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code2)" maxlength=1 >
+                        <input id="code2" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code3)" maxlength=1>
+                        <input id="code3" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code2, code4)" maxlength=1>
+                        <input id="code4" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code3, finish)" maxlength=1>
                     </div>
 
                     <button type="button" class="action-button previous previous_button">Back</button>
@@ -459,6 +459,33 @@
         phoneNoselect ();
         nice_Select ();
     })(jQuery);
+
+    function numericValuesOnly(elmnt){
+        elmnt.value = elmnt.value.replace(/[^0-9.]/g, '').replace(/(\..*)\./g, '$1')
+    }
+
+    window.onload = function() {
+        document.getElementById('code1').value = '';
+        document.getElementById('code2').value = '';
+        document.getElementById('code3').value = '';
+        document.getElementById('code4').value = '';
+    }
+    
+    function autotab(original, destPrev, destNext){
+        var key = event.key
+        if (original.getAttribute && original.value.length==original.getAttribute("maxlength")) {
+            // if (key === "Backspace" || key === "Delete") {
+            //     original.value = '';
+            //     destPrev.focus()
+            // } else {
+            //     destNext.value = '';
+            //     destNext.focus()
+            // }
+            destNext.value = '';
+            destNext.focus()
+        }
+    }
+
 </script>
 
 </body>

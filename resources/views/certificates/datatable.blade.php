@@ -40,7 +40,7 @@
 
         <div class="card">
             <div class="card-body p-0">
-                <table class="table" id="certificates-table">
+                <table class="table" id="certificates-table" data-page-length='25'>
                     <thead>
                         <tr>
                             <th>Last Name</th>
