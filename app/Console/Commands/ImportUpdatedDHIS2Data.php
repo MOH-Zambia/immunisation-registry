@@ -264,8 +264,8 @@ class ImportUpdatedDHIS2Data extends Command
             }
 
             $time = date('Y-m-d H:i:s');
-            $this->getOutput()->writeln("{$time} <info>Funished loading updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}, <info>Number of Events:</info> {$number_of_events}");
-            Log::info("$time Info: <info>Funished loading updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}, <info>Number of Events:</info> {$number_of_events}");
+            $this->getOutput()->writeln("{$time} <info>Finished loading updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}, <info>Number of Events:</info> {$number_of_events}");
+            Log::info("$time Info: <info>Finished loading updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}, <info>Number of Events:</info> {$number_of_events}");
         } //End foreach($facilities as $facility)
 
         return array($total_number_of_saved_events, $total_number_of_events, $total_number_of_updated_events, $number_of_saved_clients, $number_of_updated_clients);
