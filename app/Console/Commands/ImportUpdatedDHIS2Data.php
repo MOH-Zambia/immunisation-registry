@@ -77,7 +77,7 @@ class ImportUpdatedDHIS2Data extends Command
         parent::__construct();
     }
 
-    public function loadEvents($startDate, $endDate): array
+    public function loadEvents($startDate, $endDate, $filename): array
     {
         $httpClient = new GuzzleHttp\Client();
         $utility = new Utilities();
@@ -86,18 +86,48 @@ class ImportUpdatedDHIS2Data extends Command
         $persistVaccination = new PersistVaccination();
 
         $facilities = Facility::all(); //Get all facilities from database
+        // $facilities = Facility::inRandomOrder()->limit(5)->get(); //Get (n) random number of facilities from database FOR TESTING
         $total_number_of_events = 0; //Total events counter
         $number_of_saved_clients = 0; //Total clients counter
         $total_number_of_saved_events = 0; //Saved events counter
         $number_of_updated_clients = 0; //Updated clients counter
         $total_number_of_updated_events = 0; //Updated events counter
 
+        $facilities_import_summaries = [];
+
+        $total_facilities_with_updated_data = 0; //Total number of DHIS2 facilities with changes loaded into IR
+        
+        $import_summary_file = fopen($filename, "w");
+
+        $heading = "Import Summary per Facility of Imported DHIS2 Data, Start Date: " . $startDate . ", End Date: " . $endDate . "\n\n";
+        $process_details = "Fetching data from a total of : " . count($facilities) . " facilities\n";
+        $intro = "Process started at : " . date('Y-m-d H:i:s') . "\n\n";
+        fwrite($import_summary_file, $heading . $process_details . $intro );
+
         foreach($facilities as $facility) {
             $number_of_events = 0;
-            $time = date('Y-m-d H:i:s');
-            $this->getOutput()->writeln("{$time} <info>Loading Updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}");
-            Log::info("$time Info: <info>Loading Updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}");
+
+            $_total_number_of_events = 0; //Total events counter
+            $_number_of_saved_clients = 0; //Total clients counter
+            $_number_of_updated_clients = 0; //Updated clients counter
+            $_total_number_of_saved_events = 0; //Saved events counter
+            $_total_number_of_updated_events = 0; //Updated events counter
+
             if(!empty($facility->DHIS2_UID)) {
+                
+                $facility_import_summary = array (
+                    "FacilityUID" => $facility->DHIS2_UID,
+                    "FacilityName" => $facility->name,
+                    "NewEvents" => $_total_number_of_saved_events,
+                    "UpdatedEvents" => $_total_number_of_updated_events,
+                    "NewClients" => $_number_of_saved_clients,
+                    "UpdatedClients" => $_number_of_updated_clients
+                ); //Array as a dictionary
+
+                $time = date('Y-m-d H:i:s');
+                $this->getOutput()->writeln("{$time} <info>Loading Updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}");
+                Log::info("$time Info: <info>Loading Updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}");
+
                 try {
                     $response = $httpClient->request('GET', env('DHIS2_BASE_URL')."events.json", [
                         'auth' => [env('DHIS2_USERNAME'), env('DHIS2_PASSWORD')],
@@ -116,7 +146,9 @@ class ImportUpdatedDHIS2Data extends Command
                         $response_body = json_decode($response->getBody(), true);
                         foreach ($response_body['events'] as $event) {
                             $number_of_events++;
-                            $total_number_of_events++;
+                            
+                            $_total_number_of_events++;
+
                             $event_uid = $event['event'];
     
                             if ($event['status'] == "SCHEDULE" || $event['status'] == "SKIPPED" || $event['status'] == "OVERDUE") {
@@ -143,7 +175,9 @@ class ImportUpdatedDHIS2Data extends Command
                                     $new_client_side_record = $persistRecord->saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
     
                                     $client = $persistClient->saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
-                                    $number_of_saved_clients++;
+
+                                    $_number_of_saved_clients++;
+
                                 } else {
                                     $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
                                     $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($client->source_updated_at, $tracked_entity_instance['lastUpdated']);
@@ -156,7 +190,9 @@ class ImportUpdatedDHIS2Data extends Command
     
                                         //probably an if statement here
                                         $client = $persistClient->updateClient($client, $tracked_entity_instance, $facility->id);
-                                        $number_of_updated_clients++;
+
+                                        $_number_of_updated_clients++;
+                                        
                                     } else {
                                         $time = date('Y-m-d H:i:s');
                                         $this->getOutput()->writeln("{$time} <comment>SKIPPING Client UID:</comment> {$client->source_id}, <comment>as record is still upto date</comment>");
@@ -176,8 +212,9 @@ class ImportUpdatedDHIS2Data extends Command
                                         $updated_event_side_record = $persistRecord->updateRecord($old_event_side_record, $event);
     
                                         $vaccination = $persistVaccination->updateVaccination($vaccination, $event, $facility->id);
-    
-                                        $total_number_of_updated_events++;
+
+                                        $_total_number_of_updated_events++;
+
                                         $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                         $time = date('Y-m-d H:i:s');
                                         $this->getOutput()->writeln("{$time} <info>UPDATING Event total:</info> {$total_number_of_events} ({$runTime}ms), <info>Event UID :</info> {$event_uid}");
@@ -190,8 +227,7 @@ class ImportUpdatedDHIS2Data extends Command
                                     $new_event_side_record = $persistRecord->saveRecord($event_uid, 'EVENT', $event);
                                     //Store new client, record and event data in the vaccination table
                                     $vaccination = $persistVaccination->saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
-    
-                                    $total_number_of_saved_events++;
+                                    $_total_number_of_saved_events++;
                                     $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                     $event = json_encode($event, JSON_UNESCAPED_SLASHES);
                                     $time = date('Y-m-d H:i:s');
@@ -259,14 +295,39 @@ class ImportUpdatedDHIS2Data extends Command
             } else {
                 $time = date('Y-m-d H:i:s');
 
-                Log::error("$time Facility with DHIS2 UID: {$$facility->DHIS2_UID}, NOT FOUND. UID is Invalid or Does Not Exist!");
-                $this->getOutput()->writeln("$time <error>Facility with DHIS2 UID: {$$facility->DHIS2_UID}, NOT FOUND. UID is Invalid or Does Not Exist!");
+                Log::error("$time Facility NOT FOUND. UID is Invalid or Does Not Exist!");
+                $this->getOutput()->writeln("$time <error>Facility NOT FOUND. UID is Invalid or Does Not Exist!");
             }
+
+            if ($_total_number_of_saved_events > 0 || $_total_number_of_updated_events > 0 || $_number_of_saved_clients > 0 || $_number_of_updated_clients > 0)
+            {
+                $total_facilities_with_updated_data++;
+            }
+
+            $total_number_of_saved_events += $_total_number_of_saved_events;
+            $total_number_of_updated_events += $_total_number_of_updated_events;
+            $number_of_saved_clients += $_number_of_saved_clients;
+            $number_of_updated_clients += $_number_of_updated_clients;
+
+            $facility_import_summary["NewEvents"] = $_total_number_of_saved_events;
+            $facility_import_summary["UpdatedEvents"] = $_total_number_of_updated_events;
+            $facility_import_summary["NewClients"] = $_number_of_saved_clients;
+            $facility_import_summary["UpdatedClients"] = $_number_of_updated_clients;
+
+            $facilities_import_summaries = array_push($facility_import_summary);
+
+            fwrite($import_summary_file, json_encode($facility_import_summary) . "\n");
 
             $time = date('Y-m-d H:i:s');
             $this->getOutput()->writeln("{$time} <info>Finished loading updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}, <info>Number of Events:</info> {$number_of_events}");
             Log::info("$time Info: <info>Finished loading updated DHIS2 Data between Start-Date:</info>{$startDate} <info>and End-Date:</info>{$endDate}<info> from:</info> {$facility->name}, <info>UID:</info> {$facility->DHIS2_UID}, <info>ID:</info> {$facility->id}, <info>Number of Events:</info> {$number_of_events}");
         } //End foreach($facilities as $facility)
+
+        $process_details = "\nLoaded new and updated data from a total of : " . $total_facilities_with_updated_data . " facilities, out a total of : " . count($facilities);
+        $outro = "\nProcess completed SUCCESSFULLY at: " . date('Y-m-d H:i:s');
+        fwrite($import_summary_file, $process_details . $outro);
+
+        fclose($import_summary_file);
 
         return array($total_number_of_saved_events, $total_number_of_events, $total_number_of_updated_events, $number_of_saved_clients, $number_of_updated_clients);
 
@@ -285,19 +346,12 @@ class ImportUpdatedDHIS2Data extends Command
         Log::info("$script_start_date_time: Loading Updated Data from DHIS2 Covax Instance");
         $this->getOutput()->writeln("<info>$script_start_date_time Script started - Loading Updated Data from DHIS2 Covax Instance</info>");
 
-        // $utility = new Utilities();
-        // $startDate = $this->argument('startDate');
-        // $endDate = $this->argument('endDate');
-
-        // if (!$utility->isDateValid($startDate) || !$utility->isDateValid($endDate)) {
-        //     $startDate = date('Y-m-d',strtotime("yesterday"));
-        //     $endDate = date('Y-m-d');
-        // }
-
         $startDate = date('Y-m-d',strtotime("yesterday"));
         $endDate = date('Y-m-d');
 
-        $results = self::loadEvents($startDate, $endDate);
+        $filename = 'storage/import_summaries/' . 'import_summary_' . $startDate . '_' . $endDate . '.txt';
+
+        $results = self::loadEvents($startDate, $endDate, $filename);
 
         $script_end_time = date('Y-m-d H:i:s');
         $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
