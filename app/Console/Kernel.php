@@ -30,9 +30,9 @@ class Kernel extends ConsoleKernel
         $startDate = "2020-01-01";
         $endDate = date('Y-m-d');
         $facilityDhis2Uid = "HvCdWhbVEvI"; //Chilenje First Level Hospital - Default Facility Picked
-
-        // $schedule->command("command:ImportDHIS2Data $startDate $endDate")->daily();
-        $schedule->command("command:GenerateVaccinationCertificates")->daily()->at("06:00");
+        foreach (['06:00', '11:00', '14:00'] as $cert_gen_time) {
+            $schedule->command("command:GenerateVaccinationCertificates")->daily()->at($cert_gen_time); //->dailyAt($time);
+        }
         // $schedule->command("command:ImportDHIS2DataPerFacility $startDate $endDate $facilityDhis2Uid")->daily()->at("12:00");
         $schedule->command("command:ImportUpdatedDHIS2Data")->daily()->at("01:30");
         $schedule->command("command:ImportUpdatedDHIS2ClientData")->daily()->at("22:00");
