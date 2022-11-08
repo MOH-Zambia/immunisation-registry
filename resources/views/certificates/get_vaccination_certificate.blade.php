@@ -117,10 +117,10 @@
                     </div>
 
                     <div class="code_group">
-                        <input id="code1" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code2)" maxlength=1 >
-                        <input id="code2" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code3)" maxlength=1>
-                        <input id="code3" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code2, code4)" maxlength=1>
-                        <input id="code4" type="text" class="form-control" placeholder="0" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code3, finish)" maxlength=1>
+                        <input id="code1" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code2)" maxlength=1 >
+                        <input id="code2" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code3)" maxlength=1>
+                        <input id="code3" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code2, code4)" maxlength=1>
+                        <input id="code4" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code3, finish)" maxlength=1>
                     </div>
 
                     <button type="button" class="action-button previous previous_button">Back</button>
