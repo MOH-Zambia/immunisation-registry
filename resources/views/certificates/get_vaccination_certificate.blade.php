@@ -86,7 +86,7 @@
                     <h3>Select verification method</h3>
                     <select id="verification_method" class="product_select mb-xl-5">
                         <option value="phone" data-display="By Phone">By Phone</option>
-                        <option value="email">By Email</option>
+                        <!-- <option value="email">By Email</option> --> <!-- Option omitted, email verification broken -->
                     </select>
 
                     <div id="verification_method_phone" class="row">
