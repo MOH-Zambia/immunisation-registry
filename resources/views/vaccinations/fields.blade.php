@@ -111,9 +111,3 @@
     {!! Form::label('event_id', 'Event Id:') !!}
     {!! Form::text('event_id', null, ['class' => 'form-control','maxlength' => 255,'maxlength' => 255]) !!}
 </div>
-
-<!-- Record Id Field -->
-<div class="form-group col-sm-6">
-    {!! Form::label('record_id', 'Record Id:') !!}
-    {!! Form::number('record_id', null, ['class' => 'form-control']) !!}
-</div>

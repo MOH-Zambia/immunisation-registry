@@ -107,17 +107,6 @@ class UpdateTrackedEntityInstances extends Command
                         $time = date('Y-m-d H:i:s');
                         $this->getOutput()->writeln("<info>$time Updating TRACKED_ENTITY_INSTANCE: </info>{$trackedEntityInstance['trackedEntityInstance']}");
 
-                        //Store data in record table
-                        $record = new Record([
-                            'record_id' => $client->source_id,
-                            'data_source' => 'MOH_DHIS2_COVAX',
-                            'data_type' => 'TRACKED_ENTITY_INSTANCE',
-                            'hash' => sha1(json_encode($trackedEntityInstance)),
-                            'data' => json_encode($trackedEntityInstance)
-                        ]);
-
-                        $record->save();
-
                         foreach ($trackedEntityInstance['attributes'] as $attribute) {
                             if ($attribute['attribute'] == 'zUQCBnWbBer') //Attribute ID for Card Number
                                 $client->card_number = $attribute['value'];

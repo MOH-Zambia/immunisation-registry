@@ -30,8 +30,7 @@ class VaccinationsRepository extends BaseRepository
         'vaccinating_country_id',
         'certificate_id',
         'facility_id',
-        'event_uid',
-        'record_id'
+        'event_uid'
     ];
 
     /**

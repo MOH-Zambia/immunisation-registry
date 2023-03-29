@@ -63,16 +63,6 @@ class UpdateEvents extends Command
 
                     if ($lastUpdated > $vaccination->source_updated_at) {
                         DB::beginTransaction();
-                        //Store data in record table
-                        $record = new Record([
-                            'record_id' => $event['event'],
-                            'data_source' => 'MOH_DHIS2_COVAX',
-                            'data_type' => 'EVENT',
-                            'hash' => sha1(json_encode($event)),
-                            'data' => json_encode($event),
-                        ]);
-
-                        $record->save();
 
                         $time = date('Y-m-d H:i:s');
 
@@ -80,7 +70,6 @@ class UpdateEvents extends Command
                             ->writeln("<info>$time Saving event... Event UID: {$event['event']}, TRACKED_ENTITY_INSTANCE: {$event['trackedEntityInstance']}</info>");
 
                         $vaccination->date = $event['eventDate'];
-                        $vaccination->record_id = $record->id;
                         $vaccination->source_updated_at = $event['lastUpdated'];
 
                         switch ($event['programStage']) {

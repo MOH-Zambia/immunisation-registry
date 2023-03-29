@@ -81,7 +81,6 @@ class ImportUpdatedDHIS2Data extends Command
     {
         $httpClient = new GuzzleHttp\Client();
         $utility = new Utilities();
-        $persistRecord = new PersistRecord();
         $persistClient = new PersistClient();
         $persistVaccination = new PersistVaccination();
 
@@ -172,8 +171,6 @@ class ImportUpdatedDHIS2Data extends Command
                                 if (empty($client)) {
                                     //An if statement here perhaps to check if the tracked_entity
                                     $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
-    
-                                    $new_client_side_record = $persistRecord->saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
     
                                     $client = $persistClient->saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
 

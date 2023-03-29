@@ -82,9 +82,3 @@
     <p>{{ $vaccination->event_id }}</p>
 </div>
 
-<!-- Record Id Field -->
-<div class="col-sm-12">
-    {!! Form::label('record_id', 'Record Id:') !!}
-    <p>{{ $vaccination->record_id }}</p>
-</div>
-

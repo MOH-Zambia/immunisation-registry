@@ -28,8 +28,7 @@ class VaccinationRepository extends BaseRepository
         'vaccine_batch_expiration_date',
         'vaccinating_organization_id',
         'vaccinating_country_id',
-        'vaccination_certificate_id',
-        'record_id'
+        'vaccination_certificate_id'
     ];
 
     /**
