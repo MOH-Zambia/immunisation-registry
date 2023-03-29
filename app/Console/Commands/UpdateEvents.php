@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\Record;
 use App\Models\Vaccination;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;

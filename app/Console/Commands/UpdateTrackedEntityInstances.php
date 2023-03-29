@@ -37,7 +37,6 @@ namespace App\Console\Commands;
 
 use App\Models\Client;
 use App\Models\ImportLog;
-use App\Models\Record;
 use GuzzleHttp\Exception\ConnectException;
 use GuzzleHttp\Exception\RequestException;
 use GuzzleHttp\Exception\TransferException;

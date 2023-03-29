@@ -47,7 +47,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use Exception;
 
 use App\Models\Facility;
-use App\Models\Record;
 use App\Models\Client;
 use App\Models\Vaccination;
 
@@ -172,7 +171,7 @@ class ImportUpdatedDHIS2Data extends Command
                                     //An if statement here perhaps to check if the tracked_entity
                                     $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
     
-                                    $client = $persistClient->saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
+                                    $client = $persistClient->saveClient($tracked_entity_instance, $facility->id);
 
                                     $_number_of_saved_clients++;
 
@@ -213,7 +212,7 @@ class ImportUpdatedDHIS2Data extends Command
                                     }
                                 } else {
                                     //Store new client, record and event data in the vaccination table
-                                    $vaccination = $persistVaccination->saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
+                                    $vaccination = $persistVaccination->saveVaccination($event, $client->id, $facility->id);
                                     $_total_number_of_saved_events++;
                                     $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                                     $event = json_encode($event, JSON_UNESCAPED_SLASHES);
