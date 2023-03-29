@@ -117,37 +117,43 @@ class GenerateVaccinationCertificates extends Command
                     ->setOutfile('public/'.$qr_code_path)
                     ->png();
 
-                $qrcode = file_get_contents('public/'.$qr_code_path);
+                if (file_exists('public/'.$qr_code_path)) {
 
-                DB::beginTransaction();
-                try{
-                    //Create new certificate
-                    $certificate = new Certificate();
+                    $qrcode = file_get_contents('public/'.$qr_code_path);
+                    // $this->getOutput()->writeln("{$time} <comment>QR Code (Contents) :</comment> {$qrcode}");
 
-                    $certificate->certificate_uuid = $certificate_uuid;
-                    $certificate->client_id = $vaccination->client_id;
-                    $certificate->target_disease = 'COVID-19';
-                    $certificate->qr_code = $qrcode;
-                    $certificate->qr_code_path = $qr_code_path;
-                    $certificate->certificate_url = $certificate_url;
+                    DB::beginTransaction();
+                    try{
+                        //Create new certificate
+                        $certificate = new Certificate();
 
-                    $certificate->save();
+                        $certificate->certificate_uuid = $certificate_uuid;
+                        $certificate->client_id = $vaccination->client_id;
+                        $certificate->target_disease = 'COVID-19';
+                        $certificate->qr_code = $qrcode;
+                        $certificate->qr_code_path = $qr_code_path;
+                        $certificate->certificate_url = $certificate_url;
 
-                    //Add reference to the certificate in the vaccination table
-                    $vaccination->certificate_id = $certificate->id;
-                    $vaccination->save();
+                        $certificate->save();
 
-                    DB::commit();
+                        //Add reference to the certificate in the vaccination table
+                        $vaccination->certificate_id = $certificate->id;
+                        $vaccination->save();
 
-                    $time = date('Y-m-d H:i:s');
-                    $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
-                    $this->getOutput()->writeln("<info>$time Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
-                } catch (\Exception $e) {
-                    DB::rollback(); //Rollback database transaction if any error occurs
+                        DB::commit();
 
-                    $message = $e->getMessage();
-                    $time = date('Y-m-d H:i:s');
-                    $this->getOutput()->writeln("<error>$time Exception: $message</error>");
+                        $time = date('Y-m-d H:i:s');
+                        $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
+                        $this->getOutput()->writeln("<info>$time Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
+                    } catch (\Exception $e) {
+                        DB::rollback(); //Rollback database transaction if any error occurs
+
+                        $message = $e->getMessage();
+                        $time = date('Y-m-d H:i:s');
+                        $this->getOutput()->writeln("<error>$time Exception: $message</error>");
+                    }
+                } else {
+                    $this->getOutput()->writeln("{$time} <comment>QR Code NOT FOUND : </comment> $qr_code_path}");
                 }
             } else {
                 $time = date('Y-m-d H:i:s');
