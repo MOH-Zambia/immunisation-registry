@@ -37,7 +37,6 @@ namespace App\Console\Commands;
 
 use App\Models\Client;
 use App\Models\Facility;
-use App\Models\Record;
 use Exception;
 use Illuminate\Console\Command;
 
@@ -109,17 +108,6 @@ class BulkLoadTrackedEntityInstances extends Command
                 $client_uid = $row[0];
 
                 if(!empty($facility)) {
-                    //Store data in record table
-                    $record = new Record([
-                        'record_id' => $client_uid,
-                        'data_source' => 'MOH_DHIS2_COVAX',
-                        'data_type' => 'TRACKED_ENTITY_INSTANCE',
-                        'hash' => sha1(json_encode($row)),
-                        'data' => json_encode($row)
-                    ]);
-
-                    $record->save();
-
                     //Create and save new client
                     $client = new Client();
                     $client->client_uid = $client_uid;
@@ -138,7 +126,6 @@ class BulkLoadTrackedEntityInstances extends Command
                     $client->occupation = $row[13];  //Tracked Entity Attribute UID for Occupation
 
                     $client->facility_id = $facility->facility_id;
-                    $client->record_id = $record->id;
 
                     // throw an exception unless the facility could be saved
                     throw_unless($client->save(), new Exception("Failed to save client '$row[2]'"));

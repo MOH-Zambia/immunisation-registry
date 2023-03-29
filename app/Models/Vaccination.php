@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Vaccination",
- *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "record_id", "source_id"},
+ *      required={"client_id", "vaccine_id", "date", "dose_number", "vaccinating_organisation", "vaccinating_country_id", "source_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -85,12 +85,6 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          format="int32"
  *      ),
  *     @SWG\Property(
- *          property="record_id",
- *          description="record_id",
- *          type="integer",
- *          format="int32"
- *      ),
- *     @SWG\Property(
  *          property="source_id",
  *          description="source_id",
  *          type="string",
@@ -154,7 +148,6 @@ class Vaccination extends Model
         'vaccinating_country_id',
         'vaccination_certificate_id',
         'facility_id',
-        'record_id',
         'source_id',
         'source_created_at',
         'source_updated_at'
@@ -180,7 +173,6 @@ class Vaccination extends Model
         'vaccinating_country_id' => 'integer',
         'vaccination_certificate_id' => 'integer',
         'facility_id' => 'integer',
-        'record_id' => 'integer',
         'source_id' => 'string',
     ];
 
@@ -203,7 +195,6 @@ class Vaccination extends Model
         'vaccinating_country_id' => 'required|integer',
         'vaccination_certificate_id' => 'nullable|integer',
         'facility_id' => 'required|integer',
-        'record_id' => 'required|integer',
         'source_id' => 'nullable|string|max:255',
         'source_created_at' => 'nullable',
         'source_updated_at' => 'nullable',
@@ -242,14 +233,6 @@ class Vaccination extends Model
     public function country(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
         return $this->belongsTo(\App\Models\Country::class, 'vaccinating_country_id');
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function record(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(\App\Models\Record::class, 'record_id');
     }
 
     /**

@@ -9,7 +9,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 /**
  * @SWG\Definition(
  *      definition="Client",
- *      required={"source_id", "first_name", "last_name", "sex", "status", "facility_id", "record_id"},
+ *      required={"source_id", "first_name", "last_name", "sex", "status", "facility_id"},
  *      @SWG\Property(
  *          property="id",
  *          description="id",
@@ -154,12 +154,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
  *          type="integer",
  *          format="int32"
  *      ),
- *      @SWG\Property(
- *          property="record_id",
- *          description="record_id",
- *          type="integer",
- *          format="int32"
- *      ),
+
  *     @SWG\Property(
  *          property="source_created_at",
  *          description="source_created_at",
@@ -231,7 +226,6 @@ class Client extends Model
         'next_of_kin_contact_email_address',
         'nationality',
         'facility_id',
-        'record_id',
         'source_created_at',
         'source_updated_at'
     ];
@@ -270,7 +264,6 @@ class Client extends Model
         'next_of_kin_contact_email_address' => 'string',
         'nationality' => 'integer',
         'facility_id' => 'integer',
-        'record_id' => 'integer'
     ];
 
     /**
@@ -305,7 +298,6 @@ class Client extends Model
         'next_of_kin_contact_email_address' => 'nullable|string|max:255',
         'nationality' => 'required|integer',
         'facility_id' => 'required|integer',
-        'record_id' => 'required|integer',
         'source_created_at' => 'nullable',
         'source_updated_at' => 'nullable',
         'created_at' => 'nullable',
@@ -336,14 +328,6 @@ class Client extends Model
     public function user()
     {
         return $this->hasOne(\App\Models\User::class);
-    }
-
-    /**
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
-     **/
-    public function record()
-    {
-        return $this->belongsTo(\App\Models\Record::class, 'record_id');
     }
 
     /**

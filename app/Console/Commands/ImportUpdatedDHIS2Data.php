@@ -165,6 +165,7 @@ class ImportUpdatedDHIS2Data extends Command
                                 //Preliminary assignments
                                 $tracked_entity_instance_uid = $event['trackedEntityInstance'];
                                 $client = Client::where('source_id', $tracked_entity_instance_uid)->first();
+
                                 //Get latest tracked entity instance
                                 $tracked_entity_instance = $utility->getTrackedEntityInstance($httpClient, $tracked_entity_instance_uid);
     
@@ -182,12 +183,7 @@ class ImportUpdatedDHIS2Data extends Command
                                     $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
                                     $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($client->source_updated_at, $tracked_entity_instance['lastUpdated']);
 
-                                    if ($persistClient->shouldUpdate($client, $event['trackedEntityInstance'], $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
-                                        //get the existing record
-                                        $old_client_side_record = Record::where('record_id', $client->source_id)->first();
-    
-                                        $updated_client_side_record = $persistRecord->updateRecord($old_client_side_record,  $tracked_entity_instance);
-    
+                                    if ($persistClient->shouldUpdate($client, $event['trackedEntityInstance'], $created_at_timestamps_difference, $updated_at_timestamps_difference)) {    
                                         //probably an if statement here
                                         $client = $persistClient->updateClient($client, $tracked_entity_instance, $facility->id);
 
@@ -207,10 +203,6 @@ class ImportUpdatedDHIS2Data extends Command
     
                                     //Check for last updated ? Vaccination Update logic kicks in
                                     if ($persistVaccination->shouldUpdate($vaccination, $client->id, $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
-                                        $old_event_side_record = Record::where('record_id', $event_uid)->first();
-                                        //Perhaps an if statement
-                                        $updated_event_side_record = $persistRecord->updateRecord($old_event_side_record, $event);
-    
                                         $vaccination = $persistVaccination->updateVaccination($vaccination, $event, $facility->id);
 
                                         $_total_number_of_updated_events++;
@@ -223,8 +215,6 @@ class ImportUpdatedDHIS2Data extends Command
                                         $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event already exists in the DATABASE!</comment>");
                                     }
                                 } else {
-                                    //Store new even data in record table
-                                    $new_event_side_record = $persistRecord->saveRecord($event_uid, 'EVENT', $event);
                                     //Store new client, record and event data in the vaccination table
                                     $vaccination = $persistVaccination->saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
                                     $_total_number_of_saved_events++;

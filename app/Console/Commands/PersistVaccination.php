@@ -86,12 +86,11 @@ class PersistVaccination
         return $_vaccination;
     }
 
-    public function saveVaccination($_event, $_client_id, $_facility_id, $_record_id): ? Vaccination
+    public function saveVaccination($_event, $_client_id, $_facility_id): ? Vaccination
     {
         $_vaccination = new Vaccination();
 
         $_vaccination->client_id = $_client_id;
-        $_vaccination->record_id = $_record_id;
         $_vaccination->source_id = $_event['event'];
 
         $_vaccination = self::assignCommonVaccinationFields($_vaccination, $_event, $_facility_id);

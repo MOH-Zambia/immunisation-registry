@@ -47,7 +47,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use Exception;
 
 use App\Models\Facility;
-use App\Models\Record;
 use App\Models\Client;
 use App\Models\Vaccination;
 
@@ -81,7 +80,6 @@ class ImportDHIS2DataPerFacilityClient extends Command
     {
         $httpClient = new GuzzleHttp\Client();
         $utility = new Utilities();
-        $persistRecord = new PersistRecord();
         $persistClient = new PersistClient();
         $persistVaccination = new PersistVaccination();
 
@@ -134,9 +132,7 @@ class ImportDHIS2DataPerFacilityClient extends Command
                                 //An if statement here perhaps to check if the tracked_entity
                                 $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
 
-                                $new_client_side_record = $persistRecord->saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
-
-                                $client = $persistClient->saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
+                                $client = $persistClient->saveClient($tracked_entity_instance, $facility->id);
                             } else {
                                 $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
                                 $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($client->source_updated_at, $tracked_entity_instance['lastUpdated']);

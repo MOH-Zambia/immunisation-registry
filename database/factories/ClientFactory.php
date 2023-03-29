@@ -42,7 +42,6 @@ class ClientFactory extends Factory
             'next_of_kin_contact_number' => $this->faker->word,
             'next_of_kin_contact_email_address' => $this->faker->word,
             'facility_id' => $this->faker->randomDigitNotNull,
-            'record_id' => $this->faker->randomDigitNotNull,
             'created_at' => $this->faker->date('Y-m-d H:i:s'),
             'updated_at' => $this->faker->date('Y-m-d H:i:s'),
             'deleted_at' => $this->faker->date('Y-m-d H:i:s')

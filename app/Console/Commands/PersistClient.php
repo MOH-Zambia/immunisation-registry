@@ -78,11 +78,10 @@ class PersistClient
         return $_client;
     }
 
-    public function saveClient($_tracked_entity_instance, $_facility_id, $_record_id): ? Client
+    public function saveClient($_tracked_entity_instance, $_facility_id): ? Client
     {
         $_client = new Client();
         $_client->source_id = $_tracked_entity_instance['trackedEntityInstance'];
-        $_client->record_id = $_record_id;
 
         $_client = self::assignCommonClientFields($_client, $_tracked_entity_instance, $_facility_id);
 

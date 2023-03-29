@@ -47,7 +47,6 @@ use GuzzleHttp\Exception\GuzzleException;
 use Exception;
 
 use App\Models\Facility;
-use App\Models\Record;
 use App\Models\Client;
 use App\Models\Vaccination;
 
@@ -81,7 +80,6 @@ class ImportDHIS2Data extends Command
     {
         $httpClient = new GuzzleHttp\Client();
         $utility = new Utilities();
-        $persistRecord = new PersistRecord();
         $persistClient = new PersistClient();
         $persistVaccination = new PersistVaccination();
 
@@ -153,19 +151,12 @@ class ImportDHIS2Data extends Command
                                             //An if statement here perhaps to check if the tracked_entity
                                             $client_side_source_id = $tracked_entity_instance['trackedEntityInstance'];
 
-                                            $new_client_side_record = $persistRecord->saveRecord($client_side_source_id, 'TRACKED_ENTITY_INSTANCE', $tracked_entity_instance);
-
-                                            $client = $persistClient->saveClient($tracked_entity_instance, $facility->id, $new_client_side_record->id);
+                                            $client = $persistClient->saveClient($tracked_entity_instance, $facility->id);
                                         } else {                                
                                             $created_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($tracked_entity_instance['created'], $client->source_created_at);
                                             $updated_at_timestamps_difference = $utility->getTimestampsDifferenceInSeconds($client->source_updated_at, $tracked_entity_instance['lastUpdated']);
 
                                             if ($persistClient->shouldUpdate($client, $event['trackedEntityInstance'], $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
-                                                //get the existing record
-                                                $old_client_side_record = Record::where('record_id', $client->source_id)->first();
-
-                                                $updated_client_side_record = $persistRecord->updateRecord($old_client_side_record,  $tracked_entity_instance);
-
                                                 //probably an if statement here
                                                 $client = $persistClient->updateClient($client, $tracked_entity_instance, $facility->id);
                                             } else {
@@ -182,9 +173,6 @@ class ImportDHIS2Data extends Command
 
                                             //Check for last updated ? Vaccination Update logic kicks in
                                             if ($persistVaccination->shouldUpdate($vaccination, $client->id, $created_at_timestamps_difference, $updated_at_timestamps_difference)) {
-                                                $old_event_side_record = Record::where('record_id', $event_uid)->first();
-                                                //Perhaps an if statement
-                                                $updated_event_side_record = $persistRecord->updateRecord($old_event_side_record, $event);
 
                                                 $vaccination = $persistVaccination->updateVaccination($vaccination, $event, $facility->id);
 
@@ -198,10 +186,8 @@ class ImportDHIS2Data extends Command
                                                 $this->getOutput()->writeln("{$time} <comment>SKIPPING Event UID:</comment> {$event_uid}, <comment>because event already exists in the DATABASE!</comment>");
                                             }
                                         } else {
-                                            //Store new even data in record table
-                                            $new_event_side_record = $persistRecord->saveRecord($event_uid, 'EVENT', $event);
-                                            //Store new client, record and event data in the vaccination table
-                                            $vaccination = $persistVaccination->saveVaccination($event, $client->id, $facility->id, $new_event_side_record->id);
+                                            //Store new client and event data in the vaccination table
+                                            $vaccination = $persistVaccination->saveVaccination($event, $client->id, $facility->id);
 
                                             $total_number_of_saved_events++;
                                             $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
