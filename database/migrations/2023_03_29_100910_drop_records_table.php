@@ -15,7 +15,7 @@ class DropRecordsTable extends Migration
     {
         Schema::table('records', function(Blueprint $table)
         {
-            $table->dropIndex(['hash']);
+            // $table->dropIndex(['hash']);
         });
 
         Schema::dropIfExists('records');
