@@ -1,0 +1,6 @@
+Import Summary per Facility of Imported DHIS2 Data, Start Date: 2022-10-27, End Date: 2022-10-28
+
+Fetching data from a total of : 6574 facilities
+Process started at : 2022-10-28 15:06:05
+
+{"FacilityUID":"pXhz0PLiYZX","FacilityName":"Chamakubi Health Post","NewEvents":5,"UpdatedEvents":0,"NewClients":4,"UpdatedClients":0}
