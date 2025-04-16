@@ -25,8 +25,10 @@ class OTPVerificationController extends AppBaseController
         $smsc = env('KANNEL_SMSC');
         $username = env('KANNEL_USERNAME');
         $password = env('KANNEL_PASSWORD');
-        $to = $input['contact_number'];
         $from = env('KANNEL_SENDER');
+        
+        $to = $input['contact_number'];
+        
 
         //Your message to send, Adding URL encoding.
         $text = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
@@ -69,6 +71,74 @@ class OTPVerificationController extends AppBaseController
             return $this->sendSuccess("OTP Sent!");
         }
     }
+
+    private function sendSMSViaZamtelBulkSMS(Request $request)
+    {
+        $input = $request->all();
+
+        $OTP = mt_rand(1000,9999);
+        $isError = 0;
+        $errorMessage = true;
+        
+        $apiKey = env('ZAMTEL_BULK_SMS_API_KEY');
+        $senderId = $apiKey = env('ZAMTEL_SENDER_ID'); 
+
+        $message = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
+        $formattedPhone = $this->formatPhone($input['contact_number']); // Ensure phone is in 260xxxxxxxxx format
+
+        $url = "https://bulksms.zamtel.co.zm/api/v2.1/action/send/api_key/{$apiKey}/contacts/{$formattedPhone}/senderId/{$senderId}/message/{$message}";
+
+        Log::channel('sms')->info( "Sending OTP via SMS...");
+
+        /** @var TYPE_NAME $ch */
+        $ch = curl_init();
+
+        curl_setopt_array($ch, array(
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => TRUE,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLINFO_HEADER_OUT => TRUE
+        ));
+
+        //Ignore SSL certificate verification
+        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
+
+        //Get response
+        $response = curl_exec($ch);
+        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $responseBody = curl_getinfo($ch, CURLINFO_HEADER_OUT);
+
+        //Print error if any
+        if (curl_errno($ch)) {
+            $isError = true;
+            $errorMessage = curl_error($ch);
+        }
+
+        curl_close($ch);
+
+
+        if ($httpcode == 200) {
+            // You can parse $response if needed
+            Session::put('OTP', $OTP);
+            Log::channel('sms')->info("SMS has been sent successfully!: OTP: $OTP");
+            return $this->sendSuccess("OTP Sent!");
+        } else {
+            // Log error
+            Log::channel('sms')->error("Failed to send OTP to $formattedPhone. Response: $response");
+            return $this->sendError($errorMessage);
+        }
+    }
+
+    private function formatPhone($phone)
+    {
+        // Ensure phone starts with 260
+        if (strpos($phone, '0') === 0) {
+            return '260' . substr($phone, 1);
+        }
+        return $phone;
+    }
+
 
     /**
      * Sending the OTP.

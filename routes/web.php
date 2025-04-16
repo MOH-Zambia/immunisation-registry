@@ -39,7 +39,7 @@ Route::get('help', function () {
 Route::get('certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
 Route::post('client/verify', [App\Http\Controllers\ClientController::class, 'verify'])->name('clients.verify');
 Route::post('sendEmail', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendEmail'])->name('sendEmail');
-Route::post('sendSMS', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendSMS'])->name('sendSMS');
+Route::post('sendSMS', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendSMS'])->name('sendSMSViaZamtelBulkSMS');
 Route::post('verifyOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'verifyOTP'])->name('verifyOTP');
 
 Route::get('clients/datatable', [App\Http\Controllers\ClientController::class, 'datatable'])->name('clients.datatable');
