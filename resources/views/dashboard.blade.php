@@ -139,7 +139,7 @@
 
         <!-- Vaccine breakdown row -->
         <div class="row">
-          <div class="col-lg-2 col-4">
+          <div class="col-lg col-6">
             <!-- small box -->
             <div class="small-box bg-primary">
               <div class="inner">
@@ -154,7 +154,7 @@
             </div>
           </div>
             <!-- ./col -->
-            <div class="col-lg-2 col-4">
+            <div class="col-lg col-6">
                 <!-- small box -->
                 <div class="small-box bg-info">
                     <div class="inner">
@@ -169,7 +169,7 @@
                 </div>
             </div>
               <!-- ./col -->
-              <div class="col-lg-2 col-4">
+              <div class="col-lg col-6">
                 <!-- small box -->
                 <div class="small-box bg-gradient-primary">
                   <div class="inner">
@@ -184,7 +184,7 @@
                 </div>
               </div>
           <!-- ./col -->
-          <div class="col-lg-2 col-4">
+          <div class="col-lg col-6">
             <!-- small box -->
             <div class="small-box bg-success">
               <div class="inner">
@@ -199,7 +199,7 @@
             </div>
           </div>
           <!-- ./col -->
-          <div class="col-lg-2 col-4">
+          <div class="col-lg col-6">
             <!-- small box -->
             <div class="small-box bg-warning">
               <div class="inner">
@@ -214,7 +214,7 @@
             </div>
           </div>
             <!-- ./col -->
-            <div class="col-lg-2 col-4">
+            <div class="col-lg col-6">
                 <!-- small box -->
                 <div class="small-box bg-gradient-info">
                     <div class="inner">
@@ -229,7 +229,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-2 col-4">
+            <div class="col-lg col-6">
                 <!-- small box -->
                 <div class="small-box bg-secondary">
                     <div class="inner">
@@ -244,7 +244,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-2 col-4">
+            <div class="col-lg col-6">
                 <!-- small box -->
                 <div class="small-box bg-dark">
                     <div class="inner">
@@ -259,7 +259,7 @@
                 </div>
             </div>
             <!-- ./col -->
-            <div class="col-lg-2 col-4">
+            <div class="col-lg col-6">
                 <!-- small box -->
                 <div class="small-box bg-gradient-secondary">
                     <div class="inner">
@@ -348,7 +348,7 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        <div id="facilities-map" style="height: 400px; width: 100%;"></div>
+                        <div id="facilities-map" style="height: 350px; width: 100%;"></div>
                     </div>
                     <div class="card-footer bg-white">
                         <div class="row">
@@ -376,7 +376,7 @@
             </section>
 
             <!-- Vaccinations by Province Map -->
-            <section class="col-lg-6 connectedSortable">
+            <section class="col-lg-12 connectedSortable">
                 <div class="card">
                     <div class="card-header border-0">
                         <h3 class="card-title">
@@ -385,7 +385,7 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        <div id="province-map" style="height: 400px; width: 100%;"></div>
+                        <div id="province-map" style="height: 350px; width: 100%;"></div>
                     </div>
                     <div class="card-footer bg-white">
                         <div class="row">
@@ -404,7 +404,7 @@
             </section>
 
             <!-- Vaccinations by District Map -->
-            <section class="col-lg-6 connectedSortable">
+            <section class="col-lg-12 connectedSortable">
                 <div class="card">
                     <div class="card-header border-0">
                         <h3 class="card-title">
@@ -413,7 +413,7 @@
                         </h3>
                     </div>
                     <div class="card-body">
-                        <div id="district-map" style="height: 400px; width: 100%;"></div>
+                        <div id="district-map" style="height: 350px; width: 100%;"></div>
                     </div>
                     <div class="card-footer bg-white">
                         <div class="row">
