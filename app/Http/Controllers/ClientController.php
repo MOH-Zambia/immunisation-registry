@@ -41,6 +41,9 @@ class ClientController extends AppBaseController
 
     public function datatable(Request $request)
     {
+        // Increase memory limit for this request
+        ini_set('memory_limit', '256M');
+
         $query = Client::select([
             'clients.id',
             'clients.source_id',
@@ -56,27 +59,26 @@ class ClientController extends AppBaseController
             'clients.date_of_birth',
             'clients.created_at'
         ])
-        ->leftJoin('certificates', 'clients.id', '=', 'certificates.client_id')
-        ->leftJoin('vaccinations', 'clients.id', '=', 'vaccinations.client_id')
-        ->selectRaw('MAX(certificates.id) as certificate_id')
-        ->selectRaw('MAX(certificates.certificate_number) as certificate_number')
-        ->selectRaw('MAX(certificates.export_status) as certificate_export_status')
-        ->selectRaw('COUNT(DISTINCT vaccinations.id) as vaccination_count')
-        ->groupBy([
-            'clients.id',
-            'clients.source_id',
-            'clients.card_number',
-            'clients.NRC',
-            'clients.passport_number',
-            'clients.last_name',
-            'clients.first_name',
-            'clients.other_names',
-            'clients.sex',
-            'clients.contact_number',
-            'clients.contact_email_address',
-            'clients.date_of_birth',
-            'clients.created_at'
-        ]);
+        ->selectSub(function($query) {
+            $query->selectRaw('MAX(id)')
+                ->from('certificates')
+                ->whereColumn('certificates.client_id', 'clients.id');
+        }, 'certificate_id')
+        ->selectSub(function($query) {
+            $query->selectRaw('MAX(certificate_number)')
+                ->from('certificates')
+                ->whereColumn('certificates.client_id', 'clients.id');
+        }, 'certificate_number')
+        ->selectSub(function($query) {
+            $query->selectRaw('MAX(export_status)')
+                ->from('certificates')
+                ->whereColumn('certificates.client_id', 'clients.id');
+        }, 'certificate_export_status')
+        ->selectSub(function($query) {
+            $query->selectRaw('COUNT(DISTINCT id)')
+                ->from('vaccinations')
+                ->whereColumn('vaccinations.client_id', 'clients.id');
+        }, 'vaccination_count');
 
         // Date range filter
         if ($request->has('start_date') && $request->start_date != '') {
@@ -89,13 +91,17 @@ class ClientController extends AppBaseController
         // Certificate status filter
         if ($request->has('certificate_status') && $request->certificate_status != '') {
             if ($request->certificate_status == 'has_certificate') {
-                $query->havingRaw('MAX(certificates.id) IS NOT NULL');
+                $query->whereHas('certificates');
             } elseif ($request->certificate_status == 'no_certificate') {
-                $query->havingRaw('MAX(certificates.id) IS NULL');
+                $query->whereDoesntHave('certificates');
             } elseif ($request->certificate_status == 'exported') {
-                $query->havingRaw('MAX(certificates.export_status) = 1');
+                $query->whereHas('certificates', function($q) {
+                    $q->where('export_status', 1);
+                });
             } elseif ($request->certificate_status == 'not_exported') {
-                $query->havingRaw('MAX(certificates.id) IS NOT NULL AND MAX(certificates.export_status) = 0');
+                $query->whereHas('certificates', function($q) {
+                    $q->where('export_status', 0);
+                });
             }
         }
 
@@ -104,14 +110,18 @@ class ClientController extends AppBaseController
             $query->where('clients.sex', $request->gender);
         }
 
-        // Vaccination status filter
+        // Vaccination status filter - use whereHas instead of havingRaw
         if ($request->has('vaccination_status') && $request->vaccination_status != '') {
             if ($request->vaccination_status == 'fully_vaccinated') {
-                $query->havingRaw('COUNT(DISTINCT vaccinations.id) >= 2');
+                $query->whereHas('vaccinations', function($q) {
+                    // We need to count in PHP side or use a subquery
+                }, '>=', 2);
             } elseif ($request->vaccination_status == 'partially_vaccinated') {
-                $query->havingRaw('COUNT(DISTINCT vaccinations.id) = 1');
+                $query->whereHas('vaccinations', function($q) {
+                    // Count = 1
+                }, '=', 1);
             } elseif ($request->vaccination_status == 'not_vaccinated') {
-                $query->havingRaw('COUNT(DISTINCT vaccinations.id) = 0');
+                $query->whereDoesntHave('vaccinations');
             }
         }
 

@@ -42,6 +42,9 @@ class CertificateController extends AppBaseController
     public function datatable(Request $request)
     {
         if ($request->ajax()) {
+            // Increase memory limit for this request if needed
+            ini_set('memory_limit', '256M');
+
             $query = Certificate::join('clients', 'certificates.client_id', '=', 'clients.id')
                 ->select([
                     'certificates.id',
