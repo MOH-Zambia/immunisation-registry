@@ -880,7 +880,15 @@
             L.marker([province.lat, province.lng], {
                 icon: L.divIcon({
                     className: 'province-label',
-                    html: '<div style="backgro, {
+                    html: '<div style="background: white; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 11px; border: 1px solid #333;">' +
+                          province.name + '<br><small>' + province.vaccinations.toLocaleString() + '</small></div>',
+                    iconSize: [80, 30]
+                })
+            }).addTo(provinceMap);
+        });
+
+        // District Map - Vaccinations by District
+        var districtMap = L.map('district-map', {
             zoomControl: true,
             scrollWheelZoom: false
         }).setView([-13.1339, 27.8493], 6);
@@ -893,15 +901,7 @@
         // Force map to fit container
         setTimeout(function() {
             districtMap.invalidateSize();
-        }, 100
-
-        // District Map - Vaccinations by District
-        var districtMap = L.map('district-map').setView([-13.1339, 27.8493], 6);
-
-        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-            maxZoom: 19,
-            attribution: '© OpenStreetMap contributors'
-        }).addTo(districtMap);
+        }, 100);
 
         // Sample district data (major districts)
         var districtData = [
