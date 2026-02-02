@@ -14,11 +14,15 @@ use Illuminate\Support\Facades\Session;
 class OTPVerificationController extends AppBaseController
 {
     public function sendSMS(Request $request){
+        $request->validate([
+            'contact_number' => 'required|string'
+        ]);
+
         $input = $request->all();
 
         $OTP = mt_rand(1000,9999);
         $isError = 0;
-        $errorMessage = true;
+        $errorMessage = '';
 
         $host = env('KANNEL_HOST');
         $port = env('KANNEL_PORT');
@@ -26,9 +30,9 @@ class OTPVerificationController extends AppBaseController
         $username = env('KANNEL_USERNAME');
         $password = env('KANNEL_PASSWORD');
         $from = env('KANNEL_SENDER');
-        
+
         $to = $input['contact_number'];
-        
+
 
         //Your message to send, Adding URL encoding.
         $text = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
@@ -64,24 +68,28 @@ class OTPVerificationController extends AppBaseController
 
         if($isError){
             Log::channel('sms')->error("Error sending OTP via SMS: $errorMessage");
-            return $this->sendError($errorMessage);
+            return $this->sendError('Failed to send OTP. Please try again later.');
         }else{
             Session::put('OTP', $OTP);
-            Log::channel('sms')->info("OPT sent via SMS: $output, OTP: $OTP");
+            Log::channel('sms')->info("OTP sent via SMS: $output, OTP: $OTP");
             return $this->sendSuccess("OTP Sent!");
         }
     }
 
-    private function sendSMSViaZamtelBulkSMS(Request $request)
+    public function sendSMSViaZamtelBulkSMS(Request $request)
     {
+        $request->validate([
+            'contact_number' => 'required|string'
+        ]);
+
         $input = $request->all();
 
         $OTP = mt_rand(1000,9999);
         $isError = 0;
-        $errorMessage = true;
-        
+        $errorMessage = '';
+
         $apiKey = env('ZAMTEL_BULK_SMS_API_KEY');
-        $senderId = $apiKey = env('ZAMTEL_SENDER_ID'); 
+        $senderId = env('ZAMTEL_SENDER_ID');
 
         $message = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
         $formattedPhone = $this->formatPhone($input['contact_number']); // Ensure phone is in 260xxxxxxxxx format
@@ -126,7 +134,7 @@ class OTPVerificationController extends AppBaseController
         } else {
             // Log error
             Log::channel('sms')->error("Failed to send OTP to $formattedPhone. Response: $response");
-            return $this->sendError($errorMessage);
+            return $this->sendError('Failed to send OTP. Please try again later.');
         }
     }
 
@@ -146,6 +154,10 @@ class OTPVerificationController extends AppBaseController
      * @return \Illuminate\Http\JsonResponse
      */
     public function sendEmail(Request $request){
+        $request->validate([
+            'contact_email_address' => 'required|email'
+        ]);
+
         $input = $request->all();
         $OTP = mt_rand(1000,9999);
 
@@ -164,8 +176,8 @@ class OTPVerificationController extends AppBaseController
             Log::info( "OTP sent via email: $OTP");
             return $this->sendSuccess("OTP Sent!");
         } catch (\Exception $e){
-            Log::error("Error sending OTP via Email: $e->getMessage()");
-            return $this->sendError($e->getMessage());
+            Log::error("Error sending OTP via Email: " . $e->getMessage());
+            return $this->sendError('Failed to send OTP email. Please try again later.');
         }
     }
 
@@ -175,6 +187,11 @@ class OTPVerificationController extends AppBaseController
      * @return \Illuminate\Http\JsonResponse
      */
     public function verifyOTP(Request $request){
+        $request->validate([
+            'OTP' => 'required|numeric',
+            'client_id' => 'required|integer'
+        ]);
+
         $input = $request->all();
         $enteredOTP = $input['OTP'];
         $client_id = $input['client_id'];
@@ -182,6 +199,9 @@ class OTPVerificationController extends AppBaseController
         $sessionOTP = $request->session()->get('OTP');
 
         if($sessionOTP == $enteredOTP){
+            // Clear OTP from session immediately
+            Session::forget('OTP');
+
             $certificate = Certificate::where('client_id', $client_id)->first();
 
             if(empty($certificate)){
@@ -189,11 +209,8 @@ class OTPVerificationController extends AppBaseController
             } else {
                 return $this->sendSuccess($certificate->certificate_url);
             }
-
-            //Removing Session variable
-            Session::forget('OTP');
         } else {
-            return $this->sendError("Wrong OTP");
+            return $this->sendError("Invalid verification code");
         }
     }
 }

@@ -11,12 +11,11 @@ use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use Response;
 use Yajra\DataTables\Facades\DataTables;
 use PDF;
 use Symfony\Component\Console\Output\ConsoleOutput;
-
-// use Symfony\Component\Console\Output\ConsoleOutput;
 
 class CertificateController extends AppBaseController
 {
@@ -108,6 +107,11 @@ class CertificateController extends AppBaseController
     {
         $certificate = $this->certificateRepository->find($id);
 
+        if (empty($certificate)) {
+            Flash::error('Certificate not found');
+            return redirect(route('certificates.index'));
+        }
+
         // User role
         $role = Auth::user()->role['name'];
 
@@ -116,12 +120,6 @@ class CertificateController extends AppBaseController
                 Flash::error('Unauthorised access');
                 return back();
             }
-        }
-
-        if (empty($certificate)) {
-            Flash::error('Certificate not found');
-
-            return redirect(route('certificates.index'));
         }
 
         return view('certificates.show')->with('certificate', $certificate);
@@ -237,16 +235,21 @@ class CertificateController extends AppBaseController
      */
     public function generatePDF($uuid)
     {
-        $out = new ConsoleOutput();
+        try {
+            $out = new ConsoleOutput();
 
-        self::createDirectoryIfNonExistence(public_path('files'));
-        self::createDirectoryIfNonExistence(public_path('files/certificates'));
-        // get certificate based on uuid supplied
-        $covid19_certificate = Certificate::where('certificate_uuid', $uuid)->first();
+            self::createDirectoryIfNonExistence(public_path('files'));
+            self::createDirectoryIfNonExistence(public_path('files/certificates'));
 
-        $filename = 'files/certificates/'. $covid19_certificate->certificate_uuid . '.pdf';
+            // get certificate based on uuid supplied
+            $covid19_certificate = Certificate::where('certificate_uuid', $uuid)->first();
 
-        if (!empty($covid19_certificate)) {
+            if (empty($covid19_certificate)) {
+                $out->writeln('Certificate of supplied UUID NOT FOUND');
+                abort(404, 'Certificate not found');
+            }
+
+            $filename = 'files/certificates/'. $covid19_certificate->certificate_uuid . '.pdf';
 
             // load certificate public and private keys
             $certificate = 'file://'.base_path().'/public/STAR_moh_gov_zm.crt';
@@ -261,7 +264,7 @@ class CertificateController extends AppBaseController
 
             // set document signature
             PDF::setSignature($certificate, $certificate, 'm0h1ct11', '', 2, $info);
-            
+
             PDF::SetFont('helvetica', '', 12);
             PDF::SetTitle('COVID 19 Vaccination Certificate');
             PDF::AddPage();
@@ -283,15 +286,13 @@ class CertificateController extends AppBaseController
 
             PDF::reset();
 
-            // dd('pdf created');
-
             $out->writeln("Done!");
-            
+
             return response()->download(public_path($filename));
 
-        } else {
-            $out->writeln('Certificate of supplied UUID NOT FOUND');
-            dd('Certificate with supplied UUID NOT FOUND');
+        } catch (\Exception $e) {
+            Log::error('Error generating PDF certificate: ' . $e->getMessage());
+            abort(500, 'Failed to generate certificate');
         }
     }
 }

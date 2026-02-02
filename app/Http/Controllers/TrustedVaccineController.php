@@ -28,6 +28,10 @@ class TrustedVaccineController extends Controller
      */
     public function ajaxRequestPost(Request $request)
     {
+        $request->validate([
+            'id' => 'required|integer'
+        ]);
+
         $script_start_date_time = date('Y-m-d H:i:s');
         $startTime = microtime(true);
 
@@ -36,6 +40,10 @@ class TrustedVaccineController extends Controller
         $input = $request->all();
 
         $certificate = $this->certificateRepository->find($input['id']);
+
+        if(empty($certificate)){
+            return response()->json(['error'=>'Certificate not found'], 404);
+        }
 
         if(is_null($certificate->trusted_vaccine_code)){
             $booklet = array();

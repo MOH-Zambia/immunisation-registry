@@ -38,9 +38,10 @@ Route::get('help', function () {
 
 Route::get('certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
 Route::post('client/verify', [App\Http\Controllers\ClientController::class, 'verify'])->name('clients.verify');
-Route::post('sendEmail', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendEmail'])->name('sendEmail');
-Route::post('sendSMS', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendSMS'])->name('sendSMSViaZamtelBulkSMS');
-Route::post('verifyOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'verifyOTP'])->name('verifyOTP');
+Route::post('sendEmail', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendEmail'])->middleware('throttle:3,1')->name('sendEmail');
+Route::post('sendSMS', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendSMS'])->middleware('throttle:3,1')->name('sendSMS');
+Route::post('sendSMSViaZamtelBulkSMS', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendSMSViaZamtelBulkSMS'])->middleware('throttle:3,1')->name('sendSMSViaZamtelBulkSMS');
+Route::post('verifyOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'verifyOTP'])->middleware('throttle:5,1')->name('verifyOTP');
 
 Route::get('clients/datatable', [App\Http\Controllers\ClientController::class, 'datatable'])->name('clients.datatable');
 Route::get('users/datatable', [App\Http\Controllers\UserController::class, 'datatable'])->name('users.datatable');
