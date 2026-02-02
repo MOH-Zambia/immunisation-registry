@@ -221,11 +221,31 @@ class OTPVerificationController extends AppBaseController
 
     private function formatPhone($phone)
     {
-        // Ensure phone starts with 260
+        // Remove any whitespace
+        $phone = trim($phone);
+
+        // Remove leading + if present
+        if (strpos($phone, '+') === 0) {
+            $phone = substr($phone, 1);
+        }
+
+        // If starts with 0 (local format like 0969928546), replace with 260
         if (strpos($phone, '0') === 0) {
             return '260' . substr($phone, 1);
         }
-        return $phone;
+
+        // If starts with 9 (missing country code like 969928546), add 260
+        if (strpos($phone, '9') === 0 && strlen($phone) === 9) {
+            return '260' . $phone;
+        }
+
+        // If already starts with 260, return as is
+        if (strpos($phone, '260') === 0) {
+            return $phone;
+        }
+
+        // Default: assume it needs 260 prefix
+        return '260' . $phone;
     }
 
 

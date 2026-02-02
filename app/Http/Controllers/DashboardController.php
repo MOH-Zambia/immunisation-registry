@@ -9,6 +9,7 @@ use App\Models\Client;
 use App\Models\Vaccination;
 use App\Models\Certificate;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Cache;
 
 class DashboardController extends Controller
 {
@@ -29,88 +30,74 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        $clients = DB::table('clients')->count();
+        // Cache dashboard statistics for 5 minutes to reduce database load
+        $cacheKey = 'dashboard_stats_' . date('Y-m-d-H') . '_' . floor(now()->minute / 5);
 
-        $vaccinations = DB::table('vaccinations')->count();
+        $stats = Cache::remember($cacheKey, now()->addMinutes(5), function () {
+            // Optimize: Use single query for basic counts
+            $basicStats = DB::table('clients')
+                ->selectRaw('(SELECT COUNT(*) FROM clients) as clients_count')
+                ->selectRaw('(SELECT COUNT(*) FROM vaccinations) as vaccinations_count')
+                ->selectRaw('(SELECT COUNT(*) FROM certificates) as certificates_count')
+                ->first();
 
-        $certificates = DB::table('certificates')->count();
+            // Optimize: Use single query with conditional aggregation for vaccine doses
+            $vaccineStats = DB::table('vaccinations')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 THEN 1 END) as astrazeneca_doses')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 AND dose_number = "1" THEN 1 END) as astrazeneca_first_dose')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 AND dose_number = "2" THEN 1 END) as astrazeneca_second_dose')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 3 THEN 1 END) as janssen_doses')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 7 THEN 1 END) as sinopharm_doses')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 6 THEN 1 END) as pfizer_doses')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 THEN 1 END) as moderna_doses')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "1" THEN 1 END) as moderna_first_dose')
+                ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "2" THEN 1 END) as moderna_second_dose')
+                ->first();
 
-        $astrazeneca_doses = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 1],
-        ])->count();
+            // Optimize: Single query for user registration data
+            $userMonthlyData = User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+                ->whereYear('created_at', date('Y'))
+                ->groupBy(DB::raw('MONTH(created_at)'))
+                ->pluck('count', 'month');
 
-        $astrazeneca_first_dose = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 1],
-            ['dose_number', '=', '1'],
-        ])->count();
+            // Initialize array with 12 months (all zeros)
+            $user_data = array_fill(0, 12, 0);
 
-        $astrazeneca_second_dose = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 1],
-            ['dose_number', '=', '2'],
-        ])->count();
+            // Fill in actual data
+            foreach($userMonthlyData as $month => $count) {
+                $user_data[$month - 1] = $count; // Array is 0-indexed, months are 1-indexed
+            }
 
-        $janssen_doses = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 3],
-        ])->count();
-
-        $sinopharm_doses = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 7],
-        ])->count();
-
-
-        $pfizer_doses = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 6],
-        ])->count();
-
-
-        $moderna_first_dose = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 4],
-            ['dose_number', '=', '1'],
-        ])->count();
-
-        $moderna_second_dose = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 4],
-            ['dose_number', '=', '2'],
-        ])->count();
-
-
-        $moderna_doses = DB::table('vaccinations')->where([
-            ['vaccine_id', '=', 4],
-        ])->count();
-
-        $users = User::select(DB::raw("COUNT(*) AS count"))
-            ->whereYear('created_at', date('Y'))
-            ->groupBy(DB::raw("MONTH(created_at)"))
-            ->pluck('count');
-
-        $months = User::select(DB::raw("MONTH(created_at) AS month"))
-            ->whereYear('created_at', date('Y'))
-            ->groupBy(DB::raw("MONTH(created_at)"))
-            ->pluck('month');
-
-
-        $user_data = array(0,0,0,0,0,0,0,0,0,0,0,0);
-
-        foreach($months as $index => $month){
-            $user_data[$month] = $users[$index];
-        }
-
-        $data = array_combine($users->toArray(), $months->toArray());
-
+            return [
+                'clients' => $basicStats->clients_count,
+                'vaccinations' => $basicStats->vaccinations_count,
+                'certificates' => $basicStats->certificates_count,
+                'astrazeneca_doses' => $vaccineStats->astrazeneca_doses,
+                'astrazeneca_first_dose' => $vaccineStats->astrazeneca_first_dose,
+                'astrazeneca_second_dose' => $vaccineStats->astrazeneca_second_dose,
+                'janssen_doses' => $vaccineStats->janssen_doses,
+                'sinopharm_doses' => $vaccineStats->sinopharm_doses,
+                'pfizer_doses' => $vaccineStats->pfizer_doses,
+                'moderna_doses' => $vaccineStats->moderna_doses,
+                'moderna_first_dose' => $vaccineStats->moderna_first_dose,
+                'moderna_second_dose' => $vaccineStats->moderna_second_dose,
+                'user_data' => $user_data
+            ];
+        });
 
         return view('dashboard')
-            ->with('clients', $clients)
-            ->with('vaccinations',  $vaccinations)
-            ->with('certificates',  $certificates)
-            ->with('astrazeneca_first_dose',  $astrazeneca_first_dose)
-            ->with('astrazeneca_second_dose',  $astrazeneca_second_dose)
-            ->with('astrazeneca_doses',  $astrazeneca_doses)
-            ->with('janssen_doses',  $janssen_doses)
-            ->with('sinopharm_doses',  $sinopharm_doses)
-            ->with('pfizer_doses',  $pfizer_doses)
-            ->with('moderna_first_dose',  $moderna_first_dose)
-            ->with('moderna_second_dose',  $moderna_second_dose)
-            ->with('moderna_doses',  $moderna_doses)
-            ->with(compact('user_data'));
+            ->with('clients', $stats['clients'])
+            ->with('vaccinations', $stats['vaccinations'])
+            ->with('certificates', $stats['certificates'])
+            ->with('astrazeneca_first_dose', $stats['astrazeneca_first_dose'])
+            ->with('astrazeneca_second_dose', $stats['astrazeneca_second_dose'])
+            ->with('astrazeneca_doses', $stats['astrazeneca_doses'])
+            ->with('janssen_doses', $stats['janssen_doses'])
+            ->with('sinopharm_doses', $stats['sinopharm_doses'])
+            ->with('pfizer_doses', $stats['pfizer_doses'])
+            ->with('moderna_first_dose', $stats['moderna_first_dose'])
+            ->with('moderna_second_dose', $stats['moderna_second_dose'])
+            ->with('moderna_doses', $stats['moderna_doses'])
+            ->with(compact('user_data', $stats['user_data']));
     }
 }

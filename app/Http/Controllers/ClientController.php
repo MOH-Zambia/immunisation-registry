@@ -51,7 +51,7 @@ class ClientController extends AppBaseController
             'sex',
             'contact_number',
             'contact_email_address'
-        ])->orderBy('id', 'DESC')->limit(50);
+        ])->orderBy('id', 'DESC');
 
         return Datatables::of($clients)
             ->addIndexColumn()

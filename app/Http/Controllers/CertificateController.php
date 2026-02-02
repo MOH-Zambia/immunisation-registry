@@ -52,7 +52,7 @@ class CertificateController extends AppBaseController
                     'clients.other_names',
                     'certificates.trusted_vaccine_code',
                     'certificates.created_at'
-                ])->orderBy('certificates.id', 'DESC')->limit(50);
+                ])->orderBy('certificates.id', 'DESC');
 
             return Datatables::of($certificates)
                 ->addIndexColumn()
@@ -63,7 +63,6 @@ class CertificateController extends AppBaseController
                     return $request->created_at->format('Y-m-d');
                 })
                 ->rawColumns(['action'])
-                // ->make(true);
                 ->toJson();
         }
     }
