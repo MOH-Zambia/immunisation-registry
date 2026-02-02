@@ -85,9 +85,10 @@ class CertificateController extends AppBaseController
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
                     $viewBtn = '<a href="/certificates/'.$row->id.'" class="btn btn-success btn-sm" title="View Details"><i class="fas fa-eye"></i></a>';
+                    $printBtn = '<a href="'.route('certificates.print', ['id' => $row->id]).'" class="btn btn-info btn-sm ml-1" target="_blank" title="Print Certificate"><i class="fas fa-print"></i></a>';
                     $downloadBtn = '<a href="/certificates/'.$row->id.'/pdf" class="btn btn-primary btn-sm ml-1" title="Download PDF"><i class="fas fa-download"></i></a>';
-                    $copyBtn = '<button class="btn btn-info btn-sm ml-1 copy-uuid" data-uuid="'.$row->certificate_uuid.'" title="Copy Certificate URL"><i class="fas fa-copy"></i></button>';
-                    return $viewBtn . $downloadBtn . $copyBtn;
+                    $copyBtn = '<button class="btn btn-warning btn-sm ml-1 copy-uuid" data-uuid="'.$row->certificate_uuid.'" title="Copy Certificate URL"><i class="fas fa-copy"></i></button>';
+                    return $viewBtn . $printBtn . $downloadBtn . $copyBtn;
                 })
                 ->addColumn('client_name', function($row) {
                     return trim($row->first_name . ' ' . ($row->other_names ?? '') . ' ' . $row->last_name);
@@ -462,5 +463,51 @@ class CertificateController extends AppBaseController
             Log::error('Error generating PDF certificate: ' . $e->getMessage());
             abort(500, 'Failed to generate certificate');
         }
+    }
+
+    /**
+     * Display certificate in print-friendly format
+     *
+     * @param int $id
+     * @return \Illuminate\Http\Response
+     */
+    public function printCertificate($id)
+    {
+        $certificate = $this->certificateRepository->find($id);
+
+        if (empty($certificate)) {
+            Flash::error('Certificate not found');
+            return redirect(route('certificates.index'));
+        }
+
+        // Check authorization for authenticated users
+        if (Auth::check()) {
+            $role = Auth::user()->role['name'];
+            if($role == 'Authenticated User') {
+                if($certificate->client_id != Auth::user()->client['id']){
+                    Flash::error('Unauthorised access');
+                    return back();
+                }
+            }
+        }
+
+        return view('certificates.print')->with('certificate', $certificate);
+    }
+
+    /**
+     * Display certificate in print-friendly format by UUID (public access)
+     *
+     * @param string $uuid
+     * @return \Illuminate\Http\Response
+     */
+    public function printCertificateByUuid($uuid)
+    {
+        $certificate = Certificate::where('certificate_uuid', $uuid)->first();
+
+        if (empty($certificate)) {
+            abort(404, 'Certificate not found');
+        }
+
+        return view('certificates.print')->with('certificate', $certificate);
     }
 }

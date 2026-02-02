@@ -51,6 +51,10 @@ Route::get('certificates/datatable', [App\Http\Controllers\CertificateController
 Route::get('vaccinations/datatable', [App\Http\Controllers\VaccinationController::class, 'datatable'])->name('vaccinations.datatable');
 
 Route::get('certificates/generatePDF/{uuid}', [App\Http\Controllers\CertificateController::class, 'generatePDF'])->name('certificates.generatePDF');
+Route::get('certificates/{id}/print', [App\Http\Controllers\CertificateController::class, 'printCertificate'])->name('certificates.print');
+
+// Public routes for certificate viewing and printing
+Route::get('certificate/{uuid}/print', [App\Http\Controllers\CertificateController::class, 'printCertificateByUuid'])->name('certificate.print');
 
 Auth::routes(['verify' => true]);
 

@@ -11,7 +11,7 @@
             margin-bottom: 12px;
         }
         .capitalize-text {
-            text-transform: capitalize; 
+            text-transform: capitalize;
         }
     </style>
 @endpush
@@ -116,14 +116,16 @@
                                 <!-- this row will not appear when printing -->
                                 <div class="row no-print">
                                     <div class="col-12">
-                                        <a href="certificate-print.html" rel="noopener" target="_blank" class="btn btn-default"><i class="fas fa-print"></i> Print</a>
+                                        <a href="{{ route('certificates.print', ['id' => $certificate->id]) }}" target="_blank" class="btn btn-primary">
+                                            <i class="fas fa-print"></i> Print Certificate
+                                        </a>
 
                                         <button type="button" class="btn btn-success float-right btn-send" style="margin-right: 5px;">
                                             <i class="fas fa-share-square"></i> Send
                                         </button>
-                                        
+
                                         <a href="{{route('certificates.generatePDF', ['uuid' => $certificate->certificate_uuid])}}" type="button" class="btn btn-warning float-right" style="margin-right: 5px;">
-                                            <i class="fas fa-download"></i> Generate PDF
+                                            <i class="fas fa-download"></i> Download PDF
                                         </a>
                                     </div>
                                 </div>
