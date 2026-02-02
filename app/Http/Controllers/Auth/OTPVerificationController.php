@@ -27,94 +27,52 @@ class OTPVerificationController extends AppBaseController
         ]);
 
         $input = $request->all();
-        $contactNumber = $input['contact_number'];
+        $contactNumber = $this->formatPhone($input['contact_number']);
 
         Log::channel('sms')->info("[$requestId] Validation passed for contact: " . substr($contactNumber, -4));
 
         $OTP = mt_rand(1000,9999);
-        $isError = 0;
-        $errorMessage = '';
+        $message = "COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}";
 
-        $host = env('KANNEL_HOST');
-        $port = env('KANNEL_PORT');
-        $smsc = env('KANNEL_SMSC');
-        $username = env('KANNEL_USERNAME');
-        $password = env('KANNEL_PASSWORD');
-        $from = env('KANNEL_SENDER');
+        // Intelligently choose gateway - prefer Zamtel if configured, fallback to Kannel
+        $zamtelConfigured = !empty(env('ZAMTEL_BULK_SMS_API_KEY')) && !empty(env('ZAMTEL_SENDER_ID'));
+        $kannelConfigured = !empty(env('KANNEL_HOST')) && !empty(env('KANNEL_USERNAME'));
 
-        Log::channel('sms')->info("[$requestId] SMS Gateway config loaded", [
-            'host' => $host,
-            'port' => $port,
-            'smsc' => $smsc,
-            'sender' => $from
+        Log::channel('sms')->info("[$requestId] Gateway availability", [
+            'zamtel_configured' => $zamtelConfigured,
+            'kannel_configured' => $kannelConfigured
         ]);
 
-        $to = $contactNumber;
-
-
-        //Your message to send, Adding URL encoding.
-        $text = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
-
-        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$from}&to={$to}&text={$text}";
-
-        Log::channel('sms')->info("[$requestId] Sending OTP via SMS to: " . substr($to, -4));
-
-        /** @var TYPE_NAME $ch */
-        $ch = curl_init();
-
-        curl_setopt_array($ch, array(
-            CURLOPT_URL => $url,
-            CURLOPT_HEADER => TRUE,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLINFO_HEADER_OUT => TRUE
-        ));
-
-        //Ignore SSL certificate verification
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-
-        //Get response
-        $startTime = microtime(true);
-        $output = curl_exec($ch);
-        $executionTime = round((microtime(true) - $startTime) * 1000, 2);
-
-        //Print error if any
-        if (curl_errno($ch)) {
-            $isError = true;
-            $errorMessage = curl_error($ch);
-            Log::channel('sms')->error("[$requestId] cURL error: $errorMessage", [
-                'curl_errno' => curl_errno($ch),
-                'execution_time_ms' => $executionTime
-            ]);
+        // Try Zamtel first if configured, otherwise use Kannel
+        if ($zamtelConfigured) {
+            $result = $this->sendViaZamtel($contactNumber, $message, $requestId);
+        } elseif ($kannelConfigured) {
+            $result = $this->sendViaKannel($contactNumber, $message, $requestId);
+        } else {
+            Log::channel('sms')->error("[$requestId] No SMS gateway configured");
+            return $this->sendError('SMS gateway not configured. Please contact support.');
         }
 
-        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        curl_close($ch);
-
-        Log::channel('sms')->info("[$requestId] SMS gateway response", [
-            'http_code' => $httpCode,
-            'execution_time_ms' => $executionTime,
-            'response_length' => strlen($output)
-        ]);
-
-        if($isError){
-            Log::channel('sms')->error("[$requestId] Failed to send OTP via SMS", [
-                'error' => $errorMessage,
-                'contact_last4' => substr($to, -4)
-            ]);
-            return $this->sendError('Failed to send OTP. Please try again later.');
-        }else{
+        if($result['success']){
             Session::put('OTP', $OTP);
             Session::put('OTP_REQUEST_ID', $requestId);
             Session::put('OTP_TIMESTAMP', now()->timestamp);
 
             Log::channel('sms')->info("[$requestId] OTP sent successfully via SMS", [
-                'contact_last4' => substr($to, -4),
+                'contact_last4' => substr($contactNumber, -4),
                 'otp_stored_in_session' => true,
-                'timestamp' => now()->toDateTimeString()
+                'timestamp' => now()->toDateTimeString(),
+                'http_code' => $result['http_code'],
+                'execution_time_ms' => $result['execution_time']
             ]);
 
             return $this->sendSuccess("OTP Sent!");
+        }else{
+            Log::channel('sms')->error("[$requestId] Failed to send OTP via SMS", [
+                'error' => $result['error'],
+                'contact_last4' => substr($contactNumber, -4)
+            ]);
+            return $this->sendError('Failed to send OTP. Please try again later.');
         }
     }
 
@@ -133,87 +91,35 @@ class OTPVerificationController extends AppBaseController
         ]);
 
         $input = $request->all();
+        $contactNumber = $this->formatPhone($input['contact_number']);
 
-        Log::channel('sms')->info("[$requestId] Validation passed for contact: " . substr($input['contact_number'], -4));
+        Log::channel('sms')->info("[$requestId] Validation passed for contact: " . substr($contactNumber, -4));
 
         $OTP = mt_rand(1000,9999);
-        $isError = 0;
-        $errorMessage = '';
+        $message = "COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}";
 
-        $apiKey = env('ZAMTEL_BULK_SMS_API_KEY');
-        $senderId = env('ZAMTEL_SENDER_ID');
+        // Use the tested helper method
+        $result = $this->sendViaZamtel($contactNumber, $message, $requestId);
 
-        Log::channel('sms')->info("[$requestId] Zamtel API config loaded", [
-            'api_key_present' => !empty($apiKey),
-            'sender_id' => $senderId
-        ]);
-
-        $message = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
-        $formattedPhone = $this->formatPhone($input['contact_number']); // Ensure phone is in 260xxxxxxxxx format
-
-        $url = "https://bulksms.zamtel.co.zm/api/v2.1/action/send/api_key/{$apiKey}/contacts/{$formattedPhone}/senderId/{$senderId}/message/{$message}";
-
-        Log::channel('sms')->info("[$requestId] Sending SMS via Zamtel API to: " . substr($formattedPhone, -4));
-
-        /** @var TYPE_NAME $ch */
-        $ch = curl_init();
-
-        curl_setopt_array($ch, array(
-            CURLOPT_URL => $url,
-            CURLOPT_HEADER => TRUE,
-            CURLOPT_RETURNTRANSFER => true,
-            CURLINFO_HEADER_OUT => TRUE
-        ));
-
-        //Ignore SSL certificate verification
-        curl_setopt($ch, CURLOPT_SSL_VERIFYHOST, 0);
-        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, 0);
-
-        //Get response
-        $startTime = microtime(true);
-        $response = curl_exec($ch);
-        $executionTime = round((microtime(true) - $startTime) * 1000, 2);
-        $httpcode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
-        $responseBody = curl_getinfo($ch, CURLINFO_HEADER_OUT);
-
-        //Print error if any
-        if (curl_errno($ch)) {
-            $isError = true;
-            $errorMessage = curl_error($ch);
-            Log::channel('sms')->error("[$requestId] cURL error", [
-                'error' => $errorMessage,
-                'curl_errno' => curl_errno($ch)
-            ]);
-        }
-
-        curl_close($ch);
-
-        Log::channel('sms')->info("[$requestId] Zamtel API response", [
-            'http_code' => $httpcode,
-            'execution_time_ms' => $executionTime,
-            'response_preview' => substr($response, 0, 200)
-        ]);
-
-
-        if ($httpcode == 200) {
-            // You can parse $response if needed
+        if($result['success']){
             Session::put('OTP', $OTP);
             Session::put('OTP_REQUEST_ID', $requestId);
             Session::put('OTP_TIMESTAMP', now()->timestamp);
 
             Log::channel('sms')->info("[$requestId] OTP sent successfully via Zamtel", [
-                'phone' => $formattedPhone,
+                'phone_last4' => substr($contactNumber, -4),
                 'otp_stored_in_session' => true,
-                'timestamp' => now()->toDateTimeString()
+                'timestamp' => now()->toDateTimeString(),
+                'http_code' => $result['http_code'],
+                'execution_time_ms' => $result['execution_time']
             ]);
 
             return $this->sendSuccess("OTP Sent!");
-        } else {
-            // Log error
+        }else{
             Log::channel('sms')->error("[$requestId] Failed to send OTP via Zamtel", [
-                'phone' => $formattedPhone,
-                'http_code' => $httpcode,
-                'response_preview' => substr($response, 0, 500)
+                'phone_last4' => substr($contactNumber, -4),
+                'error' => $result['error'],
+                'http_code' => $result['http_code'] ?? null
             ]);
             return $this->sendError('Failed to send OTP. Please try again later.');
         }

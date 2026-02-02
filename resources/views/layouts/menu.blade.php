@@ -78,6 +78,13 @@
             <p><i class="fas fa-sms"></i> SMS Testing</p>
         </a>
     </li>
+
+    <li class="nav-item">
+        <a href="{{ route('admin.logs') }}"
+           class="nav-link {{ Request::is('admin/logs*') ? 'active' : '' }}">
+            <p><i class="fas fa-list-alt"></i> Log Viewer</p>
+        </a>
+    </li>
 @endif
 
 

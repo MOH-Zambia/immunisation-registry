@@ -73,6 +73,13 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('admin/test-sms', [App\Http\Controllers\Auth\OTPVerificationController::class, 'showTestSmsInterface'])->name('admin.test-sms');
         Route::post('admin/test-sms/send', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendTestSMS'])->name('admin.test-sms.send');
 
+        // Log Viewer routes
+        Route::get('admin/logs', [App\Http\Controllers\Admin\LogViewerController::class, 'index'])->name('admin.logs');
+        Route::post('admin/logs/view', [App\Http\Controllers\Admin\LogViewerController::class, 'view'])->name('admin.logs.view');
+        Route::get('admin/logs/download', [App\Http\Controllers\Admin\LogViewerController::class, 'download'])->name('admin.logs.download');
+        Route::post('admin/logs/delete', [App\Http\Controllers\Admin\LogViewerController::class, 'delete'])->name('admin.logs.delete');
+        Route::post('admin/logs/clear', [App\Http\Controllers\Admin\LogViewerController::class, 'clear'])->name('admin.logs.clear');
+
         Route::resource('roles', App\Http\Controllers\RoleController::class);
         Route::resource('facilities', App\Http\Controllers\FacilityController::class);
         Route::resource('districts', App\Http\Controllers\DistrictController::class);
