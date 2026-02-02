@@ -45,6 +45,7 @@ Route::post('sendSMSViaZamtelBulkSMS', [App\Http\Controllers\Auth\OTPVerificatio
 Route::post('verifyOTP', [App\Http\Controllers\Auth\OTPVerificationController::class, 'verifyOTP'])->middleware('throttle:5,1')->name('verifyOTP');
 
 Route::get('clients/datatable', [App\Http\Controllers\ClientController::class, 'datatable'])->name('clients.datatable');
+Route::post('clients/generate-certificate', [App\Http\Controllers\ClientController::class, 'generateCertificateForClient'])->name('clients.generate-certificate');
 Route::get('users/datatable', [App\Http\Controllers\UserController::class, 'datatable'])->name('users.datatable');
 Route::get('certificates/datatable', [App\Http\Controllers\CertificateController::class, 'datatable'])->name('certificates.datatable');
 Route::get('vaccinations/datatable', [App\Http\Controllers\VaccinationController::class, 'datatable'])->name('vaccinations.datatable');
@@ -79,6 +80,15 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('admin/logs/download', [App\Http\Controllers\Admin\LogViewerController::class, 'download'])->name('admin.logs.download');
         Route::post('admin/logs/delete', [App\Http\Controllers\Admin\LogViewerController::class, 'delete'])->name('admin.logs.delete');
         Route::post('admin/logs/clear', [App\Http\Controllers\Admin\LogViewerController::class, 'clear'])->name('admin.logs.clear');
+
+        // System Tools routes
+        Route::get('admin/system-tools', [App\Http\Controllers\Admin\SystemToolsController::class, 'index'])->name('admin.system-tools');
+        Route::post('admin/system-tools/generate-certificates', [App\Http\Controllers\Admin\SystemToolsController::class, 'generateCertificates'])->name('admin.system-tools.generate-certificates');
+        Route::post('admin/system-tools/import-dhis2', [App\Http\Controllers\Admin\SystemToolsController::class, 'importDHIS2Data'])->name('admin.system-tools.import-dhis2');
+        Route::post('admin/system-tools/export-trusted-portal', [App\Http\Controllers\Admin\SystemToolsController::class, 'exportToTrustedPortal'])->name('admin.system-tools.export-trusted-portal');
+        Route::post('admin/system-tools/clear-cache', [App\Http\Controllers\Admin\SystemToolsController::class, 'clearCache'])->name('admin.system-tools.clear-cache');
+        Route::post('admin/system-tools/optimize', [App\Http\Controllers\Admin\SystemToolsController::class, 'optimizeApp'])->name('admin.system-tools.optimize');
+        Route::get('admin/system-tools/stats', [App\Http\Controllers\Admin\SystemToolsController::class, 'getStats'])->name('admin.system-tools.stats');
 
         Route::resource('roles', App\Http\Controllers\RoleController::class);
         Route::resource('facilities', App\Http\Controllers\FacilityController::class);

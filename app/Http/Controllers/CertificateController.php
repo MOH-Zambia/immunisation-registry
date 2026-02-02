@@ -42,27 +42,79 @@ class CertificateController extends AppBaseController
     public function datatable(Request $request)
     {
         if ($request->ajax()) {
-            $certificates = Certificate::join('clients', 'certificates.client_id', '=', 'clients.id')
+            $query = Certificate::join('clients', 'certificates.client_id', '=', 'clients.id')
                 ->select([
                     'certificates.id',
+                    'certificates.certificate_uuid',
                     'clients.NRC',
                     'clients.passport_number',
+                    'clients.drivers_license',
                     'clients.last_name',
                     'clients.first_name',
                     'clients.other_names',
+                    'clients.contact_number',
+                    'clients.contact_email_address',
                     'certificates.trusted_vaccine_code',
-                    'certificates.created_at'
-                ])->orderBy('certificates.id', 'DESC');
+                    'certificates.created_at',
+                    'certificates.updated_at'
+                ]);
 
-            return Datatables::of($certificates)
+            // Apply date range filter
+            if ($request->filled('start_date') && $request->filled('end_date')) {
+                $query->whereBetween('certificates.created_at', [
+                    $request->start_date . ' 00:00:00',
+                    $request->end_date . ' 23:59:59'
+                ]);
+            }
+
+            // Apply trusted vaccine code filter
+            if ($request->filled('trusted_filter')) {
+                if ($request->trusted_filter === 'exported') {
+                    $query->whereNotNull('certificates.trusted_vaccine_code');
+                } elseif ($request->trusted_filter === 'pending') {
+                    $query->whereNull('certificates.trusted_vaccine_code');
+                }
+            }
+
+            $query->orderBy('certificates.id', 'DESC');
+
+            return Datatables::of($query)
                 ->addIndexColumn()
                 ->addColumn('action', function($row){
-                    return '<a href="/certificates/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+                    $viewBtn = '<a href="/certificates/'.$row->id.'" class="btn btn-success btn-sm" title="View Details"><i class="fas fa-eye"></i></a>';
+                    $downloadBtn = '<a href="/certificates/'.$row->id.'/pdf" class="btn btn-primary btn-sm ml-1" title="Download PDF"><i class="fas fa-download"></i></a>';
+                    $copyBtn = '<button class="btn btn-info btn-sm ml-1 copy-uuid" data-uuid="'.$row->certificate_uuid.'" title="Copy Certificate URL"><i class="fas fa-copy"></i></button>';
+                    return $viewBtn . $downloadBtn . $copyBtn;
                 })
-                ->editColumn('created_at', function ($request) {
-                    return $request->created_at->format('Y-m-d');
+                ->addColumn('client_name', function($row) {
+                    return trim($row->first_name . ' ' . ($row->other_names ?? '') . ' ' . $row->last_name);
                 })
-                ->rawColumns(['action'])
+                ->addColumn('identification', function($row) {
+                    if ($row->NRC) return 'NRC: ' . $row->NRC;
+                    if ($row->passport_number) return 'Passport: ' . $row->passport_number;
+                    if ($row->drivers_license) return 'DL: ' . $row->drivers_license;
+                    return 'N/A';
+                })
+                ->addColumn('trusted_status', function($row) {
+                    if ($row->trusted_vaccine_code) {
+                        return '<span class="badge badge-success"><i class="fas fa-check-circle"></i> Exported</span>';
+                    }
+                    return '<span class="badge badge-warning"><i class="fas fa-clock"></i> Pending</span>';
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at->format('Y-m-d H:i');
+                })
+                ->filterColumn('client_name', function($query, $keyword) {
+                    $query->whereRaw("CONCAT(clients.first_name, ' ', COALESCE(clients.other_names, ''), ' ', clients.last_name) like ?", ["%{$keyword}%"]);
+                })
+                ->filterColumn('identification', function($query, $keyword) {
+                    $query->where(function($q) use ($keyword) {
+                        $q->where('clients.NRC', 'like', "%{$keyword}%")
+                          ->orWhere('clients.passport_number', 'like', "%{$keyword}%")
+                          ->orWhere('clients.drivers_license', 'like', "%{$keyword}%");
+                    });
+                })
+                ->rawColumns(['action', 'trusted_status'])
                 ->toJson();
         }
     }

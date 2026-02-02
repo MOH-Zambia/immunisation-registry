@@ -27,67 +27,137 @@
     <!-- Main content -->
     <section class="content">
       <div class="container-fluid">
+        <!-- Alert box for cache info -->
+        <div class="alert alert-info alert-dismissible fade show" style="margin-bottom: 20px;">
+          <button type="button" class="close" data-dismiss="alert">&times;</button>
+          <i class="icon fas fa-info-circle"></i> Dashboard statistics are cached for 5 minutes for optimal performance. Last updated: {{ now()->format('h:i A') }}
+        </div>
+
         <!-- Small boxes (Stat box) -->
         <div class="row">
-          <div class="col-lg-2 col-4">
+          <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box">
+            <div class="small-box bg-info">
               <div class="inner">
                 <h3>{{ number_format($clients) }}</h3>
-
-                <p>Clients</p>
+                <p>Registered Clients</p>
               </div>
               <div class="icon">
-                <i class="ion ion-bag"></i>
+                <i class="ion ion-person-stalker"></i>
               </div>
               <a href="{{ route('clients.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
-          <div class="col-lg-2 col-4">
+          <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box">
+            <div class="small-box bg-success">
               <div class="inner">
                 <h3>{{ number_format($vaccinations) }}</h3>
-
-                <p>Total Number of Doses</p>
+                <p>Total Doses Administered</p>
               </div>
               <div class="icon">
-                <i class="ion ion-stats-bars"></i>
+                <i class="fas fa-syringe"></i>
               </div>
               <a href="{{ route('vaccinations.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
           <!-- ./col -->
-          <div class="col-lg-2 col-4">
+          <div class="col-lg-3 col-6">
             <!-- small box -->
-            <div class="small-box">
+            <div class="small-box bg-warning">
               <div class="inner">
                 <h3>{{ number_format($certificates) }}</h3>
-
-                <p>Certificates</p>
+                <p>Certificates Issued</p>
               </div>
               <div class="icon">
-                <i class="ion ion-person-add"></i>
+                <i class="fas fa-certificate"></i>
               </div>
               <a href="{{ route('certificates.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
           </div>
-            <!-- ./col -->
-            <div class="col-lg-2 col-4">
-                <!-- small box -->
-                <div class="small-box">
-                    <div class="inner">
-                        <h3>{{ number_format($astrazeneca_first_dose) }}</h3>
-
-                        <p>AstraZeneca Dose 1</p>
-                    </div>
-                    <div class="icon">
-                        <i class="ion ion-pie-graph"></i>
-                    </div>
-                    <a href="{{ route('vaccinations.index', ['vaccine_id'=>1, 'dose_number'=>1]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
-                </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box bg-primary">
+              <div class="inner">
+                <h3>{{ number_format($fully_vaccinated) }}</h3>
+                <p>Fully Vaccinated</p>
+                <small>{{ $vaccination_progress }}% of registered clients</small>
+              </div>
+              <div class="icon">
+                <i class="fas fa-check-circle"></i>
+              </div>
+              <a href="{{ route('clients.index') }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
             </div>
+          </div>
+        </div>
+        <!-- /.row -->
+
+        <!-- Secondary stats row -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-gradient-info">
+              <div class="inner">
+                <h3>{{ number_format($male_count) }}</h3>
+                <p>Male Clients</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-male"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-gradient-pink">
+              <div class="inner">
+                <h3>{{ number_format($female_count) }}</h3>
+                <p>Female Clients</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-female"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-gradient-success">
+              <div class="inner">
+                <h3>{{ number_format($vaccinations_last_7_days) }}</h3>
+                <p>Doses (Last 7 Days)</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-calendar-week"></i>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-3 col-6">
+            <div class="small-box bg-gradient-warning">
+              <div class="inner">
+                <h3>{{ number_format($unique_clients_last_7_days) }}</h3>
+                <p>New Clients (Last 7 Days)</p>
+              </div>
+              <div class="icon">
+                <i class="fas fa-user-plus"></i>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Vaccine breakdown row -->
+        <div class="row">
+          <div class="col-lg-2 col-4">
+            <!-- small box -->
+            <div class="small-box">
+              <div class="inner">
+                <h3>{{ number_format($astrazeneca_first_dose) }}</h3>
+
+                <p>AstraZeneca Dose 1</p>
+              </div>
+              <div class="icon">
+                <i class="ion ion-pie-graph"></i>
+              </div>
+              <a href="{{ route('vaccinations.index', ['vaccine_id'=>1, 'dose_number'=>1]) }}" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
             <!-- ./col -->
             <div class="col-lg-2 col-4">
                 <!-- small box -->
@@ -219,8 +289,24 @@
                 <div class="card">
                     <div class="card-header border-0">
                         <h3 class="card-title">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
-                            Users
+                            <i class="fas fa-chart-line mr-1"></i>
+                            Vaccination Trends (Last 30 Days)
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="vaccination-trends-chart" style="height: 250px; width: 100%;"></div>
+                    </div>
+                </div>
+                <!-- /.card -->
+            </section>
+
+            <section class="col-lg-12 connectedSortable">
+                <!-- Users card -->
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">
+                            <i class="fas fa-users mr-1"></i>
+                            User Growth ({{ date('Y') }})
                         </h3>
                     </div>
                     <div class="card-body">
@@ -323,20 +409,72 @@
 
 @push('page_scripts')
     <script>
-        var data = {{ json_encode($user_data) }}
+        var userData = {{ json_encode($user_data) }};
+        var vaccinationTrends = {!! json_encode($vaccination_trends) !!};
 
-        Highcharts.chart('user-chart', {
+        // Vaccination Trends Chart (Last 30 Days)
+        var trendDates = vaccinationTrends.map(function(item) {
+            return new Date(item.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        });
+        var trendCounts = vaccinationTrends.map(function(item) {
+            return parseInt(item.count);
+        });
+
+        Highcharts.chart('vaccination-trends-chart', {
+            chart: {
+                type: 'areaspline'
+            },
             title: {
-                text: 'User growth'
+                text: 'Daily Vaccinations - Last 30 Days'
             },
             subtitle: {
-                test: 'Immunisation registry users for the past 12 months'
+                text: 'Track vaccination activity over time'
             },
             xAxis: {
-                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'Jun', 'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec']
+                categories: trendDates,
+                title: {
+                    text: 'Date'
+                }
             },
             yAxis: {
-                title: 'Number of New Users'
+                title: {
+                    text: 'Number of Doses'
+                }
+            },
+            tooltip: {
+                shared: true,
+                valueSuffix: ' doses'
+            },
+            credits: {
+                enabled: false
+            },
+            plotOptions: {
+                areaspline: {
+                    fillOpacity: 0.5
+                }
+            },
+            series: [{
+                name: 'Vaccinations',
+                data: trendCounts,
+                color: '#28a745'
+            }]
+        });
+
+        // User Growth Chart
+        Highcharts.chart('user-chart', {
+            title: {
+                text: 'User Growth - ' + {{ date('Y') }}
+            },
+            subtitle: {
+                text: 'System users registered this year'
+            },
+            xAxis: {
+                categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+            },
+            yAxis: {
+                title: {
+                    text: 'Number of New Users'
+                }
             },
             legend: {
                 layout: 'vertical',
@@ -345,13 +483,17 @@
             },
             plotOptions: {
                 series: {
-                    allowPointSelect:true
+                    allowPointSelect: true
                 }
             },
             series:[{
-                name: 'New user',
-                data: data
+                name: 'New Users',
+                data: userData,
+                color: '#007bff'
             }],
+            credits: {
+                enabled: false
+            },
             responsive: {
                 rules: [{
                     condition:{
@@ -366,7 +508,6 @@
                     }
                 }]
             }
-
         });
 
 

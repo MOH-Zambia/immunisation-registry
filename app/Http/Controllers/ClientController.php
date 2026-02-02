@@ -5,10 +5,12 @@ namespace App\Http\Controllers;
 use App\Http\Requests\CreateClientRequest;
 use App\Http\Requests\UpdateClientRequest;
 use App\Models\Client;
+use App\Models\Certificate;
 use App\Repositories\ClientRepository;
 use App\Http\Controllers\AppBaseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Artisan;
 use Laracasts\Flash\Flash;
 use Illuminate\Support\Facades\Auth;
 
@@ -39,27 +41,225 @@ class ClientController extends AppBaseController
 
     public function datatable(Request $request)
     {
-        $clients = Client::select([
-            'id',
-            'source_id',
-            'card_number',
-            'NRC',
-            'passport_number',
-            'last_name',
-            'first_name',
-            'other_names',
-            'sex',
-            'contact_number',
-            'contact_email_address'
-        ])->orderBy('id', 'DESC');
+        $query = Client::select([
+            'clients.id',
+            'clients.source_id',
+            'clients.card_number',
+            'clients.NRC',
+            'clients.passport_number',
+            'clients.last_name',
+            'clients.first_name',
+            'clients.other_names',
+            'clients.sex',
+            'clients.contact_number',
+            'clients.contact_email_address',
+            'clients.date_of_birth',
+            'clients.created_at'
+        ])
+        ->leftJoin('certificates', 'clients.id', '=', 'certificates.client_id')
+        ->leftJoin('vaccinations', 'clients.id', '=', 'vaccinations.client_id')
+        ->selectRaw('MAX(certificates.id) as certificate_id')
+        ->selectRaw('MAX(certificates.certificate_number) as certificate_number')
+        ->selectRaw('MAX(certificates.export_status) as certificate_export_status')
+        ->selectRaw('COUNT(DISTINCT vaccinations.id) as vaccination_count')
+        ->groupBy([
+            'clients.id',
+            'clients.source_id',
+            'clients.card_number',
+            'clients.NRC',
+            'clients.passport_number',
+            'clients.last_name',
+            'clients.first_name',
+            'clients.other_names',
+            'clients.sex',
+            'clients.contact_number',
+            'clients.contact_email_address',
+            'clients.date_of_birth',
+            'clients.created_at'
+        ]);
 
-        return Datatables::of($clients)
+        // Date range filter
+        if ($request->has('start_date') && $request->start_date != '') {
+            $query->where('clients.created_at', '>=', $request->start_date . ' 00:00:00');
+        }
+        if ($request->has('end_date') && $request->end_date != '') {
+            $query->where('clients.created_at', '<=', $request->end_date . ' 23:59:59');
+        }
+
+        // Certificate status filter
+        if ($request->has('certificate_status') && $request->certificate_status != '') {
+            if ($request->certificate_status == 'has_certificate') {
+                $query->havingRaw('MAX(certificates.id) IS NOT NULL');
+            } elseif ($request->certificate_status == 'no_certificate') {
+                $query->havingRaw('MAX(certificates.id) IS NULL');
+            } elseif ($request->certificate_status == 'exported') {
+                $query->havingRaw('MAX(certificates.export_status) = 1');
+            } elseif ($request->certificate_status == 'not_exported') {
+                $query->havingRaw('MAX(certificates.id) IS NOT NULL AND MAX(certificates.export_status) = 0');
+            }
+        }
+
+        // Gender filter
+        if ($request->has('gender') && $request->gender != '') {
+            $query->where('clients.sex', $request->gender);
+        }
+
+        // Vaccination status filter
+        if ($request->has('vaccination_status') && $request->vaccination_status != '') {
+            if ($request->vaccination_status == 'fully_vaccinated') {
+                $query->havingRaw('COUNT(DISTINCT vaccinations.id) >= 2');
+            } elseif ($request->vaccination_status == 'partially_vaccinated') {
+                $query->havingRaw('COUNT(DISTINCT vaccinations.id) = 1');
+            } elseif ($request->vaccination_status == 'not_vaccinated') {
+                $query->havingRaw('COUNT(DISTINCT vaccinations.id) = 0');
+            }
+        }
+
+        $query->orderBy('clients.id', 'DESC');
+
+        return Datatables::of($query)
             ->addIndexColumn()
-            ->addColumn('action', function($row){
-                return '<a href="/clients/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+            ->addColumn('full_name', function($row) {
+                return trim($row->first_name . ' ' . $row->other_names . ' ' . $row->last_name);
             })
-            ->rawColumns(['action'])
+            ->addColumn('age', function($row) {
+                if ($row->date_of_birth) {
+                    return \Carbon\Carbon::parse($row->date_of_birth)->age;
+                }
+                return 'N/A';
+            })
+            ->addColumn('certificate_status', function($row) {
+                if ($row->certificate_id) {
+                    if ($row->certificate_export_status == 1) {
+                        return '<span class="badge badge-success">Certificate Exported</span>';
+                    } else {
+                        return '<span class="badge badge-info">Certificate Available</span>';
+                    }
+                }
+                return '<span class="badge badge-warning">No Certificate</span>';
+            })
+            ->addColumn('vaccination_status', function($row) {
+                if ($row->vaccination_count >= 2) {
+                    return '<span class="badge badge-success">Fully Vaccinated (' . $row->vaccination_count . ')</span>';
+                } elseif ($row->vaccination_count == 1) {
+                    return '<span class="badge badge-warning">Partially Vaccinated (1)</span>';
+                }
+                return '<span class="badge badge-secondary">Not Vaccinated</span>';
+            })
+            ->addColumn('action', function($row) {
+                $buttons = '<a class="btn btn-sm btn-info mr-1" href="'.route('clients.show', [$row->id]).'">
+                    <i class="fas fa-eye"></i> View
+                </a>';
+
+                if ($row->certificate_id) {
+                    $buttons .= '<a class="btn btn-sm btn-success mr-1" href="'.route('certificates.show', [$row->certificate_id]).'" target="_blank">
+                        <i class="fas fa-certificate"></i> View Certificate
+                    </a>';
+                } else {
+                    $buttons .= '<button class="btn btn-sm btn-primary generate-certificate" data-client-id="'.$row->id.'">
+                        <i class="fas fa-plus"></i> Generate Certificate
+                    </button>';
+                }
+
+                return $buttons;
+            })
+            ->filterColumn('full_name', function($query, $keyword) {
+                $query->whereRaw("CONCAT(clients.first_name, ' ', COALESCE(clients.other_names, ''), ' ', clients.last_name) like ?", ["%{$keyword}%"]);
+            })
+            ->rawColumns(['certificate_status', 'vaccination_status', 'action'])
             ->toJson();
+    }
+
+    /**
+     * Generate certificate for a specific client
+     *
+     * @param Request $request
+     * @return Response
+     */
+    public function generateCertificateForClient(Request $request)
+    {
+        try {
+            $clientId = $request->input('client_id');
+
+            // Verify client exists
+            $client = Client::find($clientId);
+            if (!$client) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Client not found'
+                ], 404);
+            }
+
+            // Check if client already has a certificate
+            $existingCertificate = Certificate::where('client_id', $clientId)->first();
+            if ($existingCertificate) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Client already has a certificate',
+                    'certificate_id' => $existingCertificate->id
+                ], 400);
+            }
+
+            // Check if client has vaccinations
+            $vaccinationCount = $client->vaccinations()->count();
+            if ($vaccinationCount < 1) {
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Client must have at least one vaccination record to generate a certificate'
+                ], 400);
+            }
+
+            // Log the certificate generation attempt
+            Log::info('Generating certificate for individual client', [
+                'client_id' => $clientId,
+                'user_id' => Auth::id(),
+                'vaccination_count' => $vaccinationCount
+            ]);
+
+            // Call the Artisan command to generate certificate for this specific client
+            Artisan::call('generate:certificates', [
+                '--client' => $clientId
+            ]);
+
+            // Verify certificate was created
+            $certificate = Certificate::where('client_id', $clientId)->first();
+
+            if ($certificate) {
+                Log::info('Certificate generated successfully', [
+                    'client_id' => $clientId,
+                    'certificate_id' => $certificate->id,
+                    'certificate_number' => $certificate->certificate_number
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Certificate generated successfully',
+                    'certificate_id' => $certificate->id,
+                    'certificate_number' => $certificate->certificate_number
+                ]);
+            } else {
+                Log::error('Certificate generation failed - certificate not created', [
+                    'client_id' => $clientId
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to generate certificate. Please check vaccination records and try again.'
+                ], 500);
+            }
+
+        } catch (\Exception $e) {
+            Log::error('Certificate generation error', [
+                'client_id' => $request->input('client_id'),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while generating the certificate: ' . $e->getMessage()
+            ], 500);
+        }
     }
 
     /**

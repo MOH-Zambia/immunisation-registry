@@ -41,6 +41,41 @@ class DashboardController extends Controller
                 ->selectRaw('(SELECT COUNT(*) FROM certificates) as certificates_count')
                 ->first();
 
+            // Gender breakdown
+            $genderStats = DB::table('clients')
+                ->selectRaw('COUNT(CASE WHEN sex = "M" THEN 1 END) as male_count')
+                ->selectRaw('COUNT(CASE WHEN sex = "F" THEN 1 END) as female_count')
+                ->first();
+
+            // Age group breakdown (approximate based on date_of_birth)
+            $ageStats = DB::table('clients')
+                ->whereNotNull('date_of_birth')
+                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) < 18 THEN 1 END) as under_18')
+                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 18 AND 40 THEN 1 END) as age_18_40')
+                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 41 AND 60 THEN 1 END) as age_41_60')
+                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) > 60 THEN 1 END) as over_60')
+                ->first();
+
+            // Recent activity (last 7 days)
+            $recentStats = DB::table('vaccinations')
+                ->where('created_at', '>=', now()->subDays(7))
+                ->selectRaw('COUNT(*) as vaccinations_last_7_days')
+                ->selectRaw('COUNT(DISTINCT client_id) as unique_clients_last_7_days')
+                ->first();
+
+            // Fully vaccinated count (clients with at least 2 doses or 1 J&J dose)
+            $fullyVaccinated = DB::table('clients')
+                ->whereExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('vaccinations')
+                        ->whereColumn('vaccinations.client_id', 'clients.id')
+                        ->where(function($q) {
+                            $q->where('vaccinations.vaccine_id', 3) // J&J single dose
+                              ->orHaving(DB::raw('COUNT(*)'), '>=', 2); // Or 2+ doses
+                        });
+                })
+                ->count();
+
             // Optimize: Use single query with conditional aggregation for vaccine doses
             $vaccineStats = DB::table('vaccinations')
                 ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 THEN 1 END) as astrazeneca_doses')
@@ -53,6 +88,14 @@ class DashboardController extends Controller
                 ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "1" THEN 1 END) as moderna_first_dose')
                 ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "2" THEN 1 END) as moderna_second_dose')
                 ->first();
+
+            // Vaccination trends - last 30 days by day
+            $vaccinationTrends = DB::table('vaccinations')
+                ->where('created_at', '>=', now()->subDays(30))
+                ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+                ->groupBy('date')
+                ->orderBy('date')
+                ->get();
 
             // Optimize: Single query for user registration data
             $userMonthlyData = User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
@@ -68,10 +111,25 @@ class DashboardController extends Controller
                 $user_data[$month - 1] = $count; // Array is 0-indexed, months are 1-indexed
             }
 
+            // Calculate vaccination progress percentage
+            $vaccinationProgress = $basicStats->clients_count > 0
+                ? round(($fullyVaccinated / $basicStats->clients_count) * 100, 1)
+                : 0;
+
             return [
                 'clients' => $basicStats->clients_count,
                 'vaccinations' => $basicStats->vaccinations_count,
                 'certificates' => $basicStats->certificates_count,
+                'male_count' => $genderStats->male_count ?? 0,
+                'female_count' => $genderStats->female_count ?? 0,
+                'under_18' => $ageStats->under_18 ?? 0,
+                'age_18_40' => $ageStats->age_18_40 ?? 0,
+                'age_41_60' => $ageStats->age_41_60 ?? 0,
+                'over_60' => $ageStats->over_60 ?? 0,
+                'vaccinations_last_7_days' => $recentStats->vaccinations_last_7_days ?? 0,
+                'unique_clients_last_7_days' => $recentStats->unique_clients_last_7_days ?? 0,
+                'fully_vaccinated' => $fullyVaccinated,
+                'vaccination_progress' => $vaccinationProgress,
                 'astrazeneca_doses' => $vaccineStats->astrazeneca_doses,
                 'astrazeneca_first_dose' => $vaccineStats->astrazeneca_first_dose,
                 'astrazeneca_second_dose' => $vaccineStats->astrazeneca_second_dose,
@@ -81,7 +139,8 @@ class DashboardController extends Controller
                 'moderna_doses' => $vaccineStats->moderna_doses,
                 'moderna_first_dose' => $vaccineStats->moderna_first_dose,
                 'moderna_second_dose' => $vaccineStats->moderna_second_dose,
-                'user_data' => $user_data
+                'user_data' => $user_data,
+                'vaccination_trends' => $vaccinationTrends
             ];
         });
 
@@ -89,6 +148,16 @@ class DashboardController extends Controller
             ->with('clients', $stats['clients'])
             ->with('vaccinations', $stats['vaccinations'])
             ->with('certificates', $stats['certificates'])
+            ->with('male_count', $stats['male_count'])
+            ->with('female_count', $stats['female_count'])
+            ->with('under_18', $stats['under_18'])
+            ->with('age_18_40', $stats['age_18_40'])
+            ->with('age_41_60', $stats['age_41_60'])
+            ->with('over_60', $stats['over_60'])
+            ->with('vaccinations_last_7_days', $stats['vaccinations_last_7_days'])
+            ->with('unique_clients_last_7_days', $stats['unique_clients_last_7_days'])
+            ->with('fully_vaccinated', $stats['fully_vaccinated'])
+            ->with('vaccination_progress', $stats['vaccination_progress'])
             ->with('astrazeneca_first_dose', $stats['astrazeneca_first_dose'])
             ->with('astrazeneca_second_dose', $stats['astrazeneca_second_dose'])
             ->with('astrazeneca_doses', $stats['astrazeneca_doses'])
@@ -98,6 +167,7 @@ class DashboardController extends Controller
             ->with('moderna_first_dose', $stats['moderna_first_dose'])
             ->with('moderna_second_dose', $stats['moderna_second_dose'])
             ->with('moderna_doses', $stats['moderna_doses'])
-            ->with('user_data', $stats['user_data']);
+            ->with('user_data', $stats['user_data'])
+            ->with('vaccination_trends', $stats['vaccination_trends']);
     }
 }
