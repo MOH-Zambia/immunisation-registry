@@ -98,6 +98,6 @@ class DashboardController extends Controller
             ->with('moderna_first_dose', $stats['moderna_first_dose'])
             ->with('moderna_second_dose', $stats['moderna_second_dose'])
             ->with('moderna_doses', $stats['moderna_doses'])
-            ->with(compact('user_data', $stats['user_data']));
+            ->with('user_data', $stats['user_data']);
     }
 }
