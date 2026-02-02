@@ -473,6 +473,53 @@
     </section>
 @endsection
 
+@section('third_party_stylesheets')
+    <!-- leaflet css -->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
+    <style>
+        /* Fix map container z-index and overflow issues */
+        #facilities-map,
+        #province-map,
+        #district-map {
+            position: relative;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        /* Ensure map tiles don't overflow */
+        .leaflet-container {
+            z-index: 1;
+        }
+
+        /* Fix leaflet controls z-index */
+        .leaflet-control-container {
+            position: relative;
+            z-index: 100;
+        }
+
+        /* Ensure popups appear above map but below other content */
+        .leaflet-popup {
+            z-index: 1000;
+        }
+
+        /* Fix map pane layering */
+        .leaflet-pane {
+            z-index: auto;
+        }
+
+        /* Prevent map from overlapping other sections */
+        .card {
+            position: relative;
+            z-index: 10;
+            overflow: hidden;
+        }
+
+        .card-body {
+            overflow: hidden;
+        }
+    </style>
+@endsection
+
 @section('third_party_scripts')
     <!-- highcharts -->
     <script src="https://code.highcharts.com/highcharts.js"></script>
@@ -482,7 +529,6 @@
 
     <!-- leaflet -->
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js" integrity="sha512-XQoYMqMTK8LvdxXYG3nZ448hOEQiglfqkJs1NOQV44cWnUrBc8PkAOcXy20w0vlaXaVUearIOBhiXZ5V3ynxwA==" crossorigin=""></script>
-    <script type="text/javascript" src="https://leafletjs.com/examples/choropleth/us-states.js"></script>
 @endsection
 
 @push('page_scripts')
@@ -683,13 +729,21 @@
         });
 
         // Initialize Leaflet Map for Zambia
-        var facilitiesMap = L.map('facilities-map').setView([-13.1339, 27.8493], 6); // Zambia center coordinates
+        var facilitiesMap = L.map('facilities-map', {
+            zoomControl: true,
+            scrollWheelZoom: false
+        }).setView([-13.1339, 27.8493], 6); // Zambia center coordinates
 
         // Add OpenStreetMap tiles
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
         }).addTo(facilitiesMap);
+
+        // Force map to fit container
+        setTimeout(function() {
+            facilitiesMap.invalidateSize();
+        }, 100);
 
         // Fetch facilities data and add markers
         fetch('{{ route("clients.index") }}') // Using a dummy route, should be replaced with actual facilities API
@@ -769,12 +823,20 @@
             });
 
         // Province Map - Vaccinations by Province
-        var provinceMap = L.map('province-map').setView([-13.1339, 27.8493], 6);
+        var provinceMap = L.map('province-map', {
+            zoomControl: true,
+            scrollWheelZoom: false
+        }).setView([-13.1339, 27.8493], 6);
 
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             maxZoom: 19,
             attribution: '© OpenStreetMap contributors'
         }).addTo(provinceMap);
+
+        // Force map to fit container
+        setTimeout(function() {
+            provinceMap.invalidateSize();
+        }, 100);
 
         // Province data with vaccination counts
         var provinceData = [
@@ -818,12 +880,20 @@
             L.marker([province.lat, province.lng], {
                 icon: L.divIcon({
                     className: 'province-label',
-                    html: '<div style="background: white; padding: 2px 6px; border-radius: 3px; font-weight: bold; font-size: 11px; border: 1px solid #333;">' +
-                          province.name + '<br><small>' + province.vaccinations.toLocaleString() + '</small></div>',
-                    iconSize: [80, 30]
-                })
-            }).addTo(provinceMap);
-        });
+                    html: '<div style="backgro, {
+            zoomControl: true,
+            scrollWheelZoom: false
+        }).setView([-13.1339, 27.8493], 6);
+
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+            attribution: '© OpenStreetMap contributors'
+        }).addTo(districtMap);
+
+        // Force map to fit container
+        setTimeout(function() {
+            districtMap.invalidateSize();
+        }, 100
 
         // District Map - Vaccinations by District
         var districtMap = L.map('district-map').setView([-13.1339, 27.8493], 6);
