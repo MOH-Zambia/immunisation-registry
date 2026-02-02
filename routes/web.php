@@ -49,6 +49,7 @@ Route::post('clients/generate-certificate', [App\Http\Controllers\ClientControll
 Route::get('users/datatable', [App\Http\Controllers\UserController::class, 'datatable'])->name('users.datatable');
 Route::get('certificates/datatable', [App\Http\Controllers\CertificateController::class, 'datatable'])->name('certificates.datatable');
 Route::get('vaccinations/datatable', [App\Http\Controllers\VaccinationController::class, 'datatable'])->name('vaccinations.datatable');
+Route::get('vaccinations/export', [App\Http\Controllers\VaccinationController::class, 'export'])->name('vaccinations.export');
 
 Route::get('certificates/generatePDF/{uuid}', [App\Http\Controllers\CertificateController::class, 'generatePDF'])->name('certificates.generatePDF');
 Route::get('certificates/{id}/print', [App\Http\Controllers\CertificateController::class, 'printCertificate'])->name('certificates.print');

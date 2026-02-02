@@ -1,10 +1,5 @@
 @extends('layouts.app')
 
-@section('third_party_stylesheets')
-    <!-- leaflet -->
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" integrity="sha512-xodZBNTC5n17Xt2atTPuE1HxjVMSvLVW9ocqUKLsCC5CXdbqCmblAshOMAS6/keqq/sMZMZ19scR4PsZChSR7A==" crossorigin=""/>
-@endsection
-
 @section('content')
     <!-- Content Header (Page header) -->
     <div class="content-header">
@@ -284,8 +279,8 @@
         <!-- Main row -->
         <div class="row">
           <!-- Left col -->
+            <!-- Vaccination Trends Chart -->
             <section class="col-lg-12 connectedSortable">
-                <!-- Users card -->
                 <div class="card">
                     <div class="card-header border-0">
                         <h3 class="card-title">
@@ -297,96 +292,86 @@
                         <div id="vaccination-trends-chart" style="height: 250px; width: 100%;"></div>
                     </div>
                 </div>
-                <!-- /.card -->
             </section>
 
-            <section class="col-lg-12 connectedSortable">
-                <!-- Users card -->
+            <!-- Gender and Age Distribution Charts -->
+            <section class="col-lg-6 connectedSortable">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">
+                            <i class="fas fa-venus-mars mr-1"></i>
+                            Gender Distribution
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="gender-chart" style="height: 300px; width: 100%;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <section class="col-lg-6 connectedSortable">
                 <div class="card">
                     <div class="card-header border-0">
                         <h3 class="card-title">
                             <i class="fas fa-users mr-1"></i>
-                            User Growth ({{ date('Y') }})
+                            Age Distribution
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <div id="age-chart" style="height: 300px; width: 100%;"></div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- User Growth Chart -->
+            <section class="col-lg-12 connectedSortable">
+                <div class="card">
+                    <div class="card-header border-0">
+                        <h3 class="card-title">
+                            <i class="fas fa-user-shield mr-1"></i>
+                            System User Growth ({{ date('Y') }})
                         </h3>
                     </div>
                     <div class="card-body">
                         <div id="user-chart" style="height: 250px; width: 100%;"></div>
                     </div>
                 </div>
-                <!-- /.card-body-->
             </section>
 
+            <!-- Quick Actions Card -->
             <section class="col-lg-12 connectedSortable">
-            <!-- Custom tabs (Charts with tabs)-->
-            <div class="card">
-              <div class="card-header">
-                <h3 class="card-title">
-                  <i class="fas fa-chart-pie mr-1"></i>
-                  Vaccinations
-                </h3>
-                <div class="card-tools">
-                  <ul class="nav nav-pills ml-auto">
-                    <li class="nav-item">
-                      <a class="nav-link active" href="#revenue-chart" data-toggle="tab">Area</a>
-                    </li>
-                    <li class="nav-item">
-                      <a class="nav-link" href="#sales-chart" data-toggle="tab">Donut</a>
-                    </li>
-                  </ul>
-                </div>
-              </div><!-- /.card-header -->
-              <div class="card-body">
-                <div class="tab-content p-0">
-                  <!-- Morris chart - Sales -->
-                  <div class="chart tab-pane active" id="vaccinations-bar-chart"
-                       style="position: relative; height: 300px;">
-                      <canvas id="revenue-chart-canvas" height="300" style="height: 300px;"></canvas>
-                   </div>
-                  <div class="chart tab-pane" id="sales-chart" style="position: relative; height: 300px;">
-                    <canvas id="sales-chart-canvas" height="300" style="height: 300px;"></canvas>
-                  </div>
-                </div>
-              </div><!-- /.card-body -->
-            </div>
-            <!-- /.card -->
-          </section>
-
-            <section class="col-lg-12 connectedSortable">
-                <!-- Map card -->
                 <div class="card">
-                    <div class="card-header border-0">
+                    <div class="card-header">
                         <h3 class="card-title">
-                            <i class="fas fa-map-marker-alt mr-1"></i>
-                            Vaccine Doses
+                            <i class="fas fa-bolt mr-1"></i>
+                            Quick Actions
                         </h3>
                     </div>
                     <div class="card-body">
-                        <div id="map"></div>
-                    </div>
-                    <!-- /.card-body-->
-
-                    <div class="card-footer bg-transparent">
                         <div class="row">
-                            <div class="col-4 text-center">
-                                <div id="sparkline-1"></div>
-                                <div class="text-white">Visitors</div>
+                            <div class="col-md-3 col-sm-6">
+                                <a href="{{ route('clients.index') }}" class="btn btn-app btn-block">
+                                    <i class="fas fa-users"></i> View All Clients
+                                </a>
                             </div>
-                            <!-- ./col -->
-                            <div class="col-4 text-center">
-                                <div id="sparkline-2"></div>
-                                <div class="text-white">Online</div>
+                            <div class="col-md-3 col-sm-6">
+                                <a href="{{ route('vaccinations.index') }}" class="btn btn-app btn-block">
+                                    <i class="fas fa-syringe"></i> View Vaccinations
+                                </a>
                             </div>
-                            <!-- ./col -->
-                            <div class="col-4 text-center">
-                                <div id="sparkline-3"></div>
-                                <div class="text-white">Sales</div>
+                            <div class="col-md-3 col-sm-6">
+                                <a href="{{ route('certificates.index') }}" class="btn btn-app btn-block">
+                                    <i class="fas fa-certificate"></i> View Certificates
+                                </a>
                             </div>
-                            <!-- ./col -->
+                            <div class="col-md-3 col-sm-6">
+                                <a href="{{ route('users.index') }}" class="btn btn-app btn-block">
+                                    <i class="fas fa-user-shield"></i> Manage Users
+                                </a>
+                            </div>
                         </div>
-                        <!-- /.row -->
                     </div>
                 </div>
-                <!-- /.card -->
             </section>
           <!-- /.Left col -->
         </div>
@@ -510,6 +495,91 @@
             }
         });
 
+        // Gender Distribution Pie Chart
+        Highcharts.chart('gender-chart', {
+            chart: {
+                type: 'pie'
+            },
+            title: {
+                text: 'Clients by Gender'
+            },
+            tooltip: {
+                pointFormat: '{series.name}: <b>{point.y}</b> ({point.percentage:.1f}%)'
+            },
+            accessibility: {
+                point: {
+                    valueSuffix: '%'
+                }
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    dataLabels: {
+                        enabled: true,
+                        format: '<b>{point.name}</b>: {point.y} ({point.percentage:.1f}%)'
+                    }
+                }
+            },
+            series: [{
+                name: 'Clients',
+                colorByPoint: true,
+                data: [{
+                    name: 'Male',
+                    y: {{ $male_count }},
+                    color: '#007bff'
+                }, {
+                    name: 'Female',
+                    y: {{ $female_count }},
+                    color: '#e83e8c'
+                }]
+            }],
+            credits: {
+                enabled: false
+            }
+        });
+
+        // Age Distribution Column Chart
+        Highcharts.chart('age-chart', {
+            chart: {
+                type: 'column'
+            },
+            title: {
+                text: 'Clients by Age Group'
+            },
+            xAxis: {
+                categories: ['Under 18', '18-40', '41-60', 'Over 60'],
+                crosshair: true
+            },
+            yAxis: {
+                min: 0,
+                title: {
+                    text: 'Number of Clients'
+                }
+            },
+            tooltip: {
+                headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+                pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                    '<td style="padding:0"><b>{point.y}</b></td></tr>',
+                footerFormat: '</table>',
+                shared: true,
+                useHTML: true
+            },
+            plotOptions: {
+                column: {
+                    pointPadding: 0.2,
+                    borderWidth: 0
+                }
+            },
+            series: [{
+                name: 'Clients',
+                data: [{{ $under_18 }}, {{ $age_18_40 }}, {{ $age_41_60 }}, {{ $over_60 }}],
+                color: '#28a745'
+            }],
+            credits: {
+                enabled: false
+            }
+        });
 
         $(function () {
             bsCustomFileInput.init();
@@ -518,43 +588,5 @@
         $("input[data-bootstrap-switch]").each(function(){
             $(this).bootstrapSwitch('state', $(this).prop('checked'));
         });
-
-        var map = L.map('map').setView([37.8, -96], 4);
-
-        L.tileLayer('https://api.mapbox.com/styles/v1/{id}/tiles/{z}/{x}/{y}?access_token=pk.eyJ1IjoibWFwYm94IiwiYSI6ImNpejY4NXVycTA2emYycXBndHRqcmZ3N3gifQ.rJcFIG214AriISLbB6B5aw', {
-            maxZoom: 18,
-            attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors, ' +
-                'Imagery © <a href="https://www.mapbox.com/">Mapbox</a>',
-            id: 'mapbox/light-v9',
-            tileSize: 512,
-            zoomOffset: -1
-        }).addTo(map);
-
-        // get color depending on population density value
-        function getColor(d) {
-            return d > 1000 ? '#800026' :
-                d > 500  ? '#BD0026' :
-                    d > 200  ? '#E31A1C' :
-                        d > 100  ? '#FC4E2A' :
-                            d > 50   ? '#FD8D3C' :
-                                d > 20   ? '#FEB24C' :
-                                    d > 10   ? '#FED976' :
-                                        '#FFEDA0';
-        }
-
-        function style(feature) {
-            return {
-                weight: 2,
-                opacity: 1,
-                color: 'white',
-                dashArray: '3',
-                fillOpacity: 0.7,
-                fillColor: getColor(feature.properties.density)
-            };
-        }
-
-        var geojson = L.geoJson(statesData, {
-            style: style,
-        }).addTo(map);
     </script>
 @endpush

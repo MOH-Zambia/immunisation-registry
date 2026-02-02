@@ -110,16 +110,12 @@ class ClientController extends AppBaseController
             $query->where('clients.sex', $request->gender);
         }
 
-        // Vaccination status filter - use whereHas instead of havingRaw
+        // Vaccination status filter - use subquery for counting
         if ($request->has('vaccination_status') && $request->vaccination_status != '') {
             if ($request->vaccination_status == 'fully_vaccinated') {
-                $query->whereHas('vaccinations', function($q) {
-                    // We need to count in PHP side or use a subquery
-                }, '>=', 2);
+                $query->whereRaw('(SELECT COUNT(*) FROM vaccinations WHERE vaccinations.client_id = clients.id) >= 2');
             } elseif ($request->vaccination_status == 'partially_vaccinated') {
-                $query->whereHas('vaccinations', function($q) {
-                    // Count = 1
-                }, '=', 1);
+                $query->whereRaw('(SELECT COUNT(*) FROM vaccinations WHERE vaccinations.client_id = clients.id) = 1');
             } elseif ($request->vaccination_status == 'not_vaccinated') {
                 $query->whereDoesntHave('vaccinations');
             }

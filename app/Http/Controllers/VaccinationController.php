@@ -49,21 +49,177 @@ class VaccinationController extends AppBaseController
 
     public function datatable(Request $request)
     {
-        $vaccinations = Vaccination::join('clients', 'vaccinations.client_id', '=', 'clients.id')
-            ->join('vaccines', 'vaccinations.vaccine_id', '=', 'vaccines.id')
-            ->join('facilities', 'vaccinations.facility_id', '=', 'facilities.id')
-            ->select(['vaccinations.id', 'last_name', 'first_name', 'other_names', 'date', 'vaccines.id', 'product_name', 'dose_number', 'vaccine_batch_number', 'facilities.name', 'certificate_id']);
+        // Increase memory limit for large datasets
+        ini_set('memory_limit', '256M');
 
-        return Datatables::of($vaccinations)
+        // Use subqueries to avoid JOIN with GROUP BY issues
+        $query = Vaccination::query()
+            ->select([
+                'vaccinations.id',
+                'vaccinations.client_id',
+                'vaccinations.vaccine_id',
+                'vaccinations.facility_id',
+                'vaccinations.date',
+                'vaccinations.dose_number',
+                'vaccinations.vaccine_batch_number',
+                'vaccinations.certificate_id',
+                'vaccinations.created_at',
+            ]);
+
+        // Apply filters
+        if ($request->filled('date_from')) {
+            $query->whereDate('vaccinations.date', '>=', $request->date_from);
+        }
+
+        if ($request->filled('date_to')) {
+            $query->whereDate('vaccinations.date', '<=', $request->date_to);
+        }
+
+        if ($request->filled('facility_id')) {
+            $query->where('vaccinations.facility_id', $request->facility_id);
+        }
+
+        if ($request->filled('vaccine_id')) {
+            $query->where('vaccinations.vaccine_id', $request->vaccine_id);
+        }
+
+        if ($request->filled('dose_number')) {
+            $query->where('vaccinations.dose_number', $request->dose_number);
+        }
+
+        if ($request->filled('certificate_status')) {
+            if ($request->certificate_status === 'with_certificate') {
+                $query->whereNotNull('vaccinations.certificate_id');
+            } elseif ($request->certificate_status === 'without_certificate') {
+                $query->whereNull('vaccinations.certificate_id');
+            }
+        }
+
+        return Datatables::of($query)
             ->addIndexColumn()
-            ->editColumn('date', function ($request) {
-                return $request->date->format('Y-m-d');
+            ->addColumn('client_name', function ($vaccination) {
+                $client = $vaccination->client;
+                if ($client) {
+                    return $client->last_name . ' ' . $client->first_name . ' ' . ($client->other_names ?? '');
+                }
+                return 'N/A';
             })
-            ->addColumn('action', function($row){
-                return '<a href="/vaccinations/'.$row->id.'" class="edit btn btn-success btn-sm">View</a>';
+            ->addColumn('client_nrc', function ($vaccination) {
+                return $vaccination->client ? $vaccination->client->nrc : 'N/A';
             })
-            ->rawColumns(['action'])
+            ->addColumn('vaccine_name', function ($vaccination) {
+                return $vaccination->vaccine ? $vaccination->vaccine->product_name : 'N/A';
+            })
+            ->addColumn('facility_name', function ($vaccination) {
+                return $vaccination->facility ? $vaccination->facility->name : 'N/A';
+            })
+            ->editColumn('date', function ($vaccination) {
+                return $vaccination->date ? $vaccination->date->format('Y-m-d') : 'N/A';
+            })
+            ->editColumn('certificate_id', function ($vaccination) {
+                if ($vaccination->certificate_id) {
+                    return '<a href="/certificates/' . $vaccination->certificate_id . '" class="badge badge-success">View Certificate</a>';
+                }
+                return '<span class="badge badge-secondary">No Certificate</span>';
+            })
+            ->addColumn('action', function($vaccination){
+                $btn = '<a href="/vaccinations/' . $vaccination->id . '" class="btn btn-info btn-sm" title="View"><i class="fas fa-eye"></i></a> ';
+                $btn .= '<a href="/vaccinations/' . $vaccination->id . '/edit" class="btn btn-primary btn-sm" title="Edit"><i class="fas fa-edit"></i></a> ';
+                $btn .= '<button type="button" class="btn btn-danger btn-sm delete-vaccination" data-id="' . $vaccination->id . '" title="Delete"><i class="fas fa-trash"></i></button>';
+                return $btn;
+            })
+            ->rawColumns(['certificate_id', 'action'])
             ->toJson();
+    }
+
+    /**
+     * Export vaccinations to CSV
+     */
+    public function export(Request $request)
+    {
+        $query = Vaccination::with(['client', 'vaccine', 'facility', 'provider', 'country']);
+
+        // Apply same filters as datatable
+        if ($request->filled('date_from')) {
+            $query->whereDate('date', '>=', $request->date_from);
+        }
+        if ($request->filled('date_to')) {
+            $query->whereDate('date', '<=', $request->date_to);
+        }
+        if ($request->filled('facility_id')) {
+            $query->where('facility_id', $request->facility_id);
+        }
+        if ($request->filled('vaccine_id')) {
+            $query->where('vaccine_id', $request->vaccine_id);
+        }
+        if ($request->filled('dose_number')) {
+            $query->where('dose_number', $request->dose_number);
+        }
+        if ($request->filled('certificate_status')) {
+            if ($request->certificate_status === 'with_certificate') {
+                $query->whereNotNull('certificate_id');
+            } elseif ($request->certificate_status === 'without_certificate') {
+                $query->whereNull('certificate_id');
+            }
+        }
+
+        $vaccinations = $query->get();
+
+        $filename = 'vaccinations_' . date('Y-m-d_His') . '.csv';
+        $headers = [
+            'Content-Type' => 'text/csv',
+            'Content-Disposition' => 'attachment; filename="' . $filename . '"',
+        ];
+
+        $callback = function() use ($vaccinations) {
+            $file = fopen('php://output', 'w');
+
+            // CSV Headers
+            fputcsv($file, [
+                'ID',
+                'Client Name',
+                'NRC',
+                'Passport',
+                'Date of Birth',
+                'Gender',
+                'Vaccination Date',
+                'Vaccine',
+                'Dose Number',
+                'Batch Number',
+                'Batch Expiry',
+                'Facility',
+                'Provider',
+                'Country',
+                'Certificate ID',
+                'Created At'
+            ]);
+
+            foreach ($vaccinations as $vaccination) {
+                $client = $vaccination->client;
+                fputcsv($file, [
+                    $vaccination->id,
+                    $client ? $client->last_name . ' ' . $client->first_name . ' ' . ($client->other_names ?? '') : 'N/A',
+                    $client ? $client->nrc : 'N/A',
+                    $client ? $client->passport : 'N/A',
+                    $client ? $client->date_of_birth : 'N/A',
+                    $client ? $client->gender : 'N/A',
+                    $vaccination->date ? $vaccination->date->format('Y-m-d') : 'N/A',
+                    $vaccination->vaccine ? $vaccination->vaccine->product_name : 'N/A',
+                    $vaccination->dose_number,
+                    $vaccination->vaccine_batch_number,
+                    $vaccination->vaccine_batch_expiration_date,
+                    $vaccination->facility ? $vaccination->facility->name : 'N/A',
+                    $vaccination->provider ? $vaccination->provider->name : 'N/A',
+                    $vaccination->country ? $vaccination->country->name : 'N/A',
+                    $vaccination->certificate_id ?? 'N/A',
+                    $vaccination->created_at->format('Y-m-d H:i:s')
+                ]);
+            }
+
+            fclose($file);
+        };
+
+        return response()->stream($callback, 200, $headers);
     }
 
     /**

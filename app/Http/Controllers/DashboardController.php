@@ -32,93 +32,43 @@ class DashboardController extends Controller
     {
         try {
             // Cache dashboard statistics for 5 minutes to reduce database load
-            $cacheKey = 'dashboard_stats_' . date('Y-m-d-H') . '_' . floor(now()->minute / 5);
+            $cacheKey = 'dashboard_stats_' . now()->format('Y-m-d-H-i');
+            $cacheMinutes = 5;
 
-            $stats = Cache::remember($cacheKey, now()->addMinutes(5), function () {
-            // Optimize: Use single query for basic counts
-            $basicStats = DB::table('clients')
-                ->selectRaw('(SELECT COUNT(*) FROM clients) as clients_count')
-                ->selectRaw('(SELECT COUNT(*) FROM vaccinations) as vaccinations_count')
-                ->selectRaw('(SELECT COUNT(*) FROM certificates) as certificates_count')
-                ->first();
+            $stats = Cache::remember($cacheKey, now()->addMinutes($cacheMinutes), function () {
+                return $this->calculateDashboardStatistics();
+            });
 
-            // Gender breakdown
-            $genderStats = DB::table('clients')
-                ->selectRaw('COUNT(CASE WHEN sex = "M" THEN 1 END) as male_count')
-                ->selectRaw('COUNT(CASE WHEN sex = "F" THEN 1 END) as female_count')
-                ->first();
+            return view('dashboard', $stats);
 
-            // Age group breakdown (approximate based on date_of_birth)
-            $ageStats = DB::table('clients')
-                ->whereNotNull('date_of_birth')
-                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) < 18 THEN 1 END) as under_18')
-                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 18 AND 40 THEN 1 END) as age_18_40')
-                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 41 AND 60 THEN 1 END) as age_41_60')
-                ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) > 60 THEN 1 END) as over_60')
-                ->first();
+        } catch (\Exception $e) {
+            \Log::error('Dashboard error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
 
-            // Recent activity (last 7 days)
-            $recentStats = DB::table('vaccinations')
-                ->where('created_at', '>=', now()->subDays(7))
-                ->selectRaw('COUNT(*) as vaccinations_last_7_days')
-                ->selectRaw('COUNT(DISTINCT client_id) as unique_clients_last_7_days')
-                ->first();
+            return view('dashboard', $this->getDefaultStatistics())
+                ->withErrors(['error' => 'Error loading dashboard data. Please check logs.']);
+        }
+    }
 
-// Fully vaccinated count (simplified: clients with at least 2 vaccinations OR 1 J&J dose)
-            $fullyVaccinatedWithJJ = DB::table('clients')
-                ->whereExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('vaccinations')
-                        ->whereColumn('vaccinations.client_id', 'clients.id')
-                        ->where('vaccinations.vaccine_id', 3); // J&J single dose
-                })
-                ->count();
+    /**
+     * Calculate all dashboard statistics
+     *
+     * @return array
+     */
+    private function calculateDashboardStatistics()
+    {
+            $basicStats = $this->getBasicCounts();
 
-            $fullyVaccinatedTwoDoses = DB::table('clients')
-                ->whereRaw('(
-                    SELECT COUNT(*)
-                    FROM vaccinations
-                    WHERE vaccinations.client_id = clients.id
-                ) >= 2')
-                ->count();
+            $demographics = $this->getDemographicStats();
 
-            // Subtract overlap (clients with J&J AND 2+ doses)
-            $overlap = DB::table('clients')
-                ->whereExists(function($query) {
-                    $query->select(DB::raw(1))
-                        ->from('vaccinations')
-                        ->whereColumn('vaccinations.client_id', 'clients.id')
-                        ->where('vaccinations.vaccine_id', 3);
-                })
-                ->whereRaw('(
-                    SELECT COUNT(*)
-                    FROM vaccinations
-                    WHERE vaccinations.client_id = clients.id
-                ) >= 2')
-                ->count();
+            $recentStats = $this->getRecentActivity();
 
-            $fullyVaccinated = $fullyVaccinatedWithJJ + $fullyVaccinatedTwoDoses - $overlap;
+            $fullyVaccinated = $this->getFullyVaccinatedCount();
 
-            // Optimize: Use single query with conditional aggregation for vaccine doses
-            $vaccineStats = DB::table('vaccinations')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 THEN 1 END) as astrazeneca_doses')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 AND dose_number = "1" THEN 1 END) as astrazeneca_first_dose')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 AND dose_number = "2" THEN 1 END) as astrazeneca_second_dose')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 3 THEN 1 END) as janssen_doses')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 7 THEN 1 END) as sinopharm_doses')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 6 THEN 1 END) as pfizer_doses')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 THEN 1 END) as moderna_doses')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "1" THEN 1 END) as moderna_first_dose')
-                ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "2" THEN 1 END) as moderna_second_dose')
-                ->first();
+            $vaccineStats = $this->getVaccineStatistics();
 
-            // Vaccination trends - last 30 days by day
-            $vaccinationTrends = DB::table('vaccinations')
-                ->where('created_at', '>=', now()->subDays(30))
-                ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-                ->groupBy(DB::raw('DATE(created_at)'))
-                ->orderBy('date')
-                ->get();
+            $vaccinationTrends = $this->getVaccinationTrends();
 
             // Optimize: Single query for user registration data
             $userMonthlyData = User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
@@ -134,6 +84,8 @@ class DashboardController extends Controller
                 $user_data[$month - 1] = $count; // Array is 0-indexed, months are 1-indexed
             }
 
+            $user_data = $this->getUserGrowthData();
+
             // Calculate vaccination progress percentage
             $vaccinationProgress = $basicStats->clients_count > 0
                 ? round(($fullyVaccinated / $basicStats->clients_count) * 100, 1)
@@ -143,12 +95,12 @@ class DashboardController extends Controller
                 'clients' => $basicStats->clients_count,
                 'vaccinations' => $basicStats->vaccinations_count,
                 'certificates' => $basicStats->certificates_count,
-                'male_count' => $genderStats->male_count ?? 0,
-                'female_count' => $genderStats->female_count ?? 0,
-                'under_18' => $ageStats->under_18 ?? 0,
-                'age_18_40' => $ageStats->age_18_40 ?? 0,
-                'age_41_60' => $ageStats->age_41_60 ?? 0,
-                'over_60' => $ageStats->over_60 ?? 0,
+                'male_count' => $demographics['male_count'],
+                'female_count' => $demographics['female_count'],
+                'under_18' => $demographics['under_18'],
+                'age_18_40' => $demographics['age_18_40'],
+                'age_41_60' => $demographics['age_41_60'],
+                'over_60' => $demographics['over_60'],
                 'vaccinations_last_7_days' => $recentStats->vaccinations_last_7_days ?? 0,
                 'unique_clients_last_7_days' => $recentStats->unique_clients_last_7_days ?? 0,
                 'fully_vaccinated' => $fullyVaccinated,
@@ -165,66 +117,170 @@ class DashboardController extends Controller
                 'user_data' => $user_data,
                 'vaccination_trends' => $vaccinationTrends
             ];
-        });
+    }
 
-        return view('dashboard')
-            ->with('clients', $stats['clients'])
-            ->with('vaccinations', $stats['vaccinations'])
-            ->with('certificates', $stats['certificates'])
-            ->with('male_count', $stats['male_count'])
-            ->with('female_count', $stats['female_count'])
-            ->with('under_18', $stats['under_18'])
-            ->with('age_18_40', $stats['age_18_40'])
-            ->with('age_41_60', $stats['age_41_60'])
-            ->with('over_60', $stats['over_60'])
-            ->with('vaccinations_last_7_days', $stats['vaccinations_last_7_days'])
-            ->with('unique_clients_last_7_days', $stats['unique_clients_last_7_days'])
-            ->with('fully_vaccinated', $stats['fully_vaccinated'])
-            ->with('vaccination_progress', $stats['vaccination_progress'])
-            ->with('astrazeneca_first_dose', $stats['astrazeneca_first_dose'])
-            ->with('astrazeneca_second_dose', $stats['astrazeneca_second_dose'])
-            ->with('astrazeneca_doses', $stats['astrazeneca_doses'])
-            ->with('janssen_doses', $stats['janssen_doses'])
-            ->with('sinopharm_doses', $stats['sinopharm_doses'])
-            ->with('pfizer_doses', $stats['pfizer_doses'])
-            ->with('moderna_first_dose', $stats['moderna_first_dose'])
-            ->with('moderna_second_dose', $stats['moderna_second_dose'])
-            ->with('moderna_doses', $stats['moderna_doses'])
-            ->with('user_data', $stats['user_data'])
-            ->with('vaccination_trends', $stats['vaccination_trends']);
+    /**
+     * Get basic counts
+     */
+    private function getBasicCounts()
+    {
+        return DB::table('clients')
+            ->selectRaw('(SELECT COUNT(*) FROM clients) as clients_count')
+            ->selectRaw('(SELECT COUNT(*) FROM vaccinations) as vaccinations_count')
+            ->selectRaw('(SELECT COUNT(*) FROM certificates) as certificates_count')
+            ->first();
+    }
 
-        } catch (\Exception $e) {
-            \Log::error('Dashboard error: ' . $e->getMessage(), [
-                'trace' => $e->getTraceAsString()
-            ]);
+    /**
+     * Get demographic statistics
+     */
+    private function getDemographicStats()
+    {
+        $genderStats = DB::table('clients')
+            ->selectRaw('COUNT(CASE WHEN sex = "M" THEN 1 END) as male_count')
+            ->selectRaw('COUNT(CASE WHEN sex = "F" THEN 1 END) as female_count')
+            ->first();
 
-            // Return dashboard with default values on error
-            return view('dashboard')
-                ->with('clients', 0)
-                ->with('vaccinations', 0)
-                ->with('certificates', 0)
-                ->with('male_count', 0)
-                ->with('female_count', 0)
-                ->with('under_18', 0)
-                ->with('age_18_40', 0)
-                ->with('age_41_60', 0)
-                ->with('over_60', 0)
-                ->with('vaccinations_last_7_days', 0)
-                ->with('unique_clients_last_7_days', 0)
-                ->with('fully_vaccinated', 0)
-                ->with('vaccination_progress', 0)
-                ->with('astrazeneca_first_dose', 0)
-                ->with('astrazeneca_second_dose', 0)
-                ->with('astrazeneca_doses', 0)
-                ->with('janssen_doses', 0)
-                ->with('sinopharm_doses', 0)
-                ->with('pfizer_doses', 0)
-                ->with('moderna_first_dose', 0)
-                ->with('moderna_second_dose', 0)
-                ->with('moderna_doses', 0)
-                ->with('user_data', array_fill(0, 12, 0))
-                ->with('vaccination_trends', collect())
-                ->withErrors(['error' => 'Error loading dashboard data. Please check logs.']);
+        $ageStats = DB::table('clients')
+            ->whereNotNull('date_of_birth')
+            ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) < 18 THEN 1 END) as under_18')
+            ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 18 AND 40 THEN 1 END) as age_18_40')
+            ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) BETWEEN 41 AND 60 THEN 1 END) as age_41_60')
+            ->selectRaw('COUNT(CASE WHEN TIMESTAMPDIFF(YEAR, date_of_birth, CURDATE()) > 60 THEN 1 END) as over_60')
+            ->first();
+
+        return [
+            'male_count' => $genderStats->male_count ?? 0,
+            'female_count' => $genderStats->female_count ?? 0,
+            'under_18' => $ageStats->under_18 ?? 0,
+            'age_18_40' => $ageStats->age_18_40 ?? 0,
+            'age_41_60' => $ageStats->age_41_60 ?? 0,
+            'over_60' => $ageStats->over_60 ?? 0,
+        ];
+    }
+
+    /**
+     * Get recent activity statistics
+     */
+    private function getRecentActivity()
+    {
+        return DB::table('vaccinations')
+            ->where('created_at', '>=', now()->subDays(7))
+            ->selectRaw('COUNT(*) as vaccinations_last_7_days')
+            ->selectRaw('COUNT(DISTINCT client_id) as unique_clients_last_7_days')
+            ->first();
+    }
+
+    /**
+     * Get fully vaccinated count
+     */
+    private function getFullyVaccinatedCount()
+    {
+        $fullyVaccinatedWithJJ = DB::table('clients')
+            ->whereExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('vaccinations')
+                    ->whereColumn('vaccinations.client_id', 'clients.id')
+                    ->where('vaccinations.vaccine_id', 3);
+            })
+            ->count();
+
+        $fullyVaccinatedTwoDoses = DB::table('clients')
+            ->whereRaw('(SELECT COUNT(*) FROM vaccinations WHERE vaccinations.client_id = clients.id) >= 2')
+            ->count();
+
+        $overlap = DB::table('clients')
+            ->whereExists(function($query) {
+                $query->select(DB::raw(1))
+                    ->from('vaccinations')
+                    ->whereColumn('vaccinations.client_id', 'clients.id')
+                    ->where('vaccinations.vaccine_id', 3);
+            })
+            ->whereRaw('(SELECT COUNT(*) FROM vaccinations WHERE vaccinations.client_id = clients.id) >= 2')
+            ->count();
+
+        return $fullyVaccinatedWithJJ + $fullyVaccinatedTwoDoses - $overlap;
+    }
+
+    /**
+     * Get vaccine statistics
+     */
+    private function getVaccineStatistics()
+    {
+        return DB::table('vaccinations')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 THEN 1 END) as astrazeneca_doses')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 AND dose_number = "1" THEN 1 END) as astrazeneca_first_dose')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 1 AND dose_number = "2" THEN 1 END) as astrazeneca_second_dose')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 3 THEN 1 END) as janssen_doses')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 7 THEN 1 END) as sinopharm_doses')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 6 THEN 1 END) as pfizer_doses')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 THEN 1 END) as moderna_doses')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "1" THEN 1 END) as moderna_first_dose')
+            ->selectRaw('COUNT(CASE WHEN vaccine_id = 4 AND dose_number = "2" THEN 1 END) as moderna_second_dose')
+            ->first();
+    }
+
+    /**
+     * Get vaccination trends (last 30 days)
+     */
+    private function getVaccinationTrends()
+    {
+        return DB::table('vaccinations')
+            ->where('created_at', '>=', now()->subDays(30))
+            ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
+            ->groupBy(DB::raw('DATE(created_at)'))
+            ->orderBy('date')
+            ->get();
+    }
+
+    /**
+     * Get user growth data for current year
+     */
+    private function getUserGrowthData()
+    {
+        $userMonthlyData = User::selectRaw('MONTH(created_at) as month, COUNT(*) as count')
+            ->whereYear('created_at', date('Y'))
+            ->groupBy(DB::raw('MONTH(created_at)'))
+            ->pluck('count', 'month');
+
+        $user_data = array_fill(0, 12, 0);
+        foreach($userMonthlyData as $month => $count) {
+            $user_data[$month - 1] = $count;
         }
+
+        return $user_data;
+    }
+
+    /**
+     * Get default statistics array for error cases
+     */
+    private function getDefaultStatistics()
+    {
+        return [
+            'clients' => 0,
+            'vaccinations' => 0,
+            'certificates' => 0,
+            'male_count' => 0,
+            'female_count' => 0,
+            'under_18' => 0,
+            'age_18_40' => 0,
+            'age_41_60' => 0,
+            'over_60' => 0,
+            'vaccinations_last_7_days' => 0,
+            'unique_clients_last_7_days' => 0,
+            'fully_vaccinated' => 0,
+            'vaccination_progress' => 0,
+            'astrazeneca_first_dose' => 0,
+            'astrazeneca_second_dose' => 0,
+            'astrazeneca_doses' => 0,
+            'janssen_doses' => 0,
+            'sinopharm_doses' => 0,
+            'pfizer_doses' => 0,
+            'moderna_first_dose' => 0,
+            'moderna_second_dose' => 0,
+            'moderna_doses' => 0,
+            'user_data' => array_fill(0, 12, 0),
+            'vaccination_trends' => collect()
+        ];
     }
 }
