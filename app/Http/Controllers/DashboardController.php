@@ -30,10 +30,11 @@ class DashboardController extends Controller
      */
     public function index()
     {
-        // Cache dashboard statistics for 5 minutes to reduce database load
-        $cacheKey = 'dashboard_stats_' . date('Y-m-d-H') . '_' . floor(now()->minute / 5);
+        try {
+            // Cache dashboard statistics for 5 minutes to reduce database load
+            $cacheKey = 'dashboard_stats_' . date('Y-m-d-H') . '_' . floor(now()->minute / 5);
 
-        $stats = Cache::remember($cacheKey, now()->addMinutes(5), function () {
+            $stats = Cache::remember($cacheKey, now()->addMinutes(5), function () {
             // Optimize: Use single query for basic counts
             $basicStats = DB::table('clients')
                 ->selectRaw('(SELECT COUNT(*) FROM clients) as clients_count')
@@ -63,18 +64,40 @@ class DashboardController extends Controller
                 ->selectRaw('COUNT(DISTINCT client_id) as unique_clients_last_7_days')
                 ->first();
 
-            // Fully vaccinated count (clients with at least 2 doses or 1 J&J dose)
-            $fullyVaccinated = DB::table('clients')
+// Fully vaccinated count (simplified: clients with at least 2 vaccinations OR 1 J&J dose)
+            $fullyVaccinatedWithJJ = DB::table('clients')
                 ->whereExists(function($query) {
                     $query->select(DB::raw(1))
                         ->from('vaccinations')
                         ->whereColumn('vaccinations.client_id', 'clients.id')
-                        ->where(function($q) {
-                            $q->where('vaccinations.vaccine_id', 3) // J&J single dose
-                              ->orHaving(DB::raw('COUNT(*)'), '>=', 2); // Or 2+ doses
-                        });
+                        ->where('vaccinations.vaccine_id', 3); // J&J single dose
                 })
                 ->count();
+
+            $fullyVaccinatedTwoDoses = DB::table('clients')
+                ->whereRaw('(
+                    SELECT COUNT(*)
+                    FROM vaccinations
+                    WHERE vaccinations.client_id = clients.id
+                ) >= 2')
+                ->count();
+
+            // Subtract overlap (clients with J&J AND 2+ doses)
+            $overlap = DB::table('clients')
+                ->whereExists(function($query) {
+                    $query->select(DB::raw(1))
+                        ->from('vaccinations')
+                        ->whereColumn('vaccinations.client_id', 'clients.id')
+                        ->where('vaccinations.vaccine_id', 3);
+                })
+                ->whereRaw('(
+                    SELECT COUNT(*)
+                    FROM vaccinations
+                    WHERE vaccinations.client_id = clients.id
+                ) >= 2')
+                ->count();
+
+            $fullyVaccinated = $fullyVaccinatedWithJJ + $fullyVaccinatedTwoDoses - $overlap;
 
             // Optimize: Use single query with conditional aggregation for vaccine doses
             $vaccineStats = DB::table('vaccinations')
@@ -93,7 +116,7 @@ class DashboardController extends Controller
             $vaccinationTrends = DB::table('vaccinations')
                 ->where('created_at', '>=', now()->subDays(30))
                 ->selectRaw('DATE(created_at) as date, COUNT(*) as count')
-                ->groupBy('date')
+                ->groupBy(DB::raw('DATE(created_at)'))
                 ->orderBy('date')
                 ->get();
 
@@ -169,5 +192,39 @@ class DashboardController extends Controller
             ->with('moderna_doses', $stats['moderna_doses'])
             ->with('user_data', $stats['user_data'])
             ->with('vaccination_trends', $stats['vaccination_trends']);
+
+        } catch (\Exception $e) {
+            \Log::error('Dashboard error: ' . $e->getMessage(), [
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            // Return dashboard with default values on error
+            return view('dashboard')
+                ->with('clients', 0)
+                ->with('vaccinations', 0)
+                ->with('certificates', 0)
+                ->with('male_count', 0)
+                ->with('female_count', 0)
+                ->with('under_18', 0)
+                ->with('age_18_40', 0)
+                ->with('age_41_60', 0)
+                ->with('over_60', 0)
+                ->with('vaccinations_last_7_days', 0)
+                ->with('unique_clients_last_7_days', 0)
+                ->with('fully_vaccinated', 0)
+                ->with('vaccination_progress', 0)
+                ->with('astrazeneca_first_dose', 0)
+                ->with('astrazeneca_second_dose', 0)
+                ->with('astrazeneca_doses', 0)
+                ->with('janssen_doses', 0)
+                ->with('sinopharm_doses', 0)
+                ->with('pfizer_doses', 0)
+                ->with('moderna_first_dose', 0)
+                ->with('moderna_second_dose', 0)
+                ->with('moderna_doses', 0)
+                ->with('user_data', array_fill(0, 12, 0))
+                ->with('vaccination_trends', collect())
+                ->withErrors(['error' => 'Error loading dashboard data. Please check logs.']);
+        }
     }
 }
