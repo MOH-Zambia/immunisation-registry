@@ -99,6 +99,14 @@ class ClientController extends AppBaseController
      */
     public function verify(Request $request): \Illuminate\Http\JsonResponse
     {
+        $verifyId = uniqid('CLIENT-VERIFY-', true);
+
+        Log::info("[$verifyId] Client verification request initiated", [
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         $request->validate([
             'nrc' => 'nullable|string|max:50',
             'passport' => 'nullable|string|max:50',
@@ -108,26 +116,49 @@ class ClientController extends AppBaseController
 
         $input = $request->all();
         $client = null;
+        $searchMethod = 'none';
 
         if (array_key_exists('nrc', $input) && !empty($input['nrc'])) {
+            $searchMethod = 'NRC';
+            Log::info("[$verifyId] Searching by NRC: " . substr($input['nrc'], -4));
             $client = Client::where('NRC', $input['nrc'])->first();
         }
 
         if (!$client && array_key_exists('passport', $input) && !empty($input['passport'])) {
+            $searchMethod = 'Passport';
+            Log::info("[$verifyId] Searching by Passport: " . substr($input['passport'], -4));
             $client = Client::where('passport_number', $input['passport'])->first();
         }
 
         if (!$client && array_key_exists('drivers_license', $input) && !empty($input['drivers_license'])) {
+            $searchMethod = 'Drivers License';
+            Log::info("[$verifyId] Searching by Drivers License: " . substr($input['drivers_license'], -4));
             $client = Client::where('drivers_license', $input['drivers_license'])->first();
         }
 
         if (!$client && array_key_exists('email', $input) && !empty($input['email'])) {
+            $searchMethod = 'Email';
+            $maskedEmail = substr($input['email'], 0, 3) . '***@' . explode('@', $input['email'])[1];
+            Log::info("[$verifyId] Searching by Email: $maskedEmail");
             $client = Client::where('contact_email_address', $input['email'])->first();
         }
 
         if(empty($client)){
+            Log::warning("[$verifyId] Client not found", [
+                'search_method' => $searchMethod,
+                'has_nrc' => array_key_exists('nrc', $input) && !empty($input['nrc']),
+                'has_passport' => array_key_exists('passport', $input) && !empty($input['passport']),
+                'has_license' => array_key_exists('drivers_license', $input) && !empty($input['drivers_license']),
+                'has_email' => array_key_exists('email', $input) && !empty($input['email'])
+            ]);
             return $this->sendError('Client not found');
         } else {
+            Log::info("[$verifyId] Client found successfully", [
+                'search_method' => $searchMethod,
+                'client_id' => $client->id,
+                'has_contact_number' => !empty($client->contact_number),
+                'has_email' => !empty($client->contact_email_address)
+            ]);
             return $this->sendSuccess($client->toJson());
         }
     }

@@ -39,8 +39,8 @@
                 <!-- Tittle -->
                 <div class="tittle">
                     <img src="{{ url('img/android-icon-96x96.png') }}" alt="Coat of Arms" style="opacity: .8"> <br><br>
-                    <h2>Verification Process</h2>
-                    <p>In order to get your vaccination certificate, you have to complete this verification process</p>
+                    <h2>Get Your Vaccination Certificate</h2>
+                    <p>Follow these simple steps to securely access your COVID-19 vaccination certificate. This process ensures your information is protected.</p>
                 </div>
 
                 <!-- progressbar -->
@@ -52,50 +52,68 @@
 
                 <!-- fieldsets -->
                 <fieldset id="id_type_fieldset">
-                    <h3>Select ID Type</h3>
-                    <h6>Please upload any of these documents to verify your Identity.</h6>
+                    <h3>Step 1: Select Your ID Type</h3>
+                    <h6>Choose the type of identification document you used during vaccination registration.</h6>
                     <select id="id_type" class="product_select mb-xl-5">
-                        <option value="nrc" data-display="National Registration Card">National Registration Card</option>
+                        <option value="nrc" data-display="National Registration Card">National Registration Card (NRC)</option>
                         <option value="passport">Passport</option>
-                        <option value="drivers_license">Drivers License</option>
+                        <option value="drivers_license">Driver's License</option>
                     </select>
+                    <div class="alert alert-info mt-3" style="font-size: 12px; padding: 8px;">
+                        <strong>Tip:</strong> Select the same ID type you provided when you received your vaccination.
+                    </div>
                     <button type="button" class="next action-button mt-xl-5">Continue</button>
                 </fieldset>
                 <fieldset id="personal_details_fieldset">
-                    <h6>Please enter your personnal information provided during vaccination</h6>
+                    <h3>Step 2: Enter Your Personal Details</h3>
+                    <h6>Please enter your information exactly as it was provided during vaccination. All fields are required.</h6>
                     <div class="form-group">
-                        <input id="nrc" type="text" class="form-control" placeholder="National Registration Card Number">
+                        <input id="nrc" type="text" class="form-control" placeholder="National Registration Card Number (e.g., 123456/78/9)">
                         <input id="passport" type="text" class="form-control" placeholder="Passport Number">
-                        <input id="drivers_license" type="text" class="form-control" placeholder="Drivers License Number">
+                        <input id="drivers_license" type="text" class="form-control" placeholder="Driver's License Number">
                     </div>
                     <div class="form-group">
-                        <input id="last_name" type="text" class="form-control" placeholder="Last Name">
+                        <input id="last_name" type="text" class="form-control" placeholder="Last Name (Surname)">
                     </div>
                     <div class="form-group">
-                        <input id="first_name" type="text" class="form-control" placeholder="First Name">
+                        <input id="first_name" type="text" class="form-control" placeholder="First Name (Given Name)">
                     </div>
                     <div class="form-group">
-                        <input id="other_names" type="text" class="form-control" placeholder="Other Names">
+                        <input id="other_names" type="text" class="form-control" placeholder="Other Names (Middle Names - Optional)">
+                    </div>
+                    <div class="alert alert-warning mt-3" style="font-size: 12px; padding: 8px;">
+                        <strong>Important:</strong> Enter your details exactly as they appear on your vaccination record. Names are case-sensitive.
                     </div>
                     <input type="hidden" id="client_id" name="client_id">
                     <button type="button" class="action-button previous previous_button">Back</button>
-                    <button id="verify_personal_details" type="button" class="action-button">Verify</button>
+                    <button id="verify_personal_details" type="button" class="action-button">Verify Details</button>
                     <button id="personal_details" type="button" class="next action-button">Continue</button>
                 </fieldset>
                 <fieldset id="verification_fieldset">
-                    <h3>Select verification method</h3>
+                    <h3>Step 3: Verify Your Identity</h3>
+                    <h6>Choose how you'd like to receive your One-Time Password (OTP)</h6>
                     <select id="verification_method" class="product_select mb-xl-5">
-                        <option value="phone" data-display="By Phone">By Phone</option>
+                        <option value="phone" data-display="By Phone (SMS)">By Phone (SMS)</option>
                         <!-- <option value="email">By Email</option> --> <!-- Option omitted, email verification broken -->
                     </select>
 
                     <div id="verification_method_phone" class="row">
-                        <h6>We will send you a SMS. Input the code to verify.</h6>
+                        <div class="col-12">
+                            <div class="alert alert-info" style="font-size: 12px; padding: 8px; margin-bottom: 15px;">
+                                <strong>Instructions:</strong>
+                                <ol style="margin: 5px 0 0 0; padding-left: 20px;">
+                                    <li>Click "Send" to receive a 4-digit code via SMS</li>
+                                    <li>Check your phone for the verification code</li>
+                                    <li>Enter the 4-digit code below</li>
+                                    <li>Code is valid for 10 minutes</li>
+                                </ol>
+                            </div>
+                        </div>
                         <div class="form-group col-md-9">
-                            <input id="contact_number" type="text" class="form-control" disabled>
+                            <input id="contact_number" type="text" class="form-control" disabled placeholder="Your phone number">
                         </div>
                         <div class="form-group col-md-3">
-                            <button id="send_sms" type="button" class="send action-button">Send</button>
+                            <button id="send_sms" type="button" class="send action-button">Send OTP</button>
                         </div>
 
                         <div class="done_text">
@@ -103,28 +121,51 @@
                     </div>
 
                     <div id="verification_method_email" class="row">
-                        <h6>We will send you an email. Input the code to verify.</h6>
-
+                        <div class="col-12">
+                            <div class="alert alert-info" style="font-size: 12px; padding: 8px; margin-bottom: 15px;">
+                                <strong>Instructions:</strong>
+                                <ol style="margin: 5px 0 0 0; padding-left: 20px;">
+                                    <li>Click "Send" to receive a verification code via email</li>
+                                    <li>Check your inbox (and spam folder)</li>
+                                    <li>Enter the 4-digit code below</li>
+                                    <li>Code is valid for 10 minutes</li>
+                                </ol>
+                            </div>
+                        </div>
                         <div class="form-group col-md-9">
-                            <input id="contact_email_address" type="email" class="form-control" disabled>
+                            <input id="contact_email_address" type="email" class="form-control" disabled placeholder="Your email address">
                         </div>
                         <div class="form-group col-md-3">
-                            <button id="send_email" type="button" class="send action-button">Send</button>
+                            <button id="send_email" type="button" class="send action-button">Send OTP</button>
                         </div>
 
                         <div class="done_text">
                         </div>
                     </div>
 
+                    <div class="col-12 mt-3">
+                        <h6>Enter your 4-digit verification code below:</h6>
+                    </div>
+
                     <div class="code_group">
-                        <input id="code1" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code2)" maxlength=1 >
-                        <input id="code2" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code3)" maxlength=1>
-                        <input id="code3" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code2, code4)" maxlength=1>
-                        <input id="code4" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code3, finish)" maxlength=1>
+                        <input id="code1" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code2)" maxlength=1 aria-label="First digit">
+                        <input id="code2" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code1, code3)" maxlength=1 aria-label="Second digit">
+                        <input id="code3" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code2, code4)" maxlength=1 aria-label="Third digit">
+                        <input id="code4" type="text" class="form-control" placeholder="*" size=2 onInput="numericValuesOnly(this)" onKeyup="autotab(this, code3, finish)" maxlength=1 aria-label="Fourth digit">
+                    </div>
+
+                    <div class="alert alert-warning mt-3" style="font-size: 12px; padding: 8px;">
+                        <strong>Didn't receive the code?</strong>
+                        <ul style="margin: 5px 0 0 0; padding-left: 20px;">
+                            <li>Wait 1-2 minutes for SMS delivery</li>
+                            <li>Check your phone's message inbox</li>
+                            <li>Verify you entered the correct phone number</li>
+                            <li>Try requesting a new code</li>
+                        </ul>
                     </div>
 
                     <button type="button" class="action-button previous previous_button">Back</button>
-                    <button id="finish" type="button" class="action-button">Finish</button>
+                    <button id="finish" type="button" class="action-button">Verify & Get Certificate</button>
 {{--                    <a href="#" class="action-button">Finish</a>--}}
                 </fieldset>
             </form>
@@ -138,13 +179,24 @@
     <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="verificationErrorModalTitle">Verification failed</h5>
+                <h5 class="modal-title" id="verificationErrorModalTitle">Verification Failed</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
             <div class="modal-body">
-                Your details were not found in the database
+                <p><strong>Your details were not found in our database.</strong></p>
+                <p>Please verify that:</p>
+                <ul>
+                    <li>You entered your ID number correctly</li>
+                    <li>Your names match your vaccination record exactly</li>
+                    <li>You selected the correct ID type</li>
+                    <li>You have been vaccinated and registered in the system</li>
+                </ul>
+                <p class="mt-3">If you continue to experience issues, please contact the helpdesk at <strong>909</strong> or visit your nearest health facility.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Try Again</button>
             </div>
         </div>
     </div>
@@ -405,11 +457,12 @@
                 data: { "contact_number": $("#contact_number").val() },
                 success: function(response){
                     // console.log(response);
-                    $(".done_text").html('<a href="#" class="done_icon"><i class="ion-android-done"></i></a><h6>A verification code has been sent to your phone. <br>Please enter it here.</h6>');
+                    $(".done_text").html('<a href="#" class="done_icon"><i class="ion-android-done"></i></a><h6><strong>Success!</strong> A 4-digit verification code has been sent to your phone via SMS.<br>Please check your messages and enter the code below.</h6>');
                 },
                 error: function(error) {
                     // console.log(error);
-                    $(".done_text").html('<a href="#" class="cancel_icon"><i class="ion-android-cancel"></i></a><h6>Failed to send a verification code to your phone.<br>Please try again or contact Helpdesk</h6>');
+                    let errorMsg = error.responseJSON && error.responseJSON.message ? error.responseJSON.message : 'An error occurred';
+                    $(".done_text").html('<a href="#" class="cancel_icon"><i class="ion-android-cancel"></i></a><h6><strong>Failed to send verification code.</strong><br>' + errorMsg + '<br>Please check your phone number and try again, or contact the helpdesk at <strong>909</strong>.</h6>');
                 }
             });
         });
@@ -423,11 +476,12 @@
                 data: { "contact_email_address": $("#contact_email_address").val() },
                 success: function(response){
                     // console.log(response);
-                    $(".done_text").html('<a href="#" class="done_icon"><i class="ion-android-done"></i></a><h6>A verification code has been sent to your email. <br>Please enter it here.</h6>');
+                    $(".done_text").html('<a href="#" class="done_icon"><i class="ion-android-done"></i></a><h6><strong>Success!</strong> A 4-digit verification code has been sent to your email.<br>Please check your inbox (and spam folder) and enter the code below.</h6>');
                 },
                 error: function(error) {
                     // console.log(error);
-                    $(".done_text").html('<a href="#" class="don_icon"><i class="ion-android-cancel"></i></a><h6>Failed to send a verification code to your email. <br>Please try again or contact Helpdesk</h6>');
+                    let errorMsg = error.responseJSON && error.responseJSON.message ? error.responseJSON.message : 'An error occurred';
+                    $(".done_text").html('<a href="#" class="cancel_icon"><i class="ion-android-cancel"></i></a><h6><strong>Failed to send verification code.</strong><br>' + errorMsg + '<br>Please check your email address and try again, or contact the helpdesk at <strong>909</strong>.</h6>');
                 }
             });
 
@@ -439,6 +493,11 @@
             let OTP = $("#code1").val() + $("#code2").val() + $("#code3").val() + $("#code4").val();
             let client_id = $("#client_id").val();
 
+            if (OTP.length !== 4) {
+                alert("Please enter the complete 4-digit verification code.");
+                return;
+            }
+
             $.ajax({
                 url: "{{ route('verifyOTP') }}",
                 type: "POST",
@@ -449,7 +508,8 @@
                 },
                 error: function (error) {
                     // console.log(error);
-                    alert("Unable to verify OTP. Please try again");
+                    let errorMsg = error.responseJSON && error.responseJSON.message ? error.responseJSON.message : 'Invalid verification code';
+                    alert("Verification Failed: " + errorMsg + "\n\nPlease check your code and try again. If the problem persists, request a new code or contact the helpdesk at 909.");
                 }
             });
         });
@@ -470,7 +530,7 @@
         document.getElementById('code3').value = '';
         document.getElementById('code4').value = '';
     }
-    
+
     function autotab(original, destPrev, destNext){
         var key = event.key
         if (original.getAttribute && original.value.length==original.getAttribute("maxlength")) {
