@@ -69,6 +69,10 @@ Route::group(['middleware' => 'auth'], function(){
         Route::get('users', [App\Http\Controllers\UserController::class, 'index'])->name('users.index');
         Route::get('clients', [App\Http\Controllers\ClientController::class, 'index'])->name('clients.index');
 
+        // SMS Testing routes
+        Route::get('admin/test-sms', [App\Http\Controllers\Auth\OTPVerificationController::class, 'showTestSmsInterface'])->name('admin.test-sms');
+        Route::post('admin/test-sms/send', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendTestSMS'])->name('admin.test-sms.send');
+
         Route::resource('roles', App\Http\Controllers\RoleController::class);
         Route::resource('facilities', App\Http\Controllers\FacilityController::class);
         Route::resource('districts', App\Http\Controllers\DistrictController::class);

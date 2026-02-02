@@ -120,11 +120,21 @@ class OTPVerificationController extends AppBaseController
 
     public function sendSMSViaZamtelBulkSMS(Request $request)
     {
+        $requestId = uniqid('OTP-ZAMTEL-', true);
+
+        Log::channel('sms')->info("[$requestId] OTP SMS request initiated (Zamtel Bulk SMS)", [
+            'ip' => $request->ip(),
+            'user_agent' => $request->userAgent(),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
         $request->validate([
             'contact_number' => 'required|string'
         ]);
 
         $input = $request->all();
+
+        Log::channel('sms')->info("[$requestId] Validation passed for contact: " . substr($input['contact_number'], -4));
 
         $OTP = mt_rand(1000,9999);
         $isError = 0;
@@ -133,12 +143,17 @@ class OTPVerificationController extends AppBaseController
         $apiKey = env('ZAMTEL_BULK_SMS_API_KEY');
         $senderId = env('ZAMTEL_SENDER_ID');
 
+        Log::channel('sms')->info("[$requestId] Zamtel API config loaded", [
+            'api_key_present' => !empty($apiKey),
+            'sender_id' => $senderId
+        ]);
+
         $message = urlencode("COVID-19 Immunisation Registry, \nYour One Time Password to access your COVID-19 Certificate is {$OTP}");
         $formattedPhone = $this->formatPhone($input['contact_number']); // Ensure phone is in 260xxxxxxxxx format
 
         $url = "https://bulksms.zamtel.co.zm/api/v2.1/action/send/api_key/{$apiKey}/contacts/{$formattedPhone}/senderId/{$senderId}/message/{$message}";
 
-        Log::channel('sms')->info("[$requestId] Sending SMS via Zamtel API");
+        Log::channel('sms')->info("[$requestId] Sending SMS via Zamtel API to: " . substr($formattedPhone, -4));
 
         /** @var TYPE_NAME $ch */
         $ch = curl_init();
@@ -337,5 +352,223 @@ class OTPVerificationController extends AppBaseController
             ]);
             return $this->sendError("Invalid verification code");
         }
+    }
+
+    /**
+     * Display SMS testing interface for admins
+     *
+     * @return \Illuminate\View\View
+     */
+    public function showTestSmsInterface()
+    {
+        return view('admin.test_sms');
+    }
+
+    /**
+     * Send test SMS via selected gateway (admin only)
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function sendTestSMS(Request $request)
+    {
+        $requestId = uniqid('TEST-SMS-', true);
+
+        Log::channel('sms')->info("[$requestId] Test SMS request initiated", [
+            'admin_user_id' => auth()->id(),
+            'admin_email' => auth()->user()->email,
+            'ip' => $request->ip(),
+            'timestamp' => now()->toDateTimeString()
+        ]);
+
+        $validated = $request->validate([
+            'phone_number' => 'required|string',
+            'message' => 'required|string|max:160',
+            'gateway' => 'required|in:kannel,zamtel'
+        ]);
+
+        $phoneNumber = $validated['phone_number'];
+        $message = $validated['message'];
+        $gateway = $validated['gateway'];
+
+        Log::channel('sms')->info("[$requestId] Test SMS details", [
+            'gateway' => $gateway,
+            'phone_last4' => substr($phoneNumber, -4),
+            'message_length' => strlen($message)
+        ]);
+
+        try {
+            if ($gateway === 'zamtel') {
+                $result = $this->sendViaZamtel($phoneNumber, $message, $requestId);
+            } else {
+                $result = $this->sendViaKannel($phoneNumber, $message, $requestId);
+            }
+
+            if ($result['success']) {
+                Log::channel('sms')->info("[$requestId] Test SMS sent successfully", [
+                    'gateway' => $gateway,
+                    'execution_time_ms' => $result['execution_time']
+                ]);
+
+                return response()->json([
+                    'success' => true,
+                    'message' => 'Test SMS sent successfully!',
+                    'details' => [
+                        'gateway' => $gateway,
+                        'phone' => substr($phoneNumber, 0, 3) . '***' . substr($phoneNumber, -4),
+                        'http_code' => $result['http_code'],
+                        'execution_time_ms' => $result['execution_time'],
+                        'response_preview' => $result['response_preview']
+                    ]
+                ]);
+            } else {
+                Log::channel('sms')->error("[$requestId] Test SMS failed", [
+                    'gateway' => $gateway,
+                    'error' => $result['error']
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Failed to send test SMS',
+                    'error' => $result['error'],
+                    'details' => [
+                        'gateway' => $gateway,
+                        'http_code' => $result['http_code'] ?? null,
+                        'response_preview' => $result['response_preview'] ?? null
+                    ]
+                ], 500);
+            }
+        } catch (\Exception $e) {
+            Log::channel('sms')->error("[$requestId] Test SMS exception", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred while sending test SMS',
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Send SMS via Zamtel API
+     *
+     * @param string $phoneNumber
+     * @param string $message
+     * @param string $requestId
+     * @return array
+     */
+    private function sendViaZamtel($phoneNumber, $message, $requestId)
+    {
+        $apiKey = env('ZAMTEL_BULK_SMS_API_KEY');
+        $senderId = env('ZAMTEL_SENDER_ID');
+
+        if (empty($apiKey) || empty($senderId)) {
+            return [
+                'success' => false,
+                'error' => 'Zamtel API credentials not configured'
+            ];
+        }
+
+        $formattedPhone = $this->formatPhone($phoneNumber);
+        $encodedMessage = urlencode($message);
+
+        $url = "https://bulksms.zamtel.co.zm/api/v2.1/action/send/api_key/{$apiKey}/contacts/{$formattedPhone}/senderId/{$senderId}/message/{$encodedMessage}";
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0
+        ]);
+
+        $startTime = microtime(true);
+        $response = curl_exec($ch);
+        $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if (!empty($curlError)) {
+            return [
+                'success' => false,
+                'error' => $curlError,
+                'http_code' => $httpCode,
+                'execution_time' => $executionTime
+            ];
+        }
+
+        return [
+            'success' => $httpCode == 200,
+            'http_code' => $httpCode,
+            'execution_time' => $executionTime,
+            'response_preview' => substr($response, 0, 200),
+            'error' => $httpCode != 200 ? "HTTP $httpCode" : null
+        ];
+    }
+
+    /**
+     * Send SMS via Kannel gateway
+     *
+     * @param string $phoneNumber
+     * @param string $message
+     * @param string $requestId
+     * @return array
+     */
+    private function sendViaKannel($phoneNumber, $message, $requestId)
+    {
+        $host = env('KANNEL_HOST');
+        $port = env('KANNEL_PORT');
+        $smsc = env('KANNEL_SMSC');
+        $username = env('KANNEL_USERNAME');
+        $password = env('KANNEL_PASSWORD');
+        $from = env('KANNEL_SENDER');
+
+        if (empty($host) || empty($port) || empty($username) || empty($password)) {
+            return [
+                'success' => false,
+                'error' => 'Kannel gateway credentials not configured'
+            ];
+        }
+
+        $encodedMessage = urlencode($message);
+        $url = "http://{$host}:{$port}/cgi-bin/sendsms?username={$username}&password={$password}&smsc={$smsc}&from={$from}&to={$phoneNumber}&text={$encodedMessage}";
+
+        $ch = curl_init();
+        curl_setopt_array($ch, [
+            CURLOPT_URL => $url,
+            CURLOPT_HEADER => true,
+            CURLOPT_RETURNTRANSFER => true,
+            CURLOPT_SSL_VERIFYHOST => 0,
+            CURLOPT_SSL_VERIFYPEER => 0
+        ]);
+
+        $startTime = microtime(true);
+        $response = curl_exec($ch);
+        $executionTime = round((microtime(true) - $startTime) * 1000, 2);
+        $httpCode = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+        $curlError = curl_error($ch);
+        curl_close($ch);
+
+        if (!empty($curlError)) {
+            return [
+                'success' => false,
+                'error' => $curlError,
+                'http_code' => $httpCode,
+                'execution_time' => $executionTime
+            ];
+        }
+
+        return [
+            'success' => true, // Kannel typically returns 200 for queued messages
+            'http_code' => $httpCode,
+            'execution_time' => $executionTime,
+            'response_preview' => substr($response, 0, 200),
+            'error' => null
+        ];
     }
 }

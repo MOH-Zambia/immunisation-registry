@@ -71,6 +71,13 @@
             <p>Users</p>
         </a>
     </li>
+
+    <li class="nav-item">
+        <a href="{{ route('admin.test-sms') }}"
+           class="nav-link {{ Request::is('admin/test-sms*') ? 'active' : '' }}">
+            <p><i class="fas fa-sms"></i> SMS Testing</p>
+        </a>
+    </li>
 @endif
 
 

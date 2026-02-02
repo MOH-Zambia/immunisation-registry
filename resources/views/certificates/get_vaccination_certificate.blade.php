@@ -265,6 +265,7 @@
                     $("#contact_email_address").val(client.contact_email_address);
                     $("#client_id").val(client.id);
 
+                    $("#verify_personal_details").hide();
                     $(".next").show();
                 },
                 error: function(error) {
