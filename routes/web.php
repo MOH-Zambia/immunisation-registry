@@ -37,6 +37,7 @@ Route::get('help', function () {
 });
 
 Route::get('certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
+Route::post('certificates/verify', [App\Http\Controllers\CertificateController::class, 'verifyCertificate'])->name('certificates.verify');
 Route::post('client/verify', [App\Http\Controllers\ClientController::class, 'verify'])->name('clients.verify');
 Route::post('sendEmail', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendEmail'])->middleware('throttle:3,1')->name('sendEmail');
 Route::post('sendSMS', [App\Http\Controllers\Auth\OTPVerificationController::class, 'sendSMS'])->middleware('throttle:3,1')->name('sendSMS');

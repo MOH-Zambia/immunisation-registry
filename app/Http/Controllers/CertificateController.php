@@ -229,6 +229,120 @@ class CertificateController extends AppBaseController
     }
 
     /**
+     * Verify a certificate by UUID
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function verifyCertificate(Request $request)
+    {
+        // Generate unique request ID for tracking
+        $requestId = 'VERIFY-' . uniqid();
+
+        try {
+            // Validate input
+            $validated = $request->validate([
+                'certificate_uuid' => 'required|string|max:255',
+            ]);
+
+            $uuid = trim($validated['certificate_uuid']);
+
+            Log::channel('sms')->info("[$requestId] Certificate verification request", [
+                'uuid' => $uuid,
+                'ip_address' => $request->ip(),
+                'user_agent' => $request->userAgent(),
+            ]);
+
+            // Search for certificate by UUID
+            $certificate = Certificate::where('certificate_uuid', $uuid)
+                ->with(['client' => function($query) {
+                    $query->select('id', 'first_name', 'last_name', 'other_names', 'date_of_birth', 'NRC', 'passport_number');
+                }])
+                ->first();
+
+            if (empty($certificate)) {
+                Log::channel('sms')->warning("[$requestId] Certificate not found", [
+                    'uuid' => $uuid
+                ]);
+
+                return response()->json([
+                    'success' => false,
+                    'message' => 'Certificate not found. Please verify the UUID and try again.',
+                ], 404);
+            }
+
+            // Check if certificate has expired
+            $certificateStatus = 'Valid';
+            if ($certificate->certificate_expiration_date) {
+                $expirationDate = \Carbon\Carbon::parse($certificate->certificate_expiration_date);
+                if ($expirationDate->isPast()) {
+                    $certificateStatus = 'Expired';
+                }
+            }
+
+            // Update certificate status if needed
+            if ($certificateStatus !== $certificate->certificate_status) {
+                $certificate->certificate_status = $certificateStatus;
+                $certificate->save();
+            }
+
+            Log::channel('sms')->info("[$requestId] Certificate verified successfully", [
+                'uuid' => $uuid,
+                'client_id' => $certificate->client_id,
+                'status' => $certificateStatus,
+                'holder_name' => $certificate->client->first_name . ' ' . $certificate->client->last_name,
+            ]);
+
+            // Prepare response data
+            $responseData = [
+                'certificate_uuid' => $certificate->certificate_uuid,
+                'certificate_status' => $certificateStatus,
+                'target_disease' => $certificate->target_disease,
+                'trusted_vaccine_code' => $certificate->trusted_vaccine_code,
+                'certificate_expiration_date' => $certificate->certificate_expiration_date,
+                'certificate_url' => $certificate->certificate_url,
+                'qr_code' => $certificate->qr_code,
+                'created_at' => $certificate->created_at,
+                'client' => [
+                    'first_name' => $certificate->client->first_name,
+                    'last_name' => $certificate->client->last_name,
+                    'other_names' => $certificate->client->other_names,
+                    'date_of_birth' => $certificate->client->date_of_birth,
+                    // Mask sensitive information for security
+                    'NRC' => $certificate->client->NRC ? substr($certificate->client->NRC, 0, 3) . '***' . substr($certificate->client->NRC, -2) : null,
+                    'passport_number' => $certificate->client->passport_number ? substr($certificate->client->passport_number, 0, 2) . '***' . substr($certificate->client->passport_number, -2) : null,
+                ],
+            ];
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Certificate verified successfully',
+                'data' => $responseData,
+            ], 200);
+
+        } catch (\Illuminate\Validation\ValidationException $e) {
+            Log::channel('sms')->error("[$requestId] Validation failed", [
+                'errors' => $e->errors()
+            ]);
+            return response()->json([
+                'success' => false,
+                'message' => 'Invalid input: ' . implode(', ', $e->validator->errors()->all()),
+            ], 422);
+
+        } catch (\Exception $e) {
+            Log::channel('sms')->error("[$requestId] Certificate verification error", [
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'An error occurred during verification. Please try again later.',
+            ], 500);
+        }
+    }
+
+    /**
      * Display a listing of the resource.
      *
      * @return \Illuminate\Http\Response

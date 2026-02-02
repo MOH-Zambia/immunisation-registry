@@ -59,7 +59,7 @@
                         <option value="passport">Passport</option>
                         <option value="drivers_license">Driver's License</option>
                     </select>
-                    <div class="alert alert-info mt-3" style="font-size: 12px; padding: 8px;">
+                    <div class="alert alert-info mt-3" style="font-size: 12px; padding: 8px; position: relative; clear: both; margin-top: 15px;">
                         <strong>Tip:</strong> Select the same ID type you provided when you received your vaccination.
                     </div>
                     <button type="button" class="next action-button mt-xl-5">Continue</button>
