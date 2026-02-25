@@ -348,24 +348,33 @@ class CertificateController extends AppBaseController
                 'holder_name' => $certificate->client->first_name . ' ' . $certificate->client->last_name,
             ]);
 
+            // Helper to sanitize strings with potentially malformed UTF-8
+            $sanitize = function ($value) {
+                if (!is_string($value)) return $value;
+                // Convert to UTF-8, replacing invalid sequences
+                $clean = mb_convert_encoding($value, 'UTF-8', 'UTF-8');
+                // Strip any remaining invalid characters
+                return preg_replace('/[^\x20-\x7E\xA0-\xFF]/u', '', $clean) ?: $value;
+            };
+
             // Prepare response data
             $responseData = [
                 'certificate_uuid' => $certificate->certificate_uuid,
                 'certificate_status' => $certificateStatus,
-                'target_disease' => $certificate->target_disease,
-                'trusted_vaccine_code' => $certificate->trusted_vaccine_code,
+                'target_disease' => $sanitize($certificate->target_disease),
+                'trusted_vaccine_code' => $sanitize($certificate->trusted_vaccine_code),
                 'certificate_expiration_date' => $certificate->certificate_expiration_date,
                 'certificate_url' => $certificate->certificate_url,
                 'qr_code' => $certificate->qr_code,
                 'created_at' => $certificate->created_at,
                 'client' => [
-                    'first_name' => $certificate->client->first_name,
-                    'last_name' => $certificate->client->last_name,
-                    'other_names' => $certificate->client->other_names,
+                    'first_name' => $sanitize($certificate->client->first_name),
+                    'last_name' => $sanitize($certificate->client->last_name),
+                    'other_names' => $sanitize($certificate->client->other_names),
                     'date_of_birth' => $certificate->client->date_of_birth,
                     // Mask sensitive information for security
-                    'NRC' => $certificate->client->NRC ? substr($certificate->client->NRC, 0, 3) . '***' . substr($certificate->client->NRC, -2) : null,
-                    'passport_number' => $certificate->client->passport_number ? substr($certificate->client->passport_number, 0, 2) . '***' . substr($certificate->client->passport_number, -2) : null,
+                    'NRC' => $certificate->client->NRC ? mb_substr($certificate->client->NRC, 0, 3) . '***' . mb_substr($certificate->client->NRC, -2) : null,
+                    'passport_number' => $certificate->client->passport_number ? mb_substr($certificate->client->passport_number, 0, 2) . '***' . mb_substr($certificate->client->passport_number, -2) : null,
                 ],
             ];
 
@@ -373,7 +382,7 @@ class CertificateController extends AppBaseController
                 'success' => true,
                 'message' => 'Certificate verified successfully',
                 'data' => $responseData,
-            ], 200);
+            ], 200, [], JSON_INVALID_UTF8_SUBSTITUTE);
 
         } catch (\Illuminate\Validation\ValidationException $e) {
             Log::channel('sms')->error("[$requestId] Validation failed", [
