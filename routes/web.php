@@ -95,6 +95,7 @@ Route::group(['middleware' => 'auth'], function(){
         Route::post('admin/system-tools/generate-certificates', [App\Http\Controllers\Admin\SystemToolsController::class, 'generateCertificates'])->name('admin.system-tools.generate-certificates');
         Route::post('admin/system-tools/regenerate-missing-qrcodes', [App\Http\Controllers\Admin\SystemToolsController::class, 'regenerateMissingQrCodes'])->name('admin.system-tools.regenerate-missing-qrcodes');
         Route::post('admin/system-tools/import-dhis2', [App\Http\Controllers\Admin\SystemToolsController::class, 'importDHIS2Data'])->name('admin.system-tools.import-dhis2');
+        Route::post('admin/system-tools/import-dhis2-per-facility', [App\Http\Controllers\Admin\SystemToolsController::class, 'importDHIS2DataPerFacility'])->name('admin.system-tools.import-dhis2-per-facility');
         Route::post('admin/system-tools/export-trusted-portal', [App\Http\Controllers\Admin\SystemToolsController::class, 'exportToTrustedPortal'])->name('admin.system-tools.export-trusted-portal');
         Route::post('admin/system-tools/clear-cache', [App\Http\Controllers\Admin\SystemToolsController::class, 'clearCache'])->name('admin.system-tools.clear-cache');
         Route::post('admin/system-tools/optimize', [App\Http\Controllers\Admin\SystemToolsController::class, 'optimizeApp'])->name('admin.system-tools.optimize');

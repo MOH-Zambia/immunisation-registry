@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\Log;
 use App\Models\Certificate;
 use App\Models\Vaccination;
 use App\Models\Client;
+use App\Models\Facility;
 
 class SystemToolsController extends AppBaseController
 {
@@ -30,7 +31,13 @@ class SystemToolsController extends AppBaseController
             'total_clients' => Client::count(),
         ];
 
-        return view('admin.system_tools', compact('stats'));
+        $dhis2Facilities = Facility::query()
+            ->whereNotNull('DHIS2_UID')
+            ->where('DHIS2_UID', '!=', '')
+            ->orderBy('name')
+            ->get(['name', 'DHIS2_UID']);
+
+        return view('admin.system_tools', compact('stats', 'dhis2Facilities'));
     }
 
     /**
@@ -180,6 +187,68 @@ class SystemToolsController extends AppBaseController
             return response()->json([
                 'success' => false,
                 'message' => 'Error importing DHIS2 data: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Import DHIS2 data per facility
+     *
+     * @param Request $request
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function importDHIS2DataPerFacility(Request $request)
+    {
+        $validated = $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'facility_dhis2_uid' => 'required|string|exists:facilities,DHIS2_UID',
+        ]);
+
+        try {
+            $startTime = microtime(true);
+
+            Log::info('Admin initiated DHIS2 data import per facility', [
+                'user_id' => auth()->id(),
+                'start_date' => $validated['start_date'],
+                'end_date' => $validated['end_date'],
+                'facility_dhis2_uid' => $validated['facility_dhis2_uid'],
+                'timestamp' => now()->toDateTimeString()
+            ]);
+
+            Artisan::call('command:ImportDHIS2DataPerFacility', [
+                'startDate' => $validated['start_date'],
+                'endDate' => $validated['end_date'],
+                'facilityDhis2Uid' => $validated['facility_dhis2_uid'],
+            ]);
+            $output = Artisan::output();
+
+            $executionTime = round((microtime(true) - $startTime), 2);
+
+            Log::info('DHIS2 data import per facility completed', [
+                'user_id' => auth()->id(),
+                'execution_time' => $executionTime,
+                'facility_dhis2_uid' => $validated['facility_dhis2_uid'],
+                'timestamp' => now()->toDateTimeString()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'DHIS2 data import per facility completed successfully',
+                'output' => $output,
+                'execution_time' => $executionTime . self::EXECUTION_TIME_SUFFIX
+            ]);
+        } catch (\Exception $e) {
+            Log::error('DHIS2 data import per facility failed', [
+                'user_id' => auth()->id(),
+                'facility_dhis2_uid' => $validated['facility_dhis2_uid'] ?? null,
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error importing DHIS2 data per facility: ' . $e->getMessage()
             ], 500);
         }
     }

@@ -155,6 +155,48 @@
                     </div>
                 </div>
             </div>
+
+            <!-- DHIS2 Import Per Facility Tool -->
+            <div class="col-md-6">
+                <div class="card card-success">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-hospital"></i> Import DHIS2 Data Per Facility
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Import DHIS2 vaccination data for a specific facility and date range.</p>
+                        <form id="dhis2ImportPerFacilityForm">
+                            <div class="form-group">
+                                <label for="facilityStartDate">Start Date</label>
+                                <input type="date" class="form-control" id="facilityStartDate" required max="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="facilityEndDate">End Date</label>
+                                <input type="date" class="form-control" id="facilityEndDate" required max="{{ date('Y-m-d') }}">
+                            </div>
+                            <div class="form-group">
+                                <label for="facilityDhis2Uid">Facility</label>
+                                <select class="form-control" id="facilityDhis2Uid" required>
+                                    <option value="">Select facility...</option>
+                                    @foreach($dhis2Facilities as $facility)
+                                        <option value="{{ $facility->DHIS2_UID }}">{{ $facility->name }} ({{ $facility->DHIS2_UID }})</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <button type="submit" class="btn btn-success btn-block">
+                                <i class="fas fa-play"></i> Import Per Facility
+                            </button>
+                        </form>
+                        <div id="dhis2ImportPerFacilityOutput" class="mt-3" style="display: none;">
+                            <div class="alert alert-secondary">
+                                <h6><strong>Output:</strong></h6>
+                                <pre id="dhis2ImportPerFacilityLog" style="background: #f4f4f4; padding: 10px; max-height: 300px; overflow-y: auto; font-size: 11px;"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div class="row">
@@ -330,6 +372,47 @@ $(document).ready(function() {
         });
     });
 
+    // DHIS2 Import Per Facility
+    $('#dhis2ImportPerFacilityForm').on('submit', function(e) {
+        e.preventDefault();
+
+        const btn = $(this).find('button[type="submit"]');
+        const startDate = $('#facilityStartDate').val();
+        const endDate = $('#facilityEndDate').val();
+        const facilityDhis2Uid = $('#facilityDhis2Uid').val();
+
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Importing...');
+        $('#dhis2ImportPerFacilityOutput').hide();
+
+        $.ajax({
+            url: "{{ route('admin.system-tools.import-dhis2-per-facility') }}",
+            method: 'POST',
+            data: {
+                _token: "{{ csrf_token() }}",
+                start_date: startDate,
+                end_date: endDate,
+                facility_dhis2_uid: facilityDhis2Uid
+            },
+            success: function(response) {
+                if (response.success) {
+                    $('#dhis2ImportPerFacilityLog').text(response.output);
+                    $('#dhis2ImportPerFacilityOutput').show();
+                    toastr.success(response.message + ' (Duration: ' + response.execution_time + ')');
+                    refreshStats();
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function(xhr) {
+                const message = xhr.responseJSON?.message || 'An error occurred';
+                toastr.error(message);
+            },
+            complete: function() {
+                btn.prop('disabled', false).html('<i class="fas fa-play"></i> Import Per Facility');
+            }
+        });
+    });
+
     // Export to Trusted Portal
     $('#exportTrustedPortalBtn').on('click', function() {
         const btn = $(this);
@@ -453,6 +536,8 @@ $(document).ready(function() {
 
     $('#dhis2EndDate').val(today.toISOString().split('T')[0]);
     $('#dhis2StartDate').val(lastWeek.toISOString().split('T')[0]);
+    $('#facilityEndDate').val(today.toISOString().split('T')[0]);
+    $('#facilityStartDate').val(lastWeek.toISOString().split('T')[0]);
 });
 </script>
 @endpush
