@@ -223,8 +223,8 @@ class ClientController extends AppBaseController
             ]);
 
             // Call the Artisan command to generate certificate for this specific client
-            Artisan::call('generate:certificates', [
-                '--client' => $clientId
+            Artisan::call('command:GenerateVaccinationCertificates', [
+                '--client' => (string) $clientId
             ]);
 
             // Verify certificate was created

@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\AppBaseController;
 use App\Models\AppSetting;
+use App\Services\CertificateStorageService;
 use App\Services\QrCodeStorageService;
 use Flash;
 use Illuminate\Http\RedirectResponse;
@@ -13,15 +14,18 @@ use Illuminate\View\View;
 
 class QrCodeSettingsController extends AppBaseController
 {
-    public function index(QrCodeStorageService $qrCodeStorageService): View
+    public function index(QrCodeStorageService $qrCodeStorageService, CertificateStorageService $certificateStorageService): View
     {
         return view('admin.qrcode_settings', [
             'availableDisks' => array_keys(config('filesystems.disks', [])),
             'settings' => [
-                'storage_disk' => $qrCodeStorageService->disk(),
-                'storage_path' => $qrCodeStorageService->directory(),
-                'storage_visibility' => $qrCodeStorageService->visibility() ?? 'public',
-                'public_base_url' => $qrCodeStorageService->publicBaseUrl(),
+                'qrcode_storage_disk' => $qrCodeStorageService->disk(),
+                'qrcode_storage_path' => $qrCodeStorageService->directory(),
+                'qrcode_storage_visibility' => $qrCodeStorageService->visibility() ?? 'public',
+                'qrcode_public_base_url' => $qrCodeStorageService->publicBaseUrl(),
+                'certificate_storage_disk' => $certificateStorageService->disk(),
+                'certificate_storage_path' => $certificateStorageService->directory(),
+                'certificate_storage_visibility' => $certificateStorageService->visibility() ?? 'private',
             ],
         ]);
     }
@@ -31,17 +35,23 @@ class QrCodeSettingsController extends AppBaseController
         $availableDisks = array_keys(config('filesystems.disks', []));
 
         $validated = $request->validate([
-            'storage_disk' => ['required', 'string', 'in:' . implode(',', $availableDisks)],
-            'storage_path' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_\-\/]+$/'],
-            'storage_visibility' => ['required', 'string', 'in:public,private'],
-            'public_base_url' => ['nullable', 'url', 'max:255'],
+            'qrcode_storage_disk' => ['required', 'string', 'in:' . implode(',', $availableDisks)],
+            'qrcode_storage_path' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_\-\/]+$/'],
+            'qrcode_storage_visibility' => ['required', 'string', 'in:public,private'],
+            'qrcode_public_base_url' => ['nullable', 'url', 'max:255'],
+            'certificate_storage_disk' => ['required', 'string', 'in:' . implode(',', $availableDisks)],
+            'certificate_storage_path' => ['required', 'string', 'max:255', 'regex:/^[A-Za-z0-9_\-\/]+$/'],
+            'certificate_storage_visibility' => ['required', 'string', 'in:public,private'],
         ]);
 
         $settings = [
-            'qrcode.storage_disk' => $validated['storage_disk'],
-            'qrcode.storage_path' => trim($validated['storage_path'], '/'),
-            'qrcode.storage_visibility' => $validated['storage_visibility'],
-            'qrcode.public_base_url' => $validated['public_base_url'] ? rtrim($validated['public_base_url'], '/') : null,
+            'qrcode.storage_disk' => $validated['qrcode_storage_disk'],
+            'qrcode.storage_path' => trim($validated['qrcode_storage_path'], '/'),
+            'qrcode.storage_visibility' => $validated['qrcode_storage_visibility'],
+            'qrcode.public_base_url' => $validated['qrcode_public_base_url'] ? rtrim($validated['qrcode_public_base_url'], '/') : null,
+            'certificate.storage_disk' => $validated['certificate_storage_disk'],
+            'certificate.storage_path' => trim($validated['certificate_storage_path'], '/'),
+            'certificate.storage_visibility' => $validated['certificate_storage_visibility'],
         ];
 
         foreach ($settings as $key => $value) {
@@ -53,7 +63,7 @@ class QrCodeSettingsController extends AppBaseController
             'settings' => $settings,
         ]);
 
-        Flash::success('QR code storage settings updated successfully.');
+        Flash::success('Storage settings updated successfully.');
 
         return redirect()->route('admin.qrcode-settings.index');
     }

@@ -55,7 +55,7 @@ class GenerateVaccinationCertificates extends Command
      *
      * @var string
      */
-    protected $signature = 'command:GenerateVaccinationCertificates';
+    protected $signature = 'command:GenerateVaccinationCertificates {--client= : Generate certificate for a single client id}';
 
     /**
      * The console command description.
@@ -75,12 +75,20 @@ class GenerateVaccinationCertificates extends Command
         $script_start_time = microtime(true);
         $script_start_date_time = $this->timestamp();
         $qrCodeStorage = app(QrCodeStorageService::class);
+        $clientId = $this->option('client');
 
         Log::info("$script_start_date_time: Generating certificates");
         $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Generating certificates</info>");
 
         //Generate certificates
-        $vaccinations = Vaccination::whereNull('certificate_id')->get();
+        $vaccinationsQuery = Vaccination::whereNull('certificate_id');
+
+        if (!empty($clientId)) {
+            $vaccinationsQuery->where('client_id', $clientId);
+            $this->getOutput()->writeln("<comment>{$script_start_date_time} Filtering by client_id:</comment> {$clientId}");
+        }
+
+        $vaccinations = $vaccinationsQuery->get();
 
         foreach($vaccinations as $vaccination){
             $startTime = microtime(true);

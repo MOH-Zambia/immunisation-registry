@@ -17,4 +17,6 @@ yarn-error.log
 /public/img/qrcodes
 /storage/app/public/qrcodes
 /storage/app/qrcodes
+/storage/app/public/certificates
+/storage/app/certificates
 /public/files

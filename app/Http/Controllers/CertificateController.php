@@ -8,6 +8,7 @@ use App\Models\Certificate;
 use App\Models\User;
 use App\Repositories\CertificateRepository;
 use App\Http\Controllers\AppBaseController;
+use App\Services\CertificateStorageService;
 use Illuminate\Http\Request;
 use Flash;
 use Illuminate\Support\Facades\Auth;
@@ -22,9 +23,13 @@ class CertificateController extends AppBaseController
     /** @var  CertificateRepository */
     private $certificateRepository;
 
-    public function __construct(CertificateRepository $certificateRepo)
+    /** @var CertificateStorageService */
+    private $certificateStorageService;
+
+    public function __construct(CertificateRepository $certificateRepo, CertificateStorageService $certificateStorageService)
     {
         $this->certificateRepository = $certificateRepo;
+        $this->certificateStorageService = $certificateStorageService;
     }
 
     /**
@@ -416,9 +421,6 @@ class CertificateController extends AppBaseController
         try {
             $out = new ConsoleOutput();
 
-            self::createDirectoryIfNonExistence(public_path('files'));
-            self::createDirectoryIfNonExistence(public_path('files/certificates'));
-
             // get certificate based on uuid supplied
             $covid19_certificate = Certificate::where('certificate_uuid', $uuid)->first();
 
@@ -426,8 +428,6 @@ class CertificateController extends AppBaseController
                 $out->writeln('Certificate of supplied UUID NOT FOUND');
                 abort(404, 'Certificate not found');
             }
-
-            $filename = 'files/certificates/'. $covid19_certificate->certificate_uuid . '.pdf';
 
             // load certificate public and private keys
             $certificate = 'file://'.base_path().'/public/STAR_moh_gov_zm.crt';
@@ -459,14 +459,20 @@ class CertificateController extends AppBaseController
             // define active area for signature appearance
             PDF::setSignatureAppearance(180, 60, 15, 15);
 
-            // save certificate file to system
-            PDF::Output(public_path($filename), 'F');
+            $pdfContents = PDF::Output('', 'S');
+
+            if ($pdfContents === false || $pdfContents === '') {
+                Log::error('Error generating PDF certificate: Failed to generate PDF contents');
+                abort(500, 'Failed to generate certificate');
+            }
+
+            $pdfPath = $this->certificateStorageService->storePdf($covid19_certificate->certificate_uuid, $pdfContents);
 
             PDF::reset();
 
             $out->writeln("Done!");
 
-            return response()->download(public_path($filename));
+            return $this->certificateStorageService->downloadResponse($pdfPath);
 
         } catch (\Exception $e) {
             Log::error('Error generating PDF certificate: ' . $e->getMessage());
