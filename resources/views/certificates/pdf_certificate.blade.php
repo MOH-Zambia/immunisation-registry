@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
     <head>
         <title>Ministry of Health | Immunisation Registry</title>
         <style>
@@ -7,7 +7,7 @@
                 background-color: #04AA6D;
             }
             .capitalize-text {
-                text-transform: capitalize; 
+                text-transform: capitalize;
             }
         </style>
     </head>
@@ -29,10 +29,9 @@
                 </tr>
                 <tr>
                     <td style="text-align: center; vertical-align: middle;">
-                        <?php
-                            $rassshireniye = '.png';
-                            echo '<img src="/img/qrcodes/' . $certificate->certificate_uuid . '' . $rassshireniye .'" height="156px" width="156px" opacity="1" margin="0" padding="0" />'; 
-                        ?>
+                        @if($certificate->qr_code_image_src || $certificate->qr_code_url)
+                            <img src="{{ $certificate->qr_code_image_src ?: $certificate->qr_code_url }}" alt="Certificate QR Code" height="156px" width="156px" opacity="1" margin="0" padding="0" />
+                        @endif
                     </td>
                     <td colspan="3">
                         <div>
@@ -52,8 +51,8 @@
                     </td>
                 </tr>
             </table>
-            
-    
+
+
             <div>
                 <table font-family="Arial, Helvetica, sans-serif" border-collapse="collapse" width="100%">
                     <thead>

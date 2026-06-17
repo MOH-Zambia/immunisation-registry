@@ -36,20 +36,20 @@ namespace App\Console\Commands;
  */
 
 use Illuminate\Console\Command;
-use Illuminate\Database\QueryException;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Str;
 
 use QRCode;
-// use SimpleSoftwareIO\QrCode\Facades\QrCode;
 
-use App\Models\Client;
 use App\Models\Certificate;
 use App\Models\Vaccination;
+use App\Services\QrCodeStorageService;
 
 class GenerateVaccinationCertificates extends Command
 {
+    private const DATE_TIME_FORMAT = 'Y-m-d H:i:s';
+
     /**
      * The name and signature of the console command.
      *
@@ -65,30 +65,16 @@ class GenerateVaccinationCertificates extends Command
     protected $description = 'Generates vaccination certificates for clients';
 
     /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
-
-    /**
      * Execute the console command.
      *
      * @return int
      */
     public function handle()
     {
-        $path = "public/img/qrcodes/";
-        if (!file_exists($path)) {
-            mkdir($path, 0777, true);
-        }
-
         $number_of_certificates = 0;
         $script_start_time = microtime(true);
-        $script_start_date_time = date('Y-m-d H:i:s');
+        $script_start_date_time = $this->timestamp();
+        $qrCodeStorage = app(QrCodeStorageService::class);
 
         Log::info("$script_start_date_time: Generating certificates");
         $this->getOutput()->writeln("<info>$script_start_date_time: Script started - Generating certificates</info>");
@@ -104,23 +90,17 @@ class GenerateVaccinationCertificates extends Command
             ])->first();
 
             if(empty($certificate)){
-                $time = date('Y-m-d H:i:s');
+                $time = $this->timestamp();
                 $this->getOutput()->writeln("<comment>$time Saving certificate for client:</comment> {$vaccination->client_id}");
 
                 $certificate_uuid = Str::orderedUuid();
                 $certificate_url = env('APPLICATION_CERTIFICATE_URL').$certificate_uuid;
+                $qr_code_path = $qrCodeStorage->relativePathForUuid($certificate_uuid);
+                $qrcode = $this->generateQrCodeContents($certificate_url);
 
-                //generate qrcode and save qrcode image in our folder on this site
-                $qr_code_path = 'img/qrcodes/'.$certificate_uuid.'.png';
-                QRCode::url($certificate_url)
-                    ->setSize(6)
-                    ->setOutfile('public/'.$qr_code_path)
-                    ->png();
+                if ($qrcode !== null) {
 
-                if (file_exists('public/'.$qr_code_path)) {
-
-                    $qrcode = file_get_contents('public/'.$qr_code_path);
-                    // $this->getOutput()->writeln("{$time} <comment>QR Code (Contents) :</comment> {$qrcode}");
+                    $qr_code_path = $qrCodeStorage->storeQrCode($certificate_uuid, $qrcode);
 
                     DB::beginTransaction();
                     try{
@@ -142,21 +122,21 @@ class GenerateVaccinationCertificates extends Command
 
                         DB::commit();
 
-                        $time = date('Y-m-d H:i:s');
+                        $time = $this->timestamp();
                         $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                         $this->getOutput()->writeln("<info>$time Certificate saved: {{$certificate_url}}</info> ({$runTime}ms)");
                     } catch (\Exception $e) {
                         DB::rollback(); //Rollback database transaction if any error occurs
 
                         $message = $e->getMessage();
-                        $time = date('Y-m-d H:i:s');
+                        $time = $this->timestamp();
                         $this->getOutput()->writeln("<error>$time Exception: $message</error>");
                     }
                 } else {
                     $this->getOutput()->writeln("{$time} <comment>QR Code NOT FOUND : </comment> $qr_code_path}");
                 }
             } else {
-                $time = date('Y-m-d H:i:s');
+                $time = $this->timestamp();
                 $this->getOutput()->writeln("<comment>$time Updating certificate for client:</comment> {$vaccination->client_id}");
 
                 $vaccination->certificate_id = $certificate->id;
@@ -164,7 +144,7 @@ class GenerateVaccinationCertificates extends Command
 
                 DB::commit();
 
-                $time = date('Y-m-d H:i:s');
+                $time = $this->timestamp();
                 $runTime = number_format((microtime(true) - $startTime) * 1000, 2);
                 $this->getOutput()->writeln("<info>$time Updated certificate: {{$certificate->certificate_url}}</info> ({$runTime}ms)");
             }
@@ -172,11 +152,42 @@ class GenerateVaccinationCertificates extends Command
             $number_of_certificates++;
         }
 
-        $script_end_time = date('Y-m-d H:i:s');
+        $script_end_time = $this->timestamp();
         $script_run_time = number_format((microtime(true) - $script_start_time) * 1000, 2);
         Log::info("$script_end_time Completed generating $number_of_certificates certificates: Duration: $script_run_time");
         $this->getOutput()->writeln("<info>$script_end_time Script completed:</info> Completed generating $number_of_certificates certificates. Duration: $script_run_time");
 
         return Command::SUCCESS;
     }
+
+    private function timestamp(): string
+    {
+        return date(self::DATE_TIME_FORMAT);
+    }
+
+    private function generateQrCodeContents(string $certificateUrl): ?string
+    {
+        $temporaryQrCode = tempnam(sys_get_temp_dir(), 'qrc');
+
+        if ($temporaryQrCode === false) {
+            return null;
+        }
+
+        QRCode::url($certificateUrl)
+            ->setSize(6)
+            ->setOutfile($temporaryQrCode)
+            ->png();
+
+        if (!file_exists($temporaryQrCode)) {
+            @unlink($temporaryQrCode);
+
+            return null;
+        }
+
+        $contents = file_get_contents($temporaryQrCode);
+        @unlink($temporaryQrCode);
+
+        return $contents !== false ? $contents : null;
+    }
 }
+

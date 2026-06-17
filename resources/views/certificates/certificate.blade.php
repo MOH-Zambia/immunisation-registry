@@ -79,7 +79,7 @@
                                         <!-- info row -->
                                         <div class="row invoice-info">
                                             <div class="col-sm-4 invoice-col">
-                                                <img src="{{ url( $certificate->qr_code_path) }}" alt="Certificate QR Code" style="opacity: .8">
+                                                <img src="{{ $certificate->qr_code_image_src ?: $certificate->qr_code_url }}" alt="Certificate QR Code" style="opacity: .8">
                                             </div>
                                             <!-- /.col -->
 

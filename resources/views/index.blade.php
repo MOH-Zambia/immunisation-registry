@@ -60,10 +60,13 @@
                         <a class="nav-link" href="#header-section">Home <span class="sr-only">(current)</span></a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#features-section">About</a>
+                        <a class="nav-link" href="{{ url('about') }}">About</a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#digital-marketing-section">FAQ's</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{{ url('vaccination-centres') }}">Centres</a>
                     </li>
                     @if (Route::has('login'))
                         @auth
@@ -91,7 +94,7 @@
                         @endauth
                     @endif
                     <li class="nav-item btn-contact-us pl-4 pl-lg-0">
-                        <button class="btn btn-info" data-toggle="modal" data-target="#exampleModal">Contact Us</button>
+                        <a href="{{ url('contact') }}" class="btn btn-info">Contact Us</a>
                     </li>
                 </ul>
             </div>
@@ -129,7 +132,7 @@
                         <img src="{{url('img/Group7.svg')}}" alt="" class="img-icons">
                         <h5 class="py-3">COVID-19 Vaccination <br>Programme</h5>
                         <p class="text-muted">The outbreak of the Coronavirus Disease (COVID-19) was declared a Public Health Emergency of International Concern (PHEIC) on 30 January 2020, by the Director-General of the World Health Organisation (WHO).</p>
-                        <a href="#"><p class="readmore-link">Read more...</p></a>
+                        <a href="{{ url('about') }}"><p class="readmore-link">Read more...</p></a>
                     </div>
                 </div>
                 <div class="col-4">
@@ -137,7 +140,7 @@
                         <img src="{{url('img/Group5.svg')}}" alt="" class="img-icons">
                         <h5 class="py-3">COVID-19 Vaccination <br>Certificate</h5>
                         <p class="text-muted">Your proof of vaccination is your vaccine receipt or enhanced vaccine certificate with a QR code, sometimes called a vaccine passport or vaccine record. You can download an enhanced vaccine certificate with a QR code</p>
-                        <a href="#"><p class="readmore-link">Read more...</p></a>
+                        <a href="{{ url('get_vaccination_certificate') }}"><p class="readmore-link">Read more...</p></a>
                     </div>
                 </div>
                 <div class="col-4">
@@ -145,9 +148,50 @@
                         <img src="{{url('img/Group12.svg')}}" alt="" class="img-icons">
                         <h5 class="py-3">Vaccination <br>Centres</h5>
                         <p class="text-muted">Find a walk-in coronavirus (COVID-19) vaccination site</p>
-                        <a href="#"><p class="readmore-link">Read more...</p></a>
+                        <a href="{{ url('vaccination-centres') }}"><p class="readmore-link">Read more...</p></a>
                     </div>
                 </div>
+            </div>
+        </section>
+
+        <!-- FAQ Section -->
+        <section class="features-overview" id="digital-marketing-section">
+            <div class="content-header">
+                <h2>Frequently Asked Questions</h2>
+                <h6 class="section-subtitle text-muted">Common questions about the COVID-19 vaccination programme and digital certificates.</h6>
+            </div>
+            <div class="row">
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6 class="font-weight-semibold"><i class="fas fa-question-circle text-info mr-2"></i>How do I get my vaccination certificate?</h6>
+                        <p class="text-muted pl-4">Click on "Get Vaccination Certificate" on the homepage, enter your ID details, verify your identity via OTP, and download your certificate.</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="font-weight-semibold"><i class="fas fa-question-circle text-info mr-2"></i>What vaccines are approved in Zambia?</h6>
+                        <p class="text-muted pl-4">MOH has approved AstraZeneca, Janssen (Johnson & Johnson), Sinopharm, Pfizer, and Moderna COVID-19 vaccines for emergency use.</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="font-weight-semibold"><i class="fas fa-question-circle text-info mr-2"></i>Is the COVID-19 vaccine free?</h6>
+                        <p class="text-muted pl-4">Yes, the Ministry of Health provides COVID-19 vaccines free of charge to all Zambian citizens and residents.</p>
+                    </div>
+                </div>
+                <div class="col-md-6">
+                    <div class="mb-4">
+                        <h6 class="font-weight-semibold"><i class="fas fa-question-circle text-info mr-2"></i>How do I verify a certificate?</h6>
+                        <p class="text-muted pl-4">Click on "Verify Vaccination Certificate", enter the certificate UUID or scan the QR code to verify its authenticity.</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="font-weight-semibold"><i class="fas fa-question-circle text-info mr-2"></i>What if I lost my vaccination card?</h6>
+                        <p class="text-muted pl-4">Your vaccination records are stored securely in the registry. Use your NRC, passport, or email to retrieve your digital certificate.</p>
+                    </div>
+                    <div class="mb-4">
+                        <h6 class="font-weight-semibold"><i class="fas fa-question-circle text-info mr-2"></i>Where can I get vaccinated?</h6>
+                        <p class="text-muted pl-4">Visit any government health facility or designated vaccination centre in your district. <a href="{{ url('vaccination-centres') }}">View centres</a>.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="text-center mt-3">
+                <a href="{{ url('help') }}" class="btn btn-outline-info">View All FAQ's <i class="fas fa-arrow-right ml-1"></i></a>
             </div>
         </section>
 

@@ -170,7 +170,7 @@
         <!-- QR Code and Certificate Info -->
         <div class="row certificate-info">
             <div class="col-md-4 qr-code-section">
-                <img src="{{ url($certificate->qr_code_path) }}" alt="Certificate QR Code">
+                <img src="{{ $certificate->qr_code_image_src ?: $certificate->qr_code_url }}" alt="Certificate QR Code">
             </div>
 
             <div class="col-md-8">

@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
         // \Laravelista\LumenVendorPublish\VendorPublishCommand::class,
         Commands\ImportDHIS2Data::class,
         Commands\GenerateVaccinationCertificates::class,
+        Commands\RegenerateMissingQrCodes::class,
         Commands\ImportDHIS2DataPerFacility::class
     ];
 
@@ -27,13 +28,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $startDate = "2020-01-01";
-        $endDate = date('Y-m-d');
-        $facilityDhis2Uid = "HvCdWhbVEvI"; //Chilenje First Level Hospital - Default Facility Picked
         foreach (['05:00', '06:30', '11:00'] as $cert_gen_time) {
             $schedule->command("command:GenerateVaccinationCertificates")->daily()->at($cert_gen_time); //->dailyAt($time);
         }
-        // $schedule->command("command:ImportDHIS2DataPerFacility $startDate $endDate $facilityDhis2Uid")->daily()->at("12:00");
         $schedule->command("command:ImportUpdatedDHIS2Data")->daily()->at("01:30");
         $schedule->command("command:ImportUpdatedDHIS2ClientData")->daily()->at("22:00");
     }

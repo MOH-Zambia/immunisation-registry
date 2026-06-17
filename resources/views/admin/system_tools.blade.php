@@ -94,6 +94,35 @@
                 </div>
             </div>
 
+            <!-- QR Recovery Tool -->
+            <div class="col-md-6">
+                <div class="card card-secondary">
+                    <div class="card-header">
+                        <h3 class="card-title">
+                            <i class="fas fa-qrcode"></i> Regenerate Missing QR Codes
+                        </h3>
+                    </div>
+                    <div class="card-body">
+                        <p>Recover missing QR code files for existing certificates in one pass.</p>
+                        <div class="alert alert-info">
+                            <i class="fas fa-info-circle"></i>
+                            Uses the stored QR image blob when available, otherwise regenerates from the certificate URL.
+                        </div>
+                        <button type="button" class="btn btn-secondary btn-block" id="regenerateMissingQrCodesBtn">
+                            <i class="fas fa-sync-alt"></i> Regenerate Missing QR Codes
+                        </button>
+                        <div id="regenerateMissingQrCodesOutput" class="mt-3" style="display: none;">
+                            <div class="alert alert-secondary">
+                                <h6><strong>Output:</strong></h6>
+                                <pre id="regenerateMissingQrCodesLog" style="background: #f4f4f4; padding: 10px; max-height: 300px; overflow-y: auto; font-size: 11px;"></pre>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
             <!-- DHIS2 Import Tool -->
             <div class="col-md-6">
                 <div class="card card-success">
@@ -106,11 +135,11 @@
                         <p>Import vaccination data from DHIS2 COVAX instance.</p>
                         <form id="dhis2ImportForm">
                             <div class="form-group">
-                                <label>Start Date</label>
+                                <label for="dhis2StartDate">Start Date</label>
                                 <input type="date" class="form-control" id="dhis2StartDate" required max="{{ date('Y-m-d') }}">
                             </div>
                             <div class="form-group">
-                                <label>End Date</label>
+                                <label for="dhis2EndDate">End Date</label>
                                 <input type="date" class="form-control" id="dhis2EndDate" required max="{{ date('Y-m-d') }}">
                             </div>
                             <button type="submit" class="btn btn-success btn-block">
@@ -225,6 +254,39 @@ $(document).ready(function() {
             },
             complete: function() {
                 btn.prop('disabled', false).html('<i class="fas fa-play"></i> Generate Certificates');
+            }
+        });
+    });
+
+    // Regenerate Missing QR Codes
+    $('#regenerateMissingQrCodesBtn').on('click', function() {
+        const btn = $(this);
+        btn.prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Recovering...');
+        $('#regenerateMissingQrCodesOutput').hide();
+
+        $.ajax({
+            url: "{{ route('admin.system-tools.regenerate-missing-qrcodes') }}",
+            method: 'POST',
+            data: { _token: "{{ csrf_token() }}" },
+            success: function(response) {
+                if (response.success) {
+                    $('#regenerateMissingQrCodesLog').text(response.output);
+                    $('#regenerateMissingQrCodesOutput').show();
+                    toastr.success(response.message + ' (Duration: ' + response.execution_time + ')');
+                } else {
+                    toastr.error(response.message);
+                }
+            },
+            error: function(xhr) {
+                const message = xhr.responseJSON?.message || 'An error occurred';
+                toastr.error(message);
+                if (xhr.responseJSON?.output) {
+                    $('#regenerateMissingQrCodesLog').text(xhr.responseJSON.output);
+                    $('#regenerateMissingQrCodesOutput').show();
+                }
+            },
+            complete: function() {
+                btn.prop('disabled', false).html('<i class="fas fa-sync-alt"></i> Regenerate Missing QR Codes');
             }
         });
     });

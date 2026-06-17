@@ -105,6 +105,14 @@
             <p>System Tools</p>
         </a>
     </li>
+
+    <li class="nav-item">
+        <a href="{{ route('admin.qrcode-settings.index') }}"
+           class="nav-link {{ Request::is('admin/qrcode-settings*') ? 'active' : '' }}">
+            <i class="nav-icon fas fa-qrcode"></i>
+            <p>QR Code Settings</p>
+        </a>
+    </li>
 @endif
 
 

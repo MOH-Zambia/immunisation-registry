@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Services\QrCodeStorageService;
 use Eloquent as Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -186,6 +187,18 @@ class Certificate extends Model
      **/
     public function vaccinations()
     {
-        return $this->hasMany(\App\Models\Vaccination::class, 'certificate_id')->orderBy('date');;
+        return $this->hasMany(\App\Models\Vaccination::class, 'certificate_id')->orderBy('date');
+    }
+
+    public function getQrCodeImageSrcAttribute(): ?string
+    {
+        $contents = app(QrCodeStorageService::class)->contentsForCertificate($this);
+
+        return $contents !== null ? 'data:image/png;base64,' . base64_encode($contents) : null;
+    }
+
+    public function getQrCodeUrlAttribute(): ?string
+    {
+        return app(QrCodeStorageService::class)->urlForCertificate($this);
     }
 }

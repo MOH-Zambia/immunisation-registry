@@ -15,4 +15,6 @@ yarn-error.log
 /.vscode
 
 /public/img/qrcodes
+/storage/app/public/qrcodes
+/storage/app/qrcodes
 /public/files

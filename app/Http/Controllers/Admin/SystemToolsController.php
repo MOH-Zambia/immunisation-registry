@@ -12,6 +12,8 @@ use App\Models\Client;
 
 class SystemToolsController extends AppBaseController
 {
+    private const EXECUTION_TIME_SUFFIX = ' seconds';
+
     /**
      * Display system tools interface
      *
@@ -62,7 +64,7 @@ class SystemToolsController extends AppBaseController
                 'success' => true,
                 'message' => 'Certificate generation completed successfully',
                 'output' => $output,
-                'execution_time' => $executionTime . ' seconds'
+                'execution_time' => $executionTime . self::EXECUTION_TIME_SUFFIX
             ]);
         } catch (\Exception $e) {
             Log::error('Certificate generation failed', [
@@ -74,6 +76,52 @@ class SystemToolsController extends AppBaseController
             return response()->json([
                 'success' => false,
                 'message' => 'Error generating certificates: ' . $e->getMessage()
+            ], 500);
+        }
+    }
+
+    /**
+     * Regenerate missing QR codes
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function regenerateMissingQrCodes()
+    {
+        try {
+            $startTime = microtime(true);
+
+            Log::info('Admin initiated missing QR code regeneration', [
+                'user_id' => auth()->id(),
+                'timestamp' => now()->toDateTimeString()
+            ]);
+
+            Artisan::call('command:RegenerateMissingQrCodes');
+            $output = Artisan::output();
+            $executionTime = round((microtime(true) - $startTime), 2);
+
+            Log::info('Missing QR code regeneration completed', [
+                'user_id' => auth()->id(),
+                'execution_time' => $executionTime,
+                'timestamp' => now()->toDateTimeString()
+            ]);
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Missing QR code regeneration completed successfully',
+                'output' => $output,
+                'execution_time' => $executionTime . self::EXECUTION_TIME_SUFFIX
+            ]);
+        } catch (\Exception $e) {
+            Log::error('Missing QR code regeneration failed', [
+                'user_id' => auth()->id(),
+                'error' => $e->getMessage(),
+                'trace' => $e->getTraceAsString()
+            ]);
+
+            return response()->json([
+                'success' => false,
+                'message' => 'Error regenerating missing QR codes: ' . $e->getMessage(),
+                'output' => Artisan::output()
             ], 500);
         }
     }
@@ -120,7 +168,7 @@ class SystemToolsController extends AppBaseController
                 'success' => true,
                 'message' => 'DHIS2 data import completed successfully',
                 'output' => $output,
-                'execution_time' => $executionTime . ' seconds'
+                'execution_time' => $executionTime . self::EXECUTION_TIME_SUFFIX
             ]);
         } catch (\Exception $e) {
             Log::error('DHIS2 data import failed', [
@@ -167,7 +215,7 @@ class SystemToolsController extends AppBaseController
                 'success' => true,
                 'message' => 'Export to Trusted Vaccine Portal completed successfully',
                 'output' => $output,
-                'execution_time' => $executionTime . ' seconds'
+                'execution_time' => $executionTime . self::EXECUTION_TIME_SUFFIX
             ]);
         } catch (\Exception $e) {
             Log::error('Export to Trusted Vaccine Portal failed', [
