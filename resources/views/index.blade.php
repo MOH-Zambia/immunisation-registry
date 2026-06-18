@@ -30,7 +30,7 @@
                 <div class="col-md-12 content">
                     <p class="text fa-pull-left">
                         <span tabindex="0">Covid-19 Vaccine Registration and Appointment Request</span>
-                        <a class="alert-link" target="_blank" href="https://ir.moh.gov.zm/registration" tabindex="0">Click Here</a>
+                        <a class="alert-link" href="{{ url('appointment') }}" tabindex="0">Click Here</a>
                     </p>
                     <a href="javascript:void(0);" class="alert-close-icon fa-pull-right" aria-label="Close Notification bar" tabindex="0">
                         <span class="sr-only sr-only-focusable">Close Notification bar</span>

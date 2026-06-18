@@ -40,6 +40,10 @@ Route::get('vaccination-centres', function () {
     return view('vaccination-centres');
 });
 
+Route::get('appointment', function () {
+    return view('appointment');
+});
+
 Route::get('certificate/{uuid}', [App\Http\Controllers\CertificateController::class, 'view'])->name('certificate');
 Route::post('certificates/verify', [App\Http\Controllers\CertificateController::class, 'verifyCertificate'])->name('certificates.verify');
 Route::post('client/verify', [App\Http\Controllers\ClientController::class, 'verify'])->name('clients.verify');
