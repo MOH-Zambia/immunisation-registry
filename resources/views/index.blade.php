@@ -113,8 +113,8 @@
                 <li>Certain population groups should receive the vaccine first because they are at higher risk. The three priority population groups are: older people, people with certain chronic conditions and key healthcare workers</li>
             </ul>
             <div style="text-align: center;">
-                <a class="btn btn-opacity-light mr-1" href="{{ url('get_vaccination_certificate') }}">Get Vaccination Certificate</a>
-                <a class="btn btn-opacity-success mr-1" href="{{ url('verify_vaccination_certificate') }}">Verify Vaccination Certificate</a>
+                <a class="btn btn-opacity-light mr-1" href="{{ url('get_vaccination_certificate') }}" target="_blank">Get Vaccination Certificate</a>
+                <a class="btn btn-opacity-success mr-1" href="{{ url('verify_vaccination_certificate') }}" target="_blank">Verify Vaccination Certificate</a>
             </div>
         </div>
     </div>
