@@ -231,7 +231,7 @@
 </div>
 
 <footer class="border-top">
-    <p class="text-center text-muted pt-4">Copyright © 2021 <a href="https://www.moh.gov.zm" class="px-1">Ministry of Health</a>All rights reserved.</p>
+    <p class="text-center text-muted pt-4">Copyright © {{ date('Y') }} <a href="https://www.moh.gov.zm" class="px-1">Ministry of Health</a>All rights reserved.</p>
 </footer>
 
 {{--<script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js'></script>--}}
